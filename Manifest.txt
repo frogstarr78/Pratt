@@ -1,0 +1,7 @@
+History.txt
+Manifest.txt
+README.txt
+Rakefile
+bin/pratt
+lib/pratt.rb
+test/test_pratt.rb
