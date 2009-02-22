@@ -1,0 +1,40 @@
+// RCS: @(#) tile.rc,v 1.3 2006/09/30 17:53:08 jenglish Exp
+//
+// Version Resource Script
+//
+
+#include <winver.h>
+
+LANGUAGE 0x9, 0x1	/* LANG_ENGLISH, SUBLANG_DEFAULT */
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION    COMMAVERSION
+ PRODUCTVERSION COMMAVERSION
+ FILEFLAGSMASK 	0x3fL
+#ifdef DEBUG
+ FILEFLAGS 	VS_FF_DEBUG
+#else
+ FILEFLAGS 	0x0L
+#endif
+ FILEOS 	VOS__WINDOWS32
+ FILETYPE 	VFT_DLL
+ FILESUBTYPE 	0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0" /* LANG_ENGLISH/SUBLANG_ENGLISH_US, Unicode CP */
+        BEGIN
+            VALUE "FileDescription", "Tile " DOTVERSION " Tk theme extension\0"
+            VALUE "OriginalFilename", "tile" VERSION ".dll\0"
+            VALUE "FileVersion",      DOTVERSION "\0"
+            VALUE "LegalCopyright",   "Copyright \251 2003 Joe English and other parties\0"
+            VALUE "ProductName",      "Tile " DOTVERSION " Tk theme extension\0"
+            VALUE "ProductVersion",   DOTVERSION "\0"
+        END		    
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+

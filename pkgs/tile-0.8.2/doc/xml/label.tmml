@@ -1,0 +1,154 @@
+<manpage cat="widget" id="label" title="label" version="0.2">
+<!-- This file was automatically generated.  DO NOT EDIT (yet)! -->
+<!-- 
+     Copyright (c) 2004 Joe English
+ -->
+<?TROFF.TH title="label" section="n" date="0.2" source="tile" manual="Tile Widget Set" ?>
+<namesection>
+<name>ttk::label</name>
+<desc>Display a text string and/or image</desc>
+</namesection>
+<synopsis>
+<syntax>
+<b>ttk::label</b> <m>pathName</m> ?<m>options</m>?
+</syntax>
+</synopsis>
+<section>
+<title>DESCRIPTION</title>
+<p>A <b cat="AMBIGUOUS widget cmd">label</b> widget displays a textual label and/or image.
+The label may be linked to a Tcl variable 
+to automatically change the displayed text.
+</p>
+</section>
+<section>
+<title>STANDARD OPTIONS</title>
+<sl cat="stdopt" cols="4">
+<li>-class</li>
+<li>-compound</li>
+<li>-cursor</li>
+<li>-image</li>
+<li>-style</li>
+<li>-takefocus</li>
+<li>-text</li>
+<li>-textvariable</li>
+<li>-underline</li>
+<li>-width</li>
+</sl>
+</section>
+<section>
+<title>OPTIONS</title>
+<optionlist>
+<optiondef>
+<name>-anchor</name>
+<dbname>anchor</dbname>
+<dbclass>Anchor</dbclass>
+<desc>Specifies how the information in the widget is positioned
+relative to the inner margins.  Legal values are
+<b>n</b>, <b>ne</b>, <b>e</b>, <b>se</b>,
+<b>s</b>, <b>sw</b>, <b>w</b>, <b>nw</b>, and <b>center</b>.
+See also <b>-justify</b>.
+</desc>
+</optiondef>
+<optiondef>
+<name>-background</name>
+<dbname>frameColor</dbname>
+<dbclass>FrameColor</dbclass>
+<desc>The widget's background color.  
+If unspecified, the theme default is used.
+</desc>
+</optiondef>
+<optiondef>
+<name>-font</name>
+<dbname>font</dbname>
+<dbclass>Font</dbclass>
+<desc>Font to use for label text.
+</desc>
+</optiondef>
+<optiondef>
+<name>-foreground</name>
+<dbname>textColor</dbname>
+<dbclass>TextColor</dbclass>
+<desc>The widget's foreground color.
+If unspecified, the theme default is used.
+</desc>
+</optiondef>
+<optiondef>
+<name>-justify</name>
+<dbname>justify</dbname>
+<dbclass>Justify</dbclass>
+<desc>If there are multiple lines of text, specifies how
+the lines are laid out relative to one another.
+One of <b>left</b>, <b>center</b>, or <b>right</b>.
+See also <b>-anchor</b>.
+</desc>
+</optiondef>
+<optiondef>
+<name>-padding</name>
+<dbname>padding</dbname>
+<dbclass>Padding</dbclass>
+<desc>Specifies the amount of extra space to allocate for the widget.
+The padding is a list of up to four length specifications 
+<i>left top right bottom</i>.
+If fewer than four elements are specified, 
+<i>bottom</i> defaults to <i>top</i>,
+<i>right</i> defaults to <i>left</i>, and 
+<i>top</i> defaults to <i>left</i>.
+</desc>
+</optiondef>
+<optiondef>
+<name>-relief</name>
+<dbname>relief</dbname>
+<dbclass>Relief</dbclass>
+<desc>Specifies the 3-D effect desired for the widget border.
+Valid values are
+<b>flat</b>, <b>groove</b>, <b>raised</b>, <b>ridge</b>, <b>solid</b>, 
+and <b>sunken</b>.
+</desc>
+</optiondef>
+<optiondef>
+<name>-text</name>
+<dbname>text</dbname>
+<dbclass>Text</dbclass>
+<desc>Specifies a text string to be displayed inside the widget
+(unless overridden by <b>-textvariable</b>).
+</desc>
+</optiondef>
+<optiondef>
+<name>-wraplength</name>
+<dbname>wrapLength</dbname>
+<dbclass>WrapLength</dbclass>
+<desc>Specifies the maximum line length (in pixels).
+If this option is less than or equal to zero,
+then automatic wrapping is not performed; otherwise
+the text is split into lines such that no line is longer
+than the specified value.
+</desc>
+</optiondef>
+</optionlist>
+</section>
+<section>
+<title>WIDGET COMMAND</title>
+<dl>
+<dle>
+<dt><m>pathName</m> <b>cget</b> <m>option</m></dt>
+<dd/>
+</dle>
+<dle>
+<dt><m>pathName</m> <b>configure</b> ?<m>option</m>? ?<m>value option value ...</m>?</dt>
+<dd/>
+</dle>
+<dle>
+<dt><m>pathName</m> <b>instate</b> <m>statespec</m> ?<m>script</m>?</dt>
+<dd/>
+</dle>
+<dle>
+<dt><m>pathName</m> <b>state</b> ?<m>stateSpec</m>?</dt>
+<dd>See <i>widget(n)</i>
+</dd>
+</dle>
+</dl>
+</section>
+<seealso>
+<ref>widget(n)</ref>
+</seealso>
+</manpage>

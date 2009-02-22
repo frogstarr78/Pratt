@@ -1,0 +1,59 @@
+<manpage cat="cmd" id="separator" title="separator" version="0.5">
+<!-- This file was automatically generated.  DO NOT EDIT (yet)! -->
+<!--  separator.n,v 1.5 2006/11/27 05:45:02 jenglish Exp
+    
+     Copyright (c) 2004 Joe English
+ -->
+<?TROFF.TH title="separator" section="n" date="0.5" source="tile" manual="Tile Widget Set" ?>
+<namesection>
+<name>ttk::separator</name>
+<desc>Separator bar</desc>
+</namesection>
+<synopsis>
+<syntax>
+<b>ttk::separator</b> <m>pathName</m> ?<m>options</m>?
+</syntax>
+</synopsis>
+<section>
+<title>DESCRIPTION</title>
+<p>A <b>separator</b> widget displays a horizontal or vertical separator bar.
+</p>
+</section>
+<section>
+<title>STANDARD OPTIONS</title>
+<sl cat="stdopt" cols="4">
+<li>-class</li>
+<li>-cursor</li>
+<li>-state</li>
+<li>-style</li>
+<li>-takefocus</li>
+</sl>
+</section>
+<section>
+<title>OPTIONS</title>
+<optionlist>
+<optiondef>
+<name>-orient</name>
+<dbname>orient</dbname>
+<dbclass>Orient</dbclass>
+<desc>One of <b>horizontal</b> or <b>vertical</b>.
+Specifies the orientation of the separator.
+</desc>
+</optiondef>
+</optionlist>
+</section>
+<section>
+<title>WIDGET COMMAND</title>
+<p>Separator widgets support the standard 
+<b>cget</b>, <b>configure</b>, <b>instate</b>, and <b>state</b> 
+methods.  No other widget methods are used.
+</p>
+</section>
+<seealso>
+<ref>widget(n)</ref>
+</seealso>
+<keywords>
+<keyword>widget</keyword>
+<keyword>separator</keyword>
+</keywords>
+</manpage>

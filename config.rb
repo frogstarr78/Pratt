@@ -5,8 +5,6 @@ require 'ruby-debug'
 gem 'activerecord'
 gem 'sqlite3-ruby'
 
-require 'tk'
-require 'tkextlib/tile'
 require 'active_record'
 
 $LOAD_PATH << '.'

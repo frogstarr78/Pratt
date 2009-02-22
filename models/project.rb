@@ -1,13 +1,13 @@
 class Project < ActiveRecord::Base
   has_many :whences
 
-  def start!
-    whences.create :start_at => DateTime.now
-  end
-
-  def stop!
-    whences.last.end_at = DateTime.now
-    save
+  def do start = true
+    if start
+      whences.create :start_at => DateTime.now
+    else
+      (wen = whences.last).end_at = DateTime.now
+      wen.save
+    end
   end
 
   def restart!

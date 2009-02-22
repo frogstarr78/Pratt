@@ -1,0 +1,604 @@
+<manpage cat="cmd" id="treeview" title="treeview" version="0.5">
+<!-- This file was automatically generated.  DO NOT EDIT (yet)! -->
+<!-- 
+     Copyright (c) 2004 Joe English
+ -->
+<?TROFF.TH title="treeview" section="n" date="0.5" source="tile" manual="Tile Widget Set" ?>
+<namesection>
+<name>ttk::treeview</name>
+<desc>hierarchical multicolumn data display widget</desc>
+</namesection>
+<synopsis>
+<syntax>
+<b>ttk::treeview</b> <m>pathname</m> ?<m>options</m>?
+</syntax>
+</synopsis>
+<section>
+<title>DESCRIPTION</title>
+<p>The treeview widget displays a hierarchical collection of items.
+Each item has a textual label, an optional image, 
+and an optional list of data values.
+The data values are displayed in successive columns after
+the tree label.
+</p>
+<p>The order in which data values are displayed may be controlled
+by setting the <b>-displaycolumns</b> widget option.  
+The tree widget can also display column headings.
+Columns may be accessed by number or by symbolic names 
+listed in the <b>-columns</b> widget option;
+see <ref refid="column-identifiers">COLUMN IDENTIFIERS</ref>.
+</p>
+<p>Each item is identified by a unique name.
+The widget will generate item IDs if they are not supplied by the caller.
+There is a distinguished root item, named <b>{}</b>.
+The root item itself is not displayed;
+its children appear at the top level of the hierarchy.
+</p>
+<p>Each item also has a list of <i>tags</i>,
+which can be used to associate event bindings with individual items
+and control the appearance of the item.
+</p>
+<p>Treeview widgets support horizontal and vertical scrolling with the
+standard <b>-[xy]scrollcommand</b> options 
+and <b>[xy]view</b> widget commands.
+</p>
+</section>
+<section>
+<title>STANDARD OPTIONS</title>
+<sl cat="stdopt" cols="4">
+<li>-class</li>
+<li>-cursor</li>
+<li>-style</li>
+<li>-takefocus</li>
+<li>-xscrollcommand</li>
+<li>-yscrollcommand</li>
+</sl>
+</section>
+<section>
+<title>WIDGET OPTIONS</title>
+<optionlist>
+<optiondef>
+<name>-columns</name>
+<dbname>columns</dbname>
+<dbclass>Columns</dbclass>
+<desc>A list of column identifiers, 
+specifying the number of columns and their names.
+</desc>
+</optiondef>
+<optiondef>
+<name>-displaycolumns</name>
+<dbname>displayColumns</dbname>
+<dbclass>DisplayColumns</dbclass>
+<desc>A list of column identifiers 
+(either symbolic names or integer indices)
+specifying which data columns are displayed 
+and the order in which they appear, 
+or the string <b>#all</b>.
+<br/>If set to <b>#all</b> (the default), all columns are shown in the order given.
+</desc>
+</optiondef>
+<optiondef>
+<name>-height</name>
+<dbname>height</dbname>
+<dbclass>Height</dbclass>
+<desc>Specifies the number of rows which should be visible.
+Note:
+the requested width is determined from the sum of the column widths.
+</desc>
+</optiondef>
+<optiondef>
+<name>-padding</name>
+<dbname>padding</dbname>
+<dbclass>Padding</dbclass>
+<desc>Specifies the internal padding for the widget.
+The padding is a list of up to four length specifications;
+see <b>Ttk_GetPaddingFromObj()</b> for details.
+</desc>
+</optiondef>
+<optiondef>
+<name>-selectmode</name>
+<dbname>selectMode</dbname>
+<dbclass>SelectMode</dbclass>
+<desc>Controls how the built-in class bindings manage the selection.
+One of <b>extended</b>, <b>browse</b>, or <b>none</b>.
+<br/>If set to <b>extended</b> (the default), multiple items may be selected.
+If <b>browse</b>, only a single item will be selected at a time.
+If <b>none</b>, the selection will not be changed.
+<br/>Note that application code and tag bindings can set the selection 
+however they wish, regardless of the value of <b>-selectmode</b>.
+</desc>
+</optiondef>
+<optiondef>
+<name>-show</name>
+<dbname>show</dbname>
+<dbclass>Show</dbclass>
+<desc>A list containing zero or more of the following values, specifying
+which elements of the tree to display.
+<?TROFF.RS?><dl>
+<dle>
+<dt><b>tree</b></dt>
+<dd>Display tree labels in column #0.  
+</dd>
+</dle>
+<dle>
+<dt><b>headings</b></dt>
+<dd>Display the heading row.
+</dd>
+</dle>
+</dl><p>The default is <b>tree headings</b>, i.e., show all elements.
+</p><p><b>NOTE:</b> Column #0 always refers to the tree column,
+even if <b>-show tree</b> is not specified.
+</p><?TROFF.RE?></desc>
+</optiondef>
+</optionlist>
+</section>
+<section>
+<title>WIDGET COMMAND</title>
+<dl>
+<dle>
+<dt><m>pathname</m> <b>bbox</b> <m>item</m> ?<m>column</m>?</dt>
+<dd>Returns the bounding box (relative to the treeview widget's window)
+of the specified <i>item</i>
+in the form <i>x y width height</i>.
+If <i>column</i> is specified, returns the bounding box of that cell.
+If the <i>item</i> is not visible 
+(i.e., if it is a descendant of a closed item or is scrolled offscreen),
+returns the empty list.
+</dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>cget</b> <m>option</m></dt>
+<dd>Returns the current value of the specified <i>option</i>; see <i>widget(n)</i>.
+</dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>children</b> <m>item</m> ?<m>newchildren</m>?</dt>
+<dd>If <i>newchildren</i> is not specified,
+returns the list of children belonging to <i>item</i>.
+<p>If <i>newchildren</i> is specified, replaces <i>item</i>'s child list
+with <i>newchildren</i>.  
+Items in the old child list not present in the new child list
+are detached from the tree.
+None of the items in <i>newchildren</i> may be an ancestor
+of <i>item</i>.
+</p></dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>column</b> <m>column</m> ?<m>-option</m> ?<m>value -option value...</m>?</dt>
+<dd>Query or modify the options for the specified <i>column</i>.
+If no <i>-option</i> is specified,
+returns a dictionary of option/value pairs.
+If a single <i>-option</i> is specified, 
+returns the value of that option.
+Otherwise, the options are updated with the specified values.
+The following options may be set on each column:
+<dl>
+<dle>
+<dt><b>-id</b> <m>name</m></dt>
+<dd>The column name.  This is a read-only option.
+For example, [<i>$pathname</i> <b>column #</b><i>n</i> <b>-id</b>] 
+returns the data column associated with display column #<i>n</i>. 
+</dd>
+</dle>
+<dle>
+<dt><b>-anchor</b></dt>
+<dd>Specifies how the text in this column should be aligned
+with respect to the cell. One of
+<b>n</b>, <b>ne</b>, <b>e</b>, <b>se</b>,
+<b>s</b>, <b>sw</b>, <b>w</b>, <b>nw</b>, or <b>center</b>.
+</dd>
+</dle>
+<dle>
+<dt><b>-minwidth</b></dt>
+<dd>The minimum width of the column in pixels.
+The treeview widget will not make the column any smaller than
+<b>-minwidth</b> when the widget is resized or the user drags a 
+column separator.
+</dd>
+</dle>
+<dle>
+<dt><b>-stretch</b></dt>
+<dd>Specifies whether or not the column's width should be adjusted
+when the widget is resized.
+</dd>
+</dle>
+<dle>
+<dt><b>-width</b> <m>w</m></dt>
+<dd>The width of the column in pixels.  Default is something reasonable,
+probably 200 or so.
+</dd>
+</dle>
+</dl><p>Use <i>pathname column #0</i> to configure the tree column.
+</p></dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>configure</b> ?<m>option</m>? ?<m>value option value ...</m>?</dt>
+<dd>Modify or query widget options; see <i>widget(n)</i>.
+</dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>delete</b> <m>itemList</m></dt>
+<dd>Deletes each of the items in <i>itemList</i> and all of their descendants.
+The root item may not be deleted.
+See also: <b>detach</b>.
+</dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>detach</b> <m>itemList</m></dt>
+<dd>Unlinks all of the specified items in <i>itemList</i> from the tree.
+The items and all of their descendants are still present
+and may be reinserted at another point in the tree
+but will not be displayed.
+The root item may not be detached.
+See also: <b>delete</b>.
+</dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>exists</b> <m>item</m></dt>
+<dd>Returns 1 if the specified <i>item</i> is present in the tree,
+0 otherwise.
+</dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>focus</b> ?<m>item</m>?</dt>
+<dd>If <i>item</i> is specified, sets the focus item to <i>item</i>.
+Otherwise, returns the current focus item, or <b>{}</b> if there is none.
+</dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>heading</b> <m>column</m> ?<m>-option</m> ?<m>value -option value...</m>?</dt>
+<dd>Query or modify the heading options for the specified <i>column</i>.
+Valid options are:
+<dl>
+<dle>
+<dt><b>-text</b> <m>text</m></dt>
+<dd>The text to display in the column heading.
+</dd>
+</dle>
+<dle>
+<dt><b>-image</b> <m>imageName</m></dt>
+<dd>Specifies an image to display to the right of the column heading.
+</dd>
+</dle>
+<dle>
+<dt><b>-anchor</b> <m>anchor</m></dt>
+<dd>Specifies how the heading text should be aligned.
+One of the standard Tk anchor values.
+</dd>
+</dle>
+<dle>
+<dt><b>-command</b> <m>script</m></dt>
+<dd>A script to evaluate when the heading label is pressed.
+</dd>
+</dle>
+</dl><p>Use <i>pathname heading #0</i> to configure the tree column heading.
+</p></dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>identify</b> <m>component x y</m></dt>
+<dd>Returns a description of the specified <i>component</i>
+under the point given by <i>x</i> and <i>y</i>,
+or the empty string if no such <i>component</i> is present at that position.
+The following subcommands are supported:
+<?TROFF.RS?><commandlist>
+<commanddef>
+<command><m>pathname</m> <b>identify row</b> <m>x y</m></command>
+<desc>Returns the item ID of the item at position <i>y</i>.
+</desc>
+</commanddef>
+<commanddef>
+<command><m>pathname</m> <b>identify column</b> <m>x y</m></command>
+<desc>Returns the data column identifier of the cell at position <i>x</i>.
+The tree column has ID <b>#0</b>.
+</desc>
+</commanddef>
+</commandlist><p>See <ref refid="column-identifiers">COLUMN IDENTIFIERS</ref> for a discussion of display columns
+and data columns.
+</p><?TROFF.RE?></dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>index</b> <m>item</m></dt>
+<dd>Returns the integer index of <i>item</i> within its parent's list of children.
+</dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>insert</b> <m>parent</m> <m>index</m> ?<b>-id</b> <m>id</m>? <m>options...</m></dt>
+<dd>Creates a new item.  
+<i>parent</i> is the item ID of the parent item,
+or the empty string <b>{}</b>
+to create a new top-level item.
+<i>index</i> is an integer, or the value <b>end</b>, specifying where in the
+list of <i>parent</i>'s children to insert the new item.
+If <i>index</i> is less than or equal to zero, 
+the new node is inserted at the beginning;
+if <i>index</i> is greater than or equal to the current number of children,
+it is inserted at the end.
+If <b>-id</b> is specified, it is used as the item identifier;
+<i>id</i> must not already exist in the tree.
+Otherwise, a new unique identifier is generated.
+<p><i>pathname</i> <b>insert</b> returns the item identifier of the
+newly created item.
+See <ref refid="item-options">ITEM OPTIONS</ref> for the list of available options.
+</p></dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>instate</b> <m>statespec</m> ?<m>script</m>?</dt>
+<dd>Test the widget state; see <i>widget(n)</i>.
+</dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>item</b> <m>item</m> ?<m>-option</m> ?<m>value -option value...</m>?</dt>
+<dd>Query or modify the options for the specified <i>item</i>.
+If no <i>-option</i> is specified, 
+returns a dictionary of option/value pairs.
+If a single <i>-option</i> is specified, 
+returns the value of that option.
+Otherwise, the item's options are updated with the specified values.
+See <ref refid="item-options">ITEM OPTIONS</ref> for the list of available options.
+</dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>move</b> <m>item parent index</m></dt>
+<dd>Moves <i>item</i> to position <i>index</i> in <i>parent</i>'s list of children.
+It is illegal to move an item under one of its descendants.
+<p>If <i>index</i> is less than or equal to zero, <i>item</i> is moved
+to the beginning; if greater than or equal to the number of children,
+it's moved to the end.
+</p></dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>next</b> <m>item</m></dt>
+<dd>Returns the identifier of <i>item</i>'s next sibling,
+or <b>{}</b> if <i>item</i> is the last child of its parent.
+</dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>parent</b> <m>item</m></dt>
+<dd>Returns the ID of the parent of <i>item</i>,
+or <b>{}</b> if <i>item</i> is at the top level of the hierarchy.
+</dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>prev</b> <m>item</m></dt>
+<dd>Returns the identifier of <i>item</i>'s previous sibling,
+or <b>{}</b> if <i>item</i> is the first child of its parent.
+</dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>see</b> <m>item</m></dt>
+<dd>Ensure that <i>item</i> is visible:
+sets all of <i>item</i>'s ancestors to <b>-open true</b>,
+and scrolls the widget if necessary so that <i>item</i> is 
+within the visible portion of the tree.
+</dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>selection</b> ?<m>selop</m> <m>itemList</m>?</dt>
+<dd>If <i>selop</i> is not specified, returns the list of selected items.
+Otherwise, <i>selop</i> is one of the following:
+<commandlist>
+<commanddef>
+<command><m>pathname</m> <b>selection set</b> <m>itemList</m></command>
+<desc><i>itemList</i> becomes the new selection.
+</desc>
+</commanddef>
+<commanddef>
+<command><m>pathname</m> <b>selection add</b> <m>itemList</m></command>
+<desc>Add <i>itemList</i> to the selection
+</desc>
+</commanddef>
+<commanddef>
+<command><m>pathname</m> <b>selection remove</b> <m>itemList</m></command>
+<desc>Remove <i>itemList</i> from the selection
+</desc>
+</commanddef>
+<commanddef>
+<command><m>pathname</m> <b>selection toggle</b> <m>itemList</m></command>
+<desc>Toggle the selection state of each item in <i>itemList</i>.
+</desc>
+</commanddef>
+</commandlist></dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>set</b> <m>item</m> ?<m>column</m> ?<m>value</m>??</dt>
+<dd>With one argument, returns a dictionary of column/value pairs
+for the specified <i>item</i>.  
+With two arguments, returns the current value of the specified <i>column</i>.
+With three arguments, sets the value of column <i>column</i>
+in item <i>item</i> to the specified <i>value</i>.
+See also <ref refid="column-identifiers">COLUMN IDENTIFIERS</ref>.
+</dd>
+</dle>
+<dle>
+<dt><m>pathname</m> <b>state</b> ?<m>stateSpec</m>?</dt>
+<dd>Modify or query the widget state; see <i>widget(n)</i>.
+</dd>
+</dle>
+<dle>
+<dt><m>pathName</m> <b>tag</b> <m>args...</m></dt>
+<dd><dl>
+<dle>
+<dt><m>pathName</m> <b>tag bind</b> <m>tagName</m> ?<m>sequence</m> ?<m>script</m>??</dt>
+<dd>Add a Tk binding script for the event sequence <i>sequence</i> 
+to the tag <i>tagName</i>.  When an X event is delivered to an item,
+binding scripts for each of the item's <b>-tags</b> are evaluated
+in order as per <i>bindtags(n)</i>.
+<p><b>&lt;KeyPress&gt;</b>, <b>&lt;KeyRelease&gt;</b>, and virtual events
+are sent to the focus item.
+<b>&lt;ButtonPress&gt;</b>, <b>&lt;ButtonRelease&gt;</b>, and <b>&lt;Motion&gt;</b> events
+are sent to the item under the mouse pointer.  
+No other event types are supported.
+</p><p>The binding <i>script</i> undergoes <b>%</b>-substitutions before 
+evaluation; see <b>bind(n)</b> for details.
+</p></dd>
+</dle>
+<dle>
+<dt><m>pathName</m> <b>tag configure</b> <m>tagName</m> ?<m>option</m>? ?<m>value option value...</m>?</dt>
+<dd>Query or modify the options for the specified <i>tagName</i>.
+If one or more <i>option/value</i> pairs are specified,
+sets the value of those options for the specified tag.
+If a single <i>option</i> is specified, 
+returns the value of that option 
+(or the empty string if the option has not been specified for <i>tagName</i>).
+With no additional arguments, 
+returns a dictionary of the option settings for <i>tagName</i>.
+See <ref refid="tag-options">TAG OPTIONS</ref> for the list of available options.
+</dd>
+</dle>
+</dl></dd>
+</dle>
+<dle>
+<dt><m>pathName</m> <b>xview</b> <m>args</m></dt>
+<dd>Standard command for horizontal scrolling; see <i>widget(n)</i>.
+</dd>
+</dle>
+<dle>
+<dt><m>pathName</m> <b>yview</b> <m>args</m></dt>
+<dd>Standard command for vertical scrolling; see <i>widget(n)</i>.
+
+</dd>
+</dle>
+</dl>
+</section>
+<section id="item-options">
+<title>ITEM OPTIONS</title>
+<p>The following item options may be specified for items
+in the <b>insert</b> and <b>item</b> widget commands.
+</p>
+<optionlist>
+<optiondef>
+<name>-text</name>
+<dbname>text</dbname>
+<dbclass>Text</dbclass>
+<desc>The textual label to display for the item.
+</desc>
+</optiondef>
+<optiondef>
+<name>-image</name>
+<dbname>image</dbname>
+<dbclass>Image</dbclass>
+<desc>A Tk image, displayed to the left of the label.
+</desc>
+</optiondef>
+<optiondef>
+<name>-values</name>
+<dbname>values</dbname>
+<dbclass>Values</dbclass>
+<desc>The list of values associated with the item.
+<br/>Each item should have the same number of values as
+the <b>-columns</b> widget option.
+If there are fewer values than columns,
+the remaining values are assumed empty.
+If there are more values than columns,
+the extra values are ignored.
+</desc>
+</optiondef>
+<optiondef>
+<name>-open</name>
+<dbname>open</dbname>
+<dbclass>Open</dbclass>
+<desc>A boolean value indicating whether the item's children
+should be displayed (<b>-open true</b>) or hidden (<b>-open false</b>).
+</desc>
+</optiondef>
+<optiondef>
+<name>-tags</name>
+<dbname>tags</dbname>
+<dbclass>Tags</dbclass>
+<desc>A list of tags associated with this item.  
+</desc>
+</optiondef>
+</optionlist>
+</section>
+<section id="tag-options">
+<title>TAG OPTIONS</title>
+<p>The following options may be specified on tags:
+</p>
+<dl>
+<dle>
+<dt>-foreground</dt>
+<dd>Specifies the text foreground color.
+</dd>
+</dle>
+<dle>
+<dt>-background</dt>
+<dd>Specifies the cell or item background color.
+</dd>
+</dle>
+<dle>
+<dt>-font</dt>
+<dd>Specifies the font to use when drawing text.
+</dd>
+</dle>
+<dle>
+<dt>-image</dt>
+<dd>Specifies the item image, in case the item's <b>-image</b> option is empty.
+</dd>
+</dle>
+</dl>
+<p><i>(@@@ TODO: sort out order of precedence for options)</i>
+</p>
+</section>
+<section id="column-identifiers">
+<title>COLUMN IDENTIFIERS</title>
+<p>Column identifiers take any of the following forms:
+</p>
+<ul>
+<li>A symbolic name from the list of <b>-columns</b>.
+</li>
+<li>An integer <i>n</i>, specifying the <i>n</i>th data column.
+</li>
+<li>A string of the form <b>#</b><i>n</i>, where <i>n</i> is an integer,
+specifying the <i>n</i>th display column.
+</li>
+</ul>
+<p><b>NOTE:</b> 
+Item <b>-values</b> may be displayed in a different order than 
+the order in which they are stored.
+</p>
+<p><b>NOTE:</b> Column #0 always refers to the tree column,
+even if <b>-show tree</b> is not specified.
+</p>
+<p>A <i>data column number</i> is an index into an item's <b>-values</b> list;
+a <i>display column number</i> is the column number in the tree
+where the values are displayed.  
+Tree labels are displayed in column #0.
+If <b>-displaycolumns</b> is not set,
+then data column <i>n</i> is displayed in display column <b>#</b><i>n+1</i>.
+Again, <b>column #0 always refers to the tree column</b>.
+</p>
+</section>
+<section>
+<title>VIRTUAL EVENTS</title>
+<p>The treeview widget generates the following virtual events.
+</p>
+<dl>
+<dle>
+<dt>&lt;&lt;TreeviewSelect&gt;&gt;</dt>
+<dd>Generated whenever the selection changes.
+</dd>
+</dle>
+<dle>
+<dt>&lt;&lt;TreeviewOpen&gt;&gt;</dt>
+<dd>Generated just before setting the focus item to <b>-open true</b>.
+</dd>
+</dle>
+<dle>
+<dt>&lt;&lt;TreeviewClose&gt;&gt;</dt>
+<dd>Generated just after setting the focus item to <b>-open false</b>.
+</dd>
+</dle>
+</dl>
+<p>The <cmd>focus</cmd> and <cmd>selection</cmd> widget commands can be used
+to determine the affected item or items.
+In Tk 8.5, the affected item is also passed as the <b>-detail</b> field
+of the virtual event.
+</p>
+</section>
+<seealso>
+<ref>widget(n)</ref>
+<ref>listbox(n)</ref>
+<ref>image(n)</ref>
+<ref>bind(n)</ref>
+</seealso>
+</manpage>

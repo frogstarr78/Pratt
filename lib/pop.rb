@@ -1,5 +1,11 @@
-require 'lib/pratt'
+require 'tk'
+require 'tkextlib/tile'
+require 'lib/pratt_module'
+require 'optparse'
+#require 'lib/pratt'
 include PrattM
+
+project_name = ARGV.first
 
 root = TkRoot.new do
   title "Rebuild Tracker" end
@@ -13,13 +19,13 @@ lbl = Tk::Tile::Label.new(top_frm) do
 end.pack(:side => 'top', :fill => 'y')
 
 project_n = Tk::Tile::Label.new(top_frm) do
-  text Whence.last_started.project.name
+  text project_name
 end.pack(:side => 'bottom', :fill => 'y')
 
 yes_button = TkButton.new(botm_frm) do
   text "Yes"
   command do
-    Whence.last_started.project.restart!
+#    Whence.last_started.project.restart!
     exit 
   end
   underline 0
@@ -28,8 +34,8 @@ end.pack('side' => 'left', :fill => 'y')
 no_button = TkButton.new(botm_frm) do
   text "No"
   command do
-    Whence.last_started.project.stop!
-    system('ruby', "lib/complex.rb")
+#    Whence.last_started.project.stop!
+#    system('ruby', "lib/complex.rb")
     exit 
   end
   underline 0
@@ -39,7 +45,7 @@ top_frm.pack( :side => 'top',    :fill => 'y')
 botm_frm.pack(:side => 'bottom', :fill => 'y')
 frm.pack(     :side => 'top',    :fill => 'y')
 root.geometry = "200x75"
-root.bind("Alt-y") { Whence.last_started.project.restart!; exit }
+#root.bind("Alt-y") { Whence.last_started.project.restart!; exit }
 root.bind("Alt-n") { system('ruby', "lib/complex.rb"); exit }
 
 Tk.mainloop

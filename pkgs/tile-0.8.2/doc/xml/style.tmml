@@ -1,0 +1,171 @@
+<manpage cat="cmd" id="style" title="style" version="0.5">
+<!-- This file was automatically generated.  DO NOT EDIT (yet)! -->
+<!-- 
+     Copyright (c) 2004 Joe English
+     style.n,v 1.15 2007/12/12 15:55:15 jenglish Exp
+ -->
+<?TROFF.TH title="style" section="n" date="0.5" source="tile" manual="Tile Widget Set" ?>
+<namesection>
+<name>ttk::style</name>
+<desc>Manipulate style database</desc>
+</namesection>
+<synopsis>
+<syntax>
+<b>ttk::style</b> <m>option</m> ?<m>args</m>?
+</syntax>
+</synopsis>
+<section>
+<title>NOTES</title>
+<p>See also the Tcl'2004 conference presentation,
+available at
+<ref href="http://tktable.sourceforge.net/tile/tile-tcl2004.pdf
+">http://tktable.sourceforge.net/tile/tile-tcl2004.pdf
+</ref></p>
+</section>
+<section>
+<title>DEFINITIONS</title>
+<p>Each widget is assigned a <i>style</i>,
+which specifies the set of elements making up the widget
+and how they are arranged, along with dynamic and default
+settings for element options.
+By default, the style name is the same as the widget's class;
+this may be overridden by the <b>-style</b> option. 
+</p>
+<p>A <i>theme</i> is a collection of elements and styles 
+which controls the overall look and feel of an application.
+</p>
+</section>
+<section>
+<title>DESCRIPTION</title>
+<p>The <b>ttk::style</b> command takes the following arguments:
+</p>
+<dl>
+<dle>
+<dt><b>ttk::style configure</b> <m>style</m> ?<m>-option</m> ?<m>value option value...</m>? ?</dt>
+<dd>Sets the default value of the specified option(s) in <i>style</i>.
+</dd>
+</dle>
+<dle>
+<dt><b>ttk::style map</b> <m>style</m> ?<m>-option</m> <b>{</b> <m>statespec value...</m> <b>}</b>?</dt>
+<dd>Sets dynamic values of the specified option(s) in <i>style</i>.
+Each <i>statespec / value</i> pair is examined in order;
+the value corresponding to the first matching <i>statespec</i>
+is used.
+</dd>
+</dle>
+<dle>
+<dt><b>ttk::style lookup</b> <m>style</m> <m>-option</m> ?<m>state</m> ?<m>default</m>??</dt>
+<dd>Returns the value specified for <i>-option</i> in style <i>style</i>
+in state <i>state</i>, using the standard lookup rules for element options.
+<i>state</i> is a list of state names; if omitted, 
+it defaults to all bits off (the ``normal'' state).
+If the <i>default</i> argument is present, it is used as a fallback
+value in case no specification for <i>-option</i> is found.
+</dd>
+</dle>
+<dle>
+<dt><b>ttk::style layout</b> <m>style</m> ?<m>layoutSpec</m>?</dt>
+<dd>Define the widget layout for style <i>style</i>.  
+See <ref refid="layouts">LAYOUTS</ref> below for the format of <i>layoutSpec</i>.
+If <i>layoutSpec</i> is omitted, return the layout specification
+for style <i>style</i>.
+</dd>
+</dle>
+<dle>
+<dt><b>ttk::style element create</b> <m>elementName</m> <m>type</m> ?<m>args...</m>?</dt>
+<dd>Creates a new element in the current theme of type <i>type</i>.
+The only built-in element type is <i>image</i> (see <i>image(n)</i>),
+although themes may define other element types 
+(see <b>Ttk_RegisterElementFactory</b>).
+</dd>
+</dle>
+<dle>
+<dt><b>ttk::style element names</b></dt>
+<dd>Returns the list of elements defined in the current theme.
+</dd>
+</dle>
+<dle>
+<dt><b>ttk::style element options</b> <m>element</m></dt>
+<dd>Returns the list of <i>element</i>'s options.
+</dd>
+</dle>
+<dle>
+<dt><b>ttk::style theme create</b> <m>themeName</m> ?<b>-parent</b> <m>basedon</m>? ?<b>-settings</b> <m>script...</m> ?</dt>
+<dd>Creates a new theme.  It is an error if <i>themeName</i> already exists.
+If <b>-parent</b> is specified, the new theme will inherit
+styles, elements, and layouts from the parent theme <i>basedon</i>.
+If <b>-settings</b> is present, <i>script</i> is evaluated in the
+context of the new theme as per <b>ttk::style theme settings</b>.
+</dd>
+</dle>
+<dle>
+<dt><b>ttk::style theme settings</b> <m>themeName</m> <m>script</m></dt>
+<dd>Temporarily sets the current theme to <i>themeName</i>, 
+evaluate <i>script</i>, then restore the previous theme.
+Typically <i>script</i> simply defines styles and elements,
+though arbitrary Tcl code may appear.
+</dd>
+</dle>
+<dle>
+<dt><b>ttk::style theme names</b></dt>
+<dd>Returns a list of all known themes.
+</dd>
+</dle>
+<dle>
+<dt><b>ttk::style theme use</b> <m>themeName</m></dt>
+<dd>Sets the current theme to <i>themeName</i>, and refreshes all widgets.
+</dd>
+</dle>
+</dl>
+</section>
+<section id="layouts">
+<title>LAYOUTS</title>
+<p>A <i>layout</i> specifies a list of elements, each followed
+by one or more options specifying how to arrange the element.
+The layout mechanism uses a simplified version of the <cmd>pack</cmd>
+geometry manager: given an initial cavity,
+each element is allocated a parcel.
+Valid options are:
+</p>
+<dl>
+<dle>
+<dt><b>-side</b> <m>side</m></dt>
+<dd>Specifies which side of the cavity to place the element;
+one of <b>left</b>, <b>right</b>, <b>top</b>, or <b>bottom</b>.
+If omitted, the element occupies the entire cavity.
+</dd>
+</dle>
+<dle>
+<dt><b>-sticky</b> <b>[</b><m>nswe</m><b>]</b></dt>
+<dd>Specifies where the element is placed inside its allocated parcel.
+</dd>
+</dle>
+<dle>
+<dt><b>-children {</b> <m>sublayout...</m> <b>}</b></dt>
+<dd>Specifies a list of elements to place inside the element.
+</dd>
+</dle>
+</dl>
+<p>For example:
+</p>
+<example>
+ttk::style layout Horizontal.TScrollbar {
+    Scrollbar.trough -children {
+        Scrollbar.leftarrow -side left
+        Scrollbar.rightarrow -side right
+        Horizontal.Scrollbar.thumb -side left -sticky ew
+    }
+}
+</example>
+</section>
+<seealso>
+<ref>tile-intro</ref>
+<ref>widget</ref>
+<ref>pixmap</ref>
+</seealso>
+<keywords>
+<keyword>style</keyword>
+<keyword>theme</keyword>
+<keyword>appearance</keyword>
+</keywords>
+</manpage>

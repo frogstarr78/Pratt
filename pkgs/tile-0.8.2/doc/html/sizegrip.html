@@ -1,0 +1,62 @@
+<html>
+<head>
+<link rel="stylesheet" href="manpage.css"><title>Tile package reference: sizegrip</title><meta name="xsl-processor" content="Jochen Loewer (loewerj@hotmail.com), Rolf Ade (rolf@pointsman.de) et. al."><meta name="generator" content="$RCSfile: tmml-html.xsl,v $ $Revision: 1.12 $">
+</head><body>
+<div class="header">
+<div class="navbar" align="center">
+<a href="#SECTid8206658">NAME</a> · <a href="#SECTid82066d0">SYNOPSIS</a> · <a href="#SECTid8206798">DESCRIPTION</a> · <a href="#SECTid8206860">STANDARD OPTIONS</a> · <a href="#SECTid82069a0">WIDGET COMMAND</a> · <a href="#SECTid8206ab8">PLATFORM-SPECIFIC NOTES</a> · <a href="#SECTid8206b58">EXAMPLES</a> · <a href="#SECTid8206bd0">BUGS</a> · <a href="#SECTid8206f40">SEE ALSO</a> · <a href="#SECTid8206f90">KEYWORDS</a>
+</div><hr class="navsep">
+</div><div class="body">
+
+
+
+<h2><a name="SECTid8206658">NAME</a></h2><p class="namesection">
+<b class="names">ttk::sizegrip - </b><br>A silly widget</p>
+<h2><a name="SECTid82066d0">SYNOPSIS</a></h2><pre class="syntax">
+<b>ttk::sizegrip</b> <i class="m">pathName</i> ?<i class="m">options</i>?
+</pre>
+<h2><a name="SECTid8206798">DESCRIPTION</a></h2><p>A <b>sizegrip</b> widget (also known as a <i>grow box</i>)
+allows the user to resize the containing toplevel window
+by pressing and dragging the grip.
+</p>
+<h2><a name="SECTid8206860">STANDARD OPTIONS</a></h2><div class="menu"><table class="menu" width="100%">
+<tr>
+<td width="25%"><a href="widget.html#stdopt_-class">-class</a></td><td width="25%"><a href="widget.html#stdopt_-cursor">-cursor</a></td><td width="25%"><a href="widget.html#stdopt_-state">-state</a></td><td width="25%"><a href="widget.html#stdopt_-style">-style</a></td>
+</tr><tr><td width="25%"><a href="widget.html#stdopt_-takefocus">-takefocus</a></td></tr>
+</table></div>
+<h2><a name="SECTid82069a0">WIDGET COMMAND</a></h2><p>Sizegrip widgets support the standard
+<b>cget</b>, <b>configure</b>, <b>instate</b>, and <b>state</b>
+methods.  No other widget methods are used.
+</p>
+<h2><a name="SECTid8206ab8">PLATFORM-SPECIFIC NOTES</a></h2><p>On Mac OSX, toplevel windows automatically include a built-in
+size grip by default.
+Adding an <b>ttk::sizegrip</b> there is harmless, since
+the built-in grip will just mask the widget.
+</p>
+<h2><a name="SECTid8206b58">EXAMPLES</a></h2><pre class="example">
+# Using pack:
+pack [ttk::frame $top.statusbar] -side bottom -fill x
+pack [ttk::sizegrip $top.statusbar.grip] -side right -anchor se
+
+# Using grid:
+grid [ttk::sizegrip $top.statusbar.grip] \
+    -row $lastRow -column $lastColumn -sticky se
+# ... optional: add vertical scrollbar in $lastColumn,
+# ... optional: add horizontal scrollbar in $lastRow
+</pre>
+<h2><a name="SECTid8206bd0">BUGS</a></h2><p>If the containing toplevel's position was specified
+relative to the right or bottom of the screen
+(e.g., <b>[wm geometry ...</b> <i>w</i><b>x</b><i>h</i><b>-</b><i>x</i><b>-</b><i>y</i><b>]</b>
+instead of <b>[wm geometry ...</b> <i>w</i><b>x</b><i>h</i><b>+</b><i>x</i><b>+</b><i>y</i><b>]</b>),
+the sizegrip widget will not resize the window.
+</p><p>ttk::sizegrip widgets only support "southeast" resizing.
+</p>
+<h2><a name="SECTid8206f40">SEE ALSO</a></h2><p class="seealso">widget(n)</p>
+<h2><a name="SECTid8206f90">KEYWORDS</a></h2><p class="keywords">
+<a class="keyword" href="keyword-index.html#KW-widget">widget</a>, <a class="keyword" href="keyword-index.html#KW-sizegrip">sizegrip</a>, <a class="keyword" href="keyword-index.html#KW-growbox">grow box</a>
+</p>
+</div><hr class="navsep"><div class="navbar" align="center">
+<a class="navaid" href="index.html">Contents</a> · <a class="navaid" href="category-index.html">Index</a> · <a class="navaid" href="keyword-index.html">Keywords</a>
+</div>
+</body>
+</html>

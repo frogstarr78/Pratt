@@ -1,0 +1,4651 @@
+	=== TILE 0.8.2 TAGGED FOR RELEASE   2006-12-16 ===
+
+2007-12-15  Joe English  <jenglish@users.sourceforge.net>
+	* tclconfig/tcl.m4: Update to TEA 3.6 (core tclconfig/tcl r1.117)
+	* generic/tkTheme.h, configure.in, generic/configure.in,
+	generic/Makefile.in, win/makefile.vc: Update version number.
+	* configure, generic/configure: Regenerated.
+
+2007-12-12  Joe English  <jenglish@users.sourceforge.net>
+	* library/scrollbar.tcl: Tweak scrollbar swap logic
+	so that Tile extension can be loaded into an 8.5 interp
+	that's already swapped the scrollbars.
+
+2007-12-11  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c(StyleElementOptionsCmd):
+	Use Ttk_GetElement() to find element instead of direct
+	hash table access.
+
+2007-12-07  Joe English  <jenglish@users.sourceforge.net>
+	* library/altTheme.tcl, library/clamTheme.tcl:
+	s/style/ttk::style/.
+
+2007-12-06  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c: Fix TCombobox layout so as not to truncate 
+	long text when combobox is wider than requested [#1845164]
+
+2007-12-01  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h, generic/tkThemeInt.h, generic/layout.c,
+	generic/tkTheme.c, generic/treeview.c, generic/clamTheme.c,
+	generic/classicTheme.c, macosx/aquaTheme.c, win/winTheme.c,
+	win/xpTheme.c:  Improved macrology for statically-initialized
+	layout templates; can specify layouts in one place.
+
+2007-11-25  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: Added [$nb hide] method (currently
+	implemented by just setting '-state hidden').  [$nb add] on 
+	an already-managed window no longer raises an error,
+	can be used to re-add hidden tabs.
+	* doc/notebook.n: Revised and updated; removed now-inoperative
+	text stating or implying that slave windows must be
+	direct children of the notebook (see also #1824996).
+
+2007-11-25  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c(SelectNearestTab): Don't map
+	next tab immediately, instead just update currentIndex
+	and let the PlaceSlaves hook take care of it.
+	Fixes [#1343984] "ttk::notebook map children when destroyed"
+
+2007-11-25  Joe English  <jenglish@users.sourceforge.net>
+	* generic/manager.h, generic/manager.c, generic/notebook.c,
+	generic/paned.c, generic/frame.c: More manager API updates:
+	Added SlaveRequest method; pass managerData to SlaveRemoved method
+	instead of manager; Ttk_ManagerData no longer needed.
+
+2007-11-19  Pat Thoyts  <patthoyts@users.sourceforge.net>
+	* generic/tkTheme.c:  BUGFIX: Fixed crash when 'style element create' 
+	called with insufficient args. Plus tests.
+	(backported from core, -JE).
+
+2007-11-18  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkElements.c, macosx/aquaTheme.c: Add "fill" element:
+	like "background" but only erases parcel.
+	* generic/frame.c: Use fill element in Labelframe Label sublayout.
+	Also improved default labelmargins for -labelanchor w*, e*.
+	* library/aquaTheme.tcl: no longer need Labelframe hack.
+	* generic/label.c: ImageTextElement no longer needed.
+	TextElement no longer needs '-background' option.
+
+2007-11-18  Joe English  <jenglish@users.sourceforge.net>
+	* generic/label.c: Default -anchor for text and label elements
+	is now "w" instead of "center" (fixes #1614540 "check and
+	radiobuttons with explicit -width").
+	* library/defaults.tcl, library/*Theme.tcl: Button styles
+	now need explicit "-anchor center".
+
+	* * * POTENTIAL INCOMPATIBILITY * * * for third-party themes.
+
+2007-11-18  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c: Use sublayout for ttk::labelframe labels 
+	instead of single element.
+	* library/aquaTheme.tcl: Adjustment for previous change.
+
+2007-11-18  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c(TTKInitPadding): BUGFIX: Ttk_GetPaddingFromObj() 
+	and Ttk_GetBorderFromObj() returned garbage when passed an empty list.
+
+2007-11-18  Joe English  <jenglish@users.sourceforge.net>
+	* library/scrollbar.tcl: Swap in core scrollbars for 
+	[ttk::scrollbar]s on OSX.  The Scrollbar Problem isn't
+	gonna get fixed in time for the next release.
+
+2007-11-18  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c: Synchronize with core changes from 2007-11-09.
+	Mostly reformatting.  Only semantically significant change:
+	now uses theme metrics for button and menubutton heights.
+	* library/aquaTheme.tcl: extra TButton -padding no longer needed.
+
+2007-11-18  Pat Thoyts  <patthoyts@users.sourceforge.net>
+	(Backported from core change, -JE)
+
+        * win/xpTheme.c: Add support for size information flags for
+	scrollbar and combobox buttons. This handles tile patches
+	1596647 and 1596657 but a bit more generically.
+
+2007-11-07  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c(Ttk_ElementSize): Fixed longstanding,
+	subtle bug that caused padding to sometimes be counted twice 
+	in element size computations.
+	* generic/image.c, macosx/aquaTheme.c win/winTheme.c, win/xpTheme.c,
+	generic/tkElements.c, generic/clamTheme.c, generic/treeview.c,
+	generic/altTheme.c:  Fix ElementSizeProcs affected by previous change.
+
+	=== POTENTIAL INCOMPATIBILITY ===
+
+	For third-party C language themes: any ElementSizeProc
+	that sets a nonzero size and a nonzero padding may be affected 
+	by this change.  
+
+	Third-party pixmap themes are not affected (fixed in image.c).
+
+2007-11-05  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl: Set focus to listbox in <Map> binding
+	instead of in Post command (workaround for problem in TkAqua
+	where the listbox only gets focus the first time it's posted;
+	see #1349811 for info).
+
+2007-11-05  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c(TreeitemLayout): Remove focus ring
+	from treeview items on OSX (problem reported by Kevin Walzer).
+
+2007-11-04  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c: Use null "treearea" element for
+	treeview owner-draw area instead of "client", to avoid
+	nameclash with Notebook.client element (this was causing 
+	sizing anomalies in XP theme, and introduced extraneous
+	padding).
+	* generic/altTheme.c: Treeitem.indicator element needs
+	left margin now.
+
+2007-10-30  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl(Unpost): BUGFIX: Unpost can be called
+	with no preceding Post (<KeyPress-Escape> binding).
+
+2007-10-30  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c(BackgroundElement): Use SetThemeBackGround/
+	kThemeBrushModelessDialogBackground{Active|Inactive}
+	instead of ApplyThemeBackground/kThemeBackgroundWindowHeader
+	(advice from DAS).
+	* library/aquaTheme.tcl: Use darker shade for inactive and 
+	disabled text, to match typical values of most (but not all)
+	kThemeXXXTextColorInactive colors.
+
+2007-10-30  Joe English  <jenglish@users.sourceforge.net>
+	* generic/widget.c: Split up RedisplayWidget() to factor out
+	double-buffering related code.
+
+2007-10-28  Joe English  <jenglish@users.sourceforge.net>
+	* library/fonts.tcl: Use Monaco 11 instead of Monaco 9 for 
+	TkFixedFont on OSX (backport core patch hobbs 2007-10-30)
+
+2007-10-28  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c: Reworked combobox layout:
+	use kThemeComboBox button to draw whole widget 
+	instead of kThemeArrow button for Combobox.downarrow.
+	* library/aquaTheme.tcl: adjust TCombobox -postoffset to match
+	new layout.
+	* library/combobox.tcl: Make popdown window [wm resizable 0 0] 
+	on OSX, to prevent TkAqua from shrinking the scrollbar to make 
+	room for a grow box that isn't there.
+
+	Remaining OSX combobox problems:
+
+	+ Popdown window only takes focus the first time it's posted.
+	+ Readonly comboboxes don't have the right appearance. 
+	+ "pulldown" interaction doesn't work.
+
+2007-10-28  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl: set [wm transient] prior to
+	posting the dropdown each time instead of just once
+	at creation-time, in case containing toplevel has
+	been reparented [fix from JH for #1818441].
+
+2007-10-25  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: Reworked $nb insert logic;
+	fixes multiple bugs (see #1817596).
+
+2007-10-24  Joe English  <jenglish@users.sourceforge.net>
+	* library/fonts.tcl: Update aqua font definitions
+	to match reality instead of the HIG (backport from 
+	core; see #780617)
+
+2007-10-24  Joe English  <jenglish@users.sourceforge.net>
+	* {generic,win,macosx}/*.c: Move widget layout registration
+	from TtkElements_Init() to widget *_Init() routines.
+	Renaming/consistency: s/...ElementGeometry()/...ElementSize()/
+
+2007-10-23  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl: [namespace import ::ttk::scrollbar]
+	doesn't work, since ttk::scrollbar isn't [namespace export]ed
+	in Tk 8.5.
+
+2007-10-21  Joe English  <jenglish@users.sourceforge.net>
+	Combobox overhaul:
+	* library/utils.tcl(SaveGrab): Avoid loops in grab stack [#1239190]
+	* library/aquaTheme.tcl: Factored aqua-specific combobox 
+	post position offsets out of combobox.tcl; now specified 
+	in theme definition.
+	* generic/track.c: TrackElementState now detects and 
+	handles grabs (release currently-pressed element on 
+	LeaveNotify/NotifyGrab)
+	* library/combobox.tcl: 
+	+ Place grab on popdown window instead of combobox.
+	+ Set/release grab in popdown <Map>/Unmap> binding.
+	+ Factored out ttk::combobox::LBHover.
+	+ Refactored LBSelected/LBSelect to avoid extraneous
+	  [focus] calls in LBTab binding.
+	+ Only restore focus to combobox on activation, not
+	  on every Unpost.
+	+ "Workaround for TrackElementState bug" no longer needed
+	+ Use MacWindowStyle help [fixes #1349586, see also #1780286]
+
+2007-10-18  Joe English  <jenglish@users.sourceforge.net>
+	* library/fonts.tcl: Add other TIP#145-defined fonts
+	TkMenuFont, TkFixedFont, and TkIconFont (backport 
+	from Tk change 2007-10-18 patthoyts).
+
+2007-10-18  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c: adjust button and separator geometry.
+	(backport from Tk change 2007-10-18 das).
+
+2007-10-15  Joe English  <jenglish@users.sourceforge.net>
+	* generic/ttk/ttkTreeview.c:  Store pointer to column 
+	table entry instead of column index in columnNames hash table.
+
+2007-09-30  Joe English  <jenglish@users.sourceforge.net>
+	* library/ttk/entry.tcl (WordBack, WordForward):
+	Fix private routines accidentally defined in global namespace [#1803836]
+
+2007-09-17  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl:  Try to improve combobox appearance
+	on OSX + Tk 8.5 [#1780286].
+
+2007-07-13  Joe English  <jenglish@users.sourceforge.net>
+	* configure.in, generic/Makefile.in, generic/configure.in,
+	generic/tkTheme.h, win/makefile.vc: Bumped version number to 0.8.1
+	to indicate CVS snapshot (should have done this a while ago)
+	* configure, generic/configure: regenerated.
+
+2007-07-10  Joe English  <jenglish@users.sourceforge.net>
+
+	* library/dialog.tcl: provide package ttk::dialog.
+	* doc/dialog.n: Add "package require ttk::dialog" to SYNOPSIS.
+
+	NOTE: dialog.tcl is still automatically loaded by tile.tcl,
+	the [package provide] call is so applications can transition
+	to calling [package require ttk::dialog] in preparation
+	for when it's distributed separately. 
+
+2007-07-06  Joe English  <jenglish@users.sourceforge.net>
+	* library/ttk/aquaTheme.tcl: Set -anchor w for TMenubuttons [#1614540]
+
+2007-06-09  Joe English  <jenglish@users.sourceforge.net>
+
+	* generic/paned.c, doc/paned.n, tests/paned.test: 
+	Added -width and -height options.  Added 'panes' method,
+	return list of managed windows.  'sashpos' method is now 
+	documented as part of the public interface, and details
+	clarified.  Should be easier to set initial sash positions 
+	now [Alleviates #1659067].
+
+2007-06-09  Joe English  <jenglish@users.sourceforge.net>
+
+	* generic/manager.c, generic/manager.h, generic/notebook.c,
+	generic/paned.c, generic/frame.c: Ttk_Manager API overhaul:
+	    + Ttk_Manager no longer responsible for managing slave records
+	    + Ttk_Manager structure now opaque
+	    + Ttk_Slave structure now private
+	    + Pass Ttk_Manager * to Tk_GeomMgr hooks instead of Ttk_Slave *
+
+	* generic/frame.c: Simplified -labelwidget management.
+
+	* generic/notebook.c, tests/notebook.test: BUGFIX: ttk::noteboook 
+	'insert' command didn't correctly maintain current tab.
+
+	* doc/paned.n, library/paned.tcl: Changed documentation 
+	of ttk::panedwindow 'identify' command to match implementation.
+
+2007-05-19  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* demos/themes/blue.tcl: fixed up for the new image element
+	factory image spec.
+
+2007-05-18  Joe English  <jenglish@users.sourceforge.net>
+	* generic/entry.c(EntrySetValue):  Ensure that widget is in 
+	a consistent state before setting the linked -textvariable.
+	Previously, it was possible for [$e index insert] to point 
+	past the end of the string, leading to heap corruption [Bug 1721532].
+	* tests/entry.test(entry-9.1): Add test case for the above.
+
+2007-04-27  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c(TagOptionSpecs): Workaround for
+	bug in tag table resource management (never calls 
+	Tk_FreeConfigOptions, so TK_OPTION_FONT and TK_OPTION_COLOR
+	resources aren't fully deallocated).  Use TK_OPTION_STRING
+	instead, which does get freed properly.
+
+	Long-term solution: don't use Tk_OptionTables for tags.
+
+2007-04-26  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c: Element drawing code now works
+	when drawing into the Tk_Window as well as an offscreen pixmap; 
+	will work without double-buffering now.
+	(Backported from core changes from DAS, 2007-04-23)
+
+	* * * NOTICE: now peeks into Tk private data structures, 
+	* * * stubs compatibility no longer guaranteed.
+
+2007-04-10  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c:  Skip OS version test, should work on
+	Vista/Aero now as well as XP [Fixes #1687299, thanks
+	to George Petasis for tracking this down].
+
+2007-03-21  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c(Ttk_BuildLayoutTemplate): BUGFIX: 
+	Nested TTK_GROUP nodes did not work unless they appeared
+	at the end of the layout (and only by accident then).
+
+2007-02-23  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* library/notebook.tcl (ttk::notebook::enableTraversal): OS X
+	needs Option instead of Alt binding
+
+2007-02-02  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* win/xpTheme.c: Support IsAppThemed() call. This is what is used
+	when theming is turned off just for an individual application.
+
+2007-01-11  Joe English  <jenglish@users.sourceforge.net>
+
+	* generic/widget.h, generic/tile.c, generic/widget.c:
+	Added various 'const' qualifiers.  Patch backported from 
+	Tk CVS [2007-01-03 Jan Nijtmans].  (Note that part of the
+	original patch didn't take, since it added contravariant
+	'const' qualifiers that are incompatible with Tk 8.4.)
+
+2007-01-05  Joe English  <jenglish@users.sourceforge.net>
+	* generic/widget.h: Add MODULE_SCOPE declarations
+	(synchronization with core copy ttkWidget.h)
+
+2006-12-31  Benjamin Riefenstahl  <b.riefenstahl@turtle-trading.net>
+	* macosx/aquaTheme.c: Define a constant to make it compile on
+	Mac OS X 10.3. [Patch backported from Tk core, -JE]
+
+2006-12-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/ttk/ttkLabel.c: ImageElement clientData no longer needed.
+
+2006-12-18  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c: Fix off-by-one condition when moving nodes
+	forward [#1618142]
+	* tests/treeview.test: added test cases for move and insert.
+
+2006-12-18  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c, library/treeview.tcl, doc/treeview.n:
+	Added column '-stretch' and '-minwidth' options.
+	Improved column drag and resize behavior.
+	Added horizontal scrolling [#1518650].
+	Row height and child indent specifiable on Treeview style.
+	Decreased default row height, no default -padding.
+	Use correct heading height [#1163349].
+	Apply tag settings to tree item as well as to data columns 
+	[NOTE: 'tag configure' still buggy].
+	* generic/scroll.c(TtkScrollTo): Prevent overscroll ([#1173434])
+	* library/altTheme.tcl, library/aquaTheme.tcl, library/clamTheme.tcl,
+	library/classicTheme.tcl, library/defaults.tcl, library/winTheme.tcl
+	library/xpTheme.tcl: Per-theme treeview settings.
+	* macosx/aquaTheme.c: Added disclosure triangle element.
+
+2006-12-17  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl, generic/entry.c, doc/combobox.n:
+	Add combobox -height option; only show scrollbar if the
+	listbox needs to scroll [#1032869].
+
+2006-12-14  Joe English  <jenglish@users.sourceforge.net>
+
+	* generic/button.c, generic/entry.c, generic/frame.c,
+	generic/image.c, generic/label.c, generic/notebook.c,
+	generic/paned.c, generic/progress.c, generic/scale.c,
+	generic/scrollbar.c, generic/separator.c, generic/tile.c,
+	generic/tkElements.c, generic/tkTheme.h, generic/widget.h:
+	Global reduction: use per-file *_Init() routines to reduce 
+	the number of globally-visible initialization records.
+
+2006-12-12  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl: Attempt to straighten out theme loading 
+	and selection logic.
+	* generic/clamTheme.c, library/clamTheme.tcl, generic/tkElements.c, 
+	library/defaults.tcl: Provide package in C part instead
+	of Tcl part as per other themes.
+
+2006-12-10  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h, generic/tkThemeInt.h, generic/ttk.decls,
+	generic/tkTheme.c, generic/layout.c: 
+	Rename typedef Ttk_Element to Ttk_ElementImpl; 
+	Ttk_Element reserved for something more useful in future.
+	* generic/ttkDecls.h: Regenerated.
+
+2006-12-09  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c, generic/image.c, generic/label.c, doc/image.n,
+	generic/notebook.c, generic/widget.h, generic/tkTheme.h,
+	generic/treeview.c: Merged duplicate functionality between
+	image element factory, image element, and -image option processing.
+	Image element factory now takes an imageSpec instead of a separate
+	image name and -map option.
+	* tests/image.test(image-1.1): Can catch this error earlier now.
+
+2006-11-28  Joe English  <jenglish@users.sourceforge.net>
+	* library/fonts.tcl: Clean up temporary variables.
+
+2006-11-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c, generic/tkTheme.h: Dead code removal;
+	Ttk_LayoutNodeSetParcel unused (use Ttk_PlaceLayoutNode instead).
+
+2006-11-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/widget.c: BUGFIX: Ensure that widget cleanup hook
+	gets called in the error path [#1603506].
+	* generic/widget.c: Check for errors in UpdateLayout().
+	Minor cleanup.
+	* generic/paned.c(PanedGetLayout): don't need to call
+	Ttk_ManagerSizeChanged().
+
+2006-11-26  Joe English  <jenglish@users.sourceforge.net>
+	* doc/*.[3n]: Re-sync with core copy.  Apparently
+	somebody's manpage scraper doesn't like \\fP.
+
+2006-11-26  Joe English  <jenglish@users.sourceforge.net>
+	* Makefile.in, generic/Makefile.in, win/makefile.vc:
+	Don't build stepTheme.o.
+
+2006-11-26  Joe English  <jenglish@users.sourceforge.net>
+	* library/utils.tcl, library/tile.tcl, library/button.tcl,
+	library/combobox.tcl, library/notebook.tcl:  Trying
+	to remove internal dependency on 'keynav' package
+	(still needed by ttk::dialog).
+
+2006-11-24  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c, doc/treeview.n: -displaycolumns {} now 
+	means "no columns" instead of "all columns".  Use 
+	-displaycolumns #all for "all columns" [Fixes #1547622].
+
+2006-11-24  Joe English  <jenglish@users.sourceforge.net>
+	* library/*.tcl: Renamed ttk::CopyBindings => ttk::copyBindings;
+	this ought to be public.
+
+2006-11-24  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c(TreeviewGetLayout): BUGFIX: 
+	didn't properly handle Ttk_CreateLayout() failure.
+	KNOWNBUG: there's still a memory leak in the error path.
+	* generic/paned.c(PanedGetLayout): BUGFIX: Same thing.
+	* tests/tile.test: Added series 15-*.  Discovered new
+	KNOWNBUG, see test tile-3.3.
+
+2006-11-22  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl(ttk::do'deprecated): Dispatch in uplevel 1 scope
+	(deprecated [style theme settings $theme { ... script... }] needs this).
+
+2006-11-22  Joe English  <jenglish@users.sourceforge.net>
+	* library/classicTheme.tcl: Don't define or use TkClassicDefaultFont.
+
+2006-11-22  Joe English  <jenglish@users.sourceforge.net>
+	* library/altTheme.tcl, library/clamTheme.tcl, 
+	library/defaults.tcl, library/winTheme.tcl, library/xpTheme.tcl:
+	BUGFIX: need to explicitly specify '-anchor w' on TMenubutton style
+	to get left-justified text if the widget has explicitly specified
+	-width [See also: #1263470].
+
+2006-11-20  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* library/classicTheme.tcl: add catches to items that prevent tile
+	* library/defaults.tcl:     from being package required into 8.5a6.
+
+2006-11-19  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c: Added PAD_MARGINS ElementInfo flag to specify 
+	if padding is inside or outside the element [#1596020,
+	patch from Tim Baker].
+	* win/xpTheme.c: Add support for alternate/indeterminate
+	checkbutton state (CBS_MIXED* flags).
+	* win/xpTheme.c: Remove unused uxtheme stub procedures.
+
+2006-11-19  Joe English  <jenglish@users.sourceforge.net>
+	* win/monitor.c: (core merge): Fixed Windows build.
+
+2006-11-19  Joe English  <jenglish@users.sourceforge.net>
+	* tests/entry.test(entry-3.2): Insert "0"s instead of "M"s;
+	entry widget uses the width of a "0" to calculate widget size
+	(fixes platform-specific sporadic failures).
+	* tests/entry.test(entry-2.2): Use [update] instead of
+	[update idletasks].
+
+2006-11-18  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h, generic/tile.c: Remove TILE_PATCHLEVEL,
+	it's been unused for a long time.
+
+2006-11-14  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c: Fix off-by-one bug in tree indicator
+	size computation [#1596021, patch from Tim Baker].
+	Increased default size from 7 to 9 pixels.
+
+2006-11-11  Joe English  <jenglish@users.sourceforge.net>
+	* generic/scroll.c: *correct* fix for #1588251 --
+	not safe to access h after reentering the interpreter.
+
+2006-11-11  Joe English  <jenglish@users.sourceforge.net>
+	* tests/tile.test(tile-6.9): Explicitly specify "-font {}",
+	XRDB settings under CDE were causing test to fail
+	[see #1583038]
+
+2006-11-11  Joe English  <jenglish@users.sourceforge.net>
+	* generic/scroll.c: Reworked cleanup procedure --
+	"self-cancelling" idle call is not robust, call
+	Tcl_CancelIdleCall() in TtkFreeScrollHandle instead.
+	[fixes #1588251]
+
+2006-11-11  Joe English  <jenglish@users.sourceforge.net>
+	* {generic,win,macosx}/*.c: Big Renaming (patch from DAS);
+	all globals now have "ttk" prefix, to match core conventions.
+
+2006-11-11  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c: More core synchronization.
+
+2006-11-06  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c, generic/entry.c, generic/tkTheme.c,
+	generic/treeview.c: Add missing 'static' declarations.
+
+2006-11-06  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl: [style] --> [ttk::style] - missed a spot.
+
+2006-11-05  Joe English  <jenglish@users.sourceforge.net>
+	* library/icons.tcl, library/dialog.tcl:
+	Image management utilities tile::defineImage and tile::stockIcon 
+	moved into ttk::* namepace.
+	* library/tile.tcl: Old versions available as deprecated aliases.
+
+2006-11-05  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c, library/tile.tcl:  
+	Renamed [style] to [ttk::style], to match 8.5a6.
+	[style] is available as deprecated alias.
+
+	* library/altTheme.tcl, library/clamTheme.tcl,
+	library/classicTheme.tcl, library/defaults.tcl,
+	library/stepTheme.tcl, library/treeview.tcl,
+	library/winTheme.tcl, library/xpTheme.tcl:
+	Quick patch to account for the above.
+
+2006-11-05  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c, library/tile.tcl:
+	* generic/altTheme.c, generic/classicTheme.c, macosx/aquaTheme.c,
+	win/winTheme.c, win/xpTheme.c, library/altTheme.tcl,
+	library/aquaTheme.tcl, library/clamTheme.tcl, library/classicTheme.tcl,
+	library/defaults.tcl:
+	Theme selection and control utilities moved from tile::* namespace 
+	into ttk::*, to match Tk 8.5a6.
+
+2006-11-05  Joe English  <jenglish@users.sourceforge.net>
+	* library/utils.tcl: Removed tile::LoadImages -- obsolete,
+	not to be used.
+
+2006-11-05  Joe English  <jenglish@users.sourceforge.net>
+	* generic/widget.h(WIDGET_TAKES_FOCUS):
+	* library/utils.tcl: widget utility routines moved from 'tile'
+	to 'ttk' namespace.
+	* library/*.tcl:  Updated to account for this.
+
+	=== BEGIN BACKPORTING CHANGES MADE FOR CORE INTEGRATION ===
+
+2006-11-02  Joe English  <jenglish@users.sourceforge.net>
+	* doc/paned.n, generic/paned.c, library/paned.tcl, tests/paned.test:
+	Renamed [ttk::paned] to [ttk::panedwindow].
+
+	* library/tile.tcl: swap forward-compatibility alias
+	with deprecated backward-compatibility alias.
+
+2006-11-02  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl:  Remove old widget constructor aliases
+	"tile::$widgetclass".  Remove even older aliases ::t$widgetclass.
+	* library/notebook.tcl:   Remove deprecated synonyms 
+	tile::notebook::enableTraversal and tile::enableNotebookTraversal.  
+	(Use ttk::notebook::enableTraversal instead).
+	* generic/tkTheme.c: Remove pre-0.7 compatibility method [style
+	default] (use [style configure])
+
+2006-11-02  Joe English  <jenglish@users.sourceforge.net>
+	* configure.in, generic/Makefile.in, generic/configure.in,
+	generic/tkTheme.h, win/makefile.vc: Bumped version number to 
+	0.8.0.
+	* configure, generic/configure: regenerated.
+
+	=== CORE MERGE COMPLETED 2006-10-30 ===
+
+	=== TILE 0.7.8 TAGGED FOR RELEASE   2006-10-05 ===
+
+2006-10-05  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/square.c: More comments and make it work more like the
+	Tk square widget (fixed up the -anchor option).
+
+	=== CORE MERGE BASE TAGGED  2006-30-03 ===
+
+2006-10-03  Joe English  <jenglish@users.sourceforge.net>
+	* configure.in generic/configure.in generic/Makefile.in
+	generic/tkTheme.h win/makefile.vc win/tile.rc:
+	Bumped version number to 0.7.8.
+	* configure, generic/configure: Regenerated.
+
+2006-10-03  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl: Add 'ttk::panedwindow' as an
+	alias for 'ttk::paned', for forward-compatibility
+	(widget to be renamed in 0.8.0).
+
+2006-10-03  Joe English  <jenglish@users.sourceforge.net>
+	* generic/entry.c: Remove dead code.
+
+2006-10-03  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c, library/treeview.tcl, doc/treeview.n:
+	Added -selectmode option.
+
+2006-09-30  Joe English  <jenglish@users.sourceforge.net>
+	* win/winTheme.c, library/winTheme.tcl, library/xpTheme.tcl:
+	Added FilledFocus element, fixes appearance of readonly 
+	comboboxes [#1567923].  Also hide selection if combobox
+	does not have focus.
+
+2006-09-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/scrollbar.c(ScrollbarFractionCommand):
+	Avoid division by zero and negative return values
+	when scrollbar is too small.
+
+2006-09-21  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c, doc/treeview.n: Added item tags.
+	* generic/tagset.c: New file.
+	* Makefile.in, generic/Makefile.in, win/makefile.vc, generic/widget.h:
+	Updated.
+
+2006-09-20  Joe English  <jenglish@users.sourceforge.net>
+	* generic/image.c: BUGFIX: missing NULL terminator in Tcl_AppendResult
+
+2006-09-20  Joe English  <jenglish@users.sourceforge.net>
+	* doc/style.n, doc/widget.n: Minor documentation updates: 
+	describe [style map], 'readonly' state.
+
+2006-09-20  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: Replace WidgetIdentifyCommand
+	(which only looks at the base layout) with new 
+	NotebookIdentifyCommand() (which examines tabs).
+
+2006-09-13  Joe English  <jenglish@users.sourceforge.net>
+	* library/dialog.tcl: BUGFIX: ttk::dialog -parent option
+	didn't work [#1551500].  (Never fully tested fix for #1283014).
+	* tests/misc.test: simple test case for the above (force code
+	coverage).
+
+2006-09-12  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c(Ttk_NewBoxObj): Revised implementation
+	that doesn't incrementally grow the list (suggestion
+	from Andreas Kupries).
+	* generic/scrollbar.c(ScrollbarGetCommand): Similar change.
+
+2006-08-27  Joe English  <jenglish@users.sourceforge.net>
+	* scroll.c(UpdateScrollbar): BUGFIX: Missing Tcl_Preserve/Tcl_Release
+	on h->corePtr (caught by valgrind/entry-5.1)
+
+2006-08-26  Joe English  <jenglish@users.sourceforge.net>
+	* treeview.c, layout.c ttk.decls: Moved Ttk_NewBoxObj(), made public.
+	* ttkDecls.h, ttkStubInit.c: Regenerated.
+	* entry.c(EntryBBoxCommand): Use Ttk_NewBoxObj()
+
+2006-08-25  Joe English  <jenglish@users.sourceforge.net>
+	* library/sizegrip.tcl: Don't need TSizegrip layout definition,
+	it's built-in.
+
+2006-08-24  Joe English  <jenglish@users.sourceforge.net>
+	* doc/sizegrip.n: Attempted to clarify BUGS section --
+	negative x or y coordinates aren't the problem, it's
+	West or South gravity that's the problem.
+
+2006-08-23  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c: Revert previous change -- it crashes
+	on OSX (probably due to buggy Xlib emulation layer on that
+	platform).
+
+2006-08-21  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c(IndicatorElementDraw):
+	Use XCreateImage() instead of XGetImage() (small performance boost).
+
+2006-08-21  Joe English  <jenglish@users.sourceforge.net>
+	* library/default.tcl: Don't use "active" feedback
+	for notebook tabs, only "selected" [#1353612] 
+
+2006-08-21  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: Notebook layout algorithm can now
+	(almost) handle -tabposition [swe]* as well as n* [#1470246].
+
+2006-08-21  Joe English  <jenglish@users.sourceforge.net>
+	* library/treeview.tcl: Changed Shift-click selection
+	behavior to match common conventions [#1389202].
+	Also added preliminary support for future '-selectmode' option.
+
+2006-08-20  Joe English  <jenglish@users.sourceforge.net>
+	* library/button.tcl, library/menubutton.tcl:
+	Buttons et. al: Don't set 'active' state if widget is disabled.
+	This is the right thing more often than not.
+
+2006-08-20  Joe English  <jenglish@users.sourceforge.net>
+	* library/icons.tcl: Add (semipublic) tile::defineImage procedure.
+
+2006-08-19  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: BIG BUGFIX: Most callers of GetTabIndex() 
+	neglected to check for "not found" condition, leading to all 
+	sorts of fun and exciting ways to crash the notebook widget.
+
+2006-08-19  Joe English  <jenglish@users.sourceforge.net>
+	* library/dialog.tcl: Add support for "no icon" [#1542785].
+	Make WM_DELETE_WINDOW invoke cancel button as documented.
+	* doc/dialog.n: Updated.
+
+2006-08-18  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c(TreeviewInitialize): Properly initialize 
+	root item [Fixes #1541739 "crash in treeview widget 'see' method']
+
+2006-08-16  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl: BUGFIX: don't sort list of [source] commands
+	alphabetically, there are dependencies between them [#1541094].
+
+2006-08-04  Joe English  <jenglish@users.sourceforge.net>
+	* library/sizegrip.tcl, doc/sizegrip.n (new files):
+	* generic/tile.c, generic/separator.c, generic/tkElements.c,
+	  library/tile.tcl: Added ttk::sizegrip widget.
+	* demos/demo.tcl: Updated to include a statusbar and sizegrip.
+
+2006-08-05  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/button.c:     Add identify command to all widgets.
+	* generic/frame.c:      This makes it possible to use any widget
+	* generic/notebook.c:   as a basis for constructing modified
+	* generic/progress.c:   layouts and making them active.
+	* generic/separator.c:
+	* generic/square.c:
+
+2006-08-04  Joe English  <jenglish@users.sourceforge.net>
+	* doc/style.n: Shamefully admit that this manpage is
+	woefully incomplete, and add a pointer to some documentation
+	that might actually be useful.
+
+2006-08-04  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* demos/themes/blue.tcl:   Added new elements (tabs,sash,sizegrip)
+	* demos/themes/blue/*.gif: and fixed the progressbar element name.
+
+2006-08-04  Joe English  <jenglish@users.sourceforge.net>
+	* doc/widget.n: Moved description of '-xscrollcommand' and
+	'-yscrollcommand' into their own section; these are not
+	"supported by all Tile widgets" as the manpage claimed.
+	* doc/*.n: Use "ttk::" namespace prefix in the NAME section
+	of all widget manpages.
+
+2006-07-30  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* win/makefile.vc: Build the stubs lib.
+	* win/tile.rc:     Windows version resource.
+
+2006-07-29  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c: Added sizegrip element.
+
+2006-07-22  Joe English  <jenglish@users.sourceforge.net>
+	* win/winTheme.c: Added sizegrip element.
+	* library/cursors.tcl: Switch on platform; added 'seresize' cursor,
+	settings for Windows.
+
+2006-07-09  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c: Change precedence order for element options:
+	widget options now take precedence over [style map ...] settings
+	[See #1517110].
+	* library/aquaTheme.c:  Removed 'style map . -underline {{} -1}' hack,
+	since it doesn't work anymore.
+
+2006-07-04  Joe English  <jenglish@users.sourceforge.net>
+	* library/menubutton.tcl(TransferGrab): Use [tk_popup]
+	instead of explicit [grab -global] call [Fixes #1486417]
+
+2006-07-04  Joe English  <jenglish@users.sourceforge.net>
+	* library/utils.tcl:  Check [winfo viewable $w] in
+	tile::takefocus, since tk_focusNext/tk::FocusOK require
+	this behavior [Fixes #1516479].  Merged [tile::wantsFocus]
+	and [tile::takesFocus], since there's no easy way to
+	distinguish these two conditions any more (see also
+	2006-04-07 ChangeLog entry).
+	* library/notebook.tcl: Adjust for the above changes.
+
+2006-05-30  Joe English  <jenglish@users.sourceforge.net>
+
+	* configure.in, generic/configure.in, generic/Makefile.in,
+	generic/tkTheme.h, win/makefile.vc:
+	Bumped version number to 0.7.7.
+
+	=== TILE 0.7.6 TAGGED FOR RELEASE   2006-05-06 ===
+
+2006-05-06  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c(SelectTab): Check TabState(nb,index) instead
+	of tab->state to determine if tab is disabled -- tabs can also
+	be disabled by setting notebook state disabled [fixes #1476923]
+
+2006-04-22  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: Add partial support for -tabposition style option
+	(Incomplete: only 'nw', 'n', and 'ne' really work properly, but that's
+	all we need for:)
+	* library/aquaTheme.tcl: (finally) put notebook tabs in the right place.
+	Someday we'll get Panther-style segmented controls working too...
+	* generic/frame.c, generic/widget.h: Made TtkGetLabeAnchorFromObj
+	semi-public.
+
+2006-04-22  Joe English  <jenglish@users.sourceforge.net>
+	* generic/configure.in: Add --disable-private-headers autoconf switch.
+	Sometimes you have to have these, sometimes you can't use them.
+	Hard to guess which condition obtains, so punt to the packager.
+	* generic/configure: Regenerated.
+
+2006-04-20  Joe English  <jenglish@users.sourceforge.net>
+
+	* configure.in, generic/configure.in, generic/Makefile.in,
+	generic/tkTheme.h, win/makefile.vc:
+	Bumped version number to 0.7.6.
+
+	* configure, generic/configure: regenerated.
+
+2006-04-17  Joe English  <jenglish@users.sourceforge.net>
+	* generic/entry.c: Added [$entry identify] method; useful
+	for [ttk::entry]-based megawidgets.
+
+2006-04-16  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c, generic/label.c: Labelframe flexibility
+	enhancements: Additional values for -labelanchor ("nwe", "wns", etc)
+	allow label parcel to stretch across parcel; -labelinset and
+	-labelspace style options replaced with -labelmargins.
+
+	* * * POTENTIAL INCOMPATIBILITY * * * for third-party themes
+	and custom styles.  -labelanchor wn, ws, en, and es label
+	placement different now.
+
+	* library/aquaTheme.tcl, library/clamTheme.tcl:
+	adjusted to account for above changes.
+
+2006-04-16  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h, generic/layout.c, generic/ttk.decls:
+	Ttk_AnchorBox() takes a Tk_Anchor, not an int.
+	* generic/ttkDecls.h: Regenerated.
+
+	* generic/tkTheme.h, generic/layout.c:
+	Added typedef Ttk_PositionSpec, Ttk_PositionBox().
+
+2006-04-16  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: More flexible tab arrangement, part 1:
+	Added TNotebook -tabmargins style option, moved TNotebook -expandtab
+	option to Tab -expand option.
+
+	This mostly helps with pixmap themes: can now expand tabs into
+	the margins, or overlap with adjacent tabs / client area.
+
+	* library/altTheme.tcl, library/winTheme.tcl, library/xpTheme.tcl:
+	Updated to account for above change.
+
+	* * * POTENTIAL INCOMPATIBILITY * * *
+
+	Third-party themes should change:
+
+	    style configure TNotebook -expandtab {l t r b}
+
+	to:
+
+	    style configure TNotebook -tabmargins {l t r 0}
+	    style map TNotebook.Tab -expand [list selected {l t r b}]
+
+2006-04-07  Joe English  <jenglish@users.sourceforge.net>
+	* library/utils.tcl:  Split [tile::takesFocus] into two parts,
+	[tile::wantsFocus] and [tile::takesFocus].  The former decides
+	if the widget wants to take keyboard focus, the latter decides
+	if it can.  Changed tile::takefocus to return "wants to take focus"
+	instead of "can take focus".
+
+	* library/notebook.tcl(ActivateTab): Set focus to the first
+	navigable descendant of the activated tab (tk_focusNext
+	sometimes picks the wrong widget).
+
+	* demos/demo.tcl: Make scales pane a direct child of $nb,
+	so <Control-KeyPress-Tab> navigation works again.
+
+	* doc/notebook.n: Added note that [ttk::notebook::enableTraversal]
+	only works properly if all panes are direct children of the notebook.
+
+2006-04-07  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c(FrameConfigure): Only issue size requests
+	if -width, -height, or one of the other geometry-related
+	options has been changed in the current 'configure' call
+	[Fixes #1446608].
+
+2006-04-07  Joe English  <jenglish@users.sourceforge.net>
+	* library/notebook.tcl(ttk::notebook::enableTraversal):
+	Handle traversal and mnemonic activation when there are
+	multiple notebooks in a toplevel, nested notebooks,
+	and when traversal-enabled notebooks are destroyed.
+	[Fixes #1368921]
+
+	* * * BEHAVIORAL CHANGE * * *  Control-Tab and Shift-Control-Tab
+	now only cycle the notebook if the focus is inside the notebook.
+	(Previously they worked when the focus was anywhere inside the
+	toplevel).  This is a change from how Tile used to work, but
+	it's consistent with other toolkits.
+
+2006-04-07  Joe English  <jenglish@users.sourceforge.net>
+	* library/keynav.tcl: BUGFIX: didn't account for condition
+	where the current default button was destroyed.
+
+2006-04-04  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c, library/altTheme.tcl, win/winTheme.c,
+	library/winTheme.tcl: "alt" and "winnative" themes: use
+	rectangular sliders in ttk::scale widget instead of pointy ones.
+
+2006-04-02  Joe English  <jenglish@users.sourceforge.net>
+	* generic/scroll.c, generic/widget.h: Added ScrollTo() function,
+	clarified scrollbar choreography.
+	* generic/treeview.c: Use ScrollTo().
+	* generic/entry.c: Updated to use general-purpose scrolling interface.
+	* generic/entry.c: More cleanups: 'avgWidth' field no longer needed.
+	Inlined EntryPlaceTextLayout().
+	* generic/entry.c: rightIndex (=xscroll.last) points one past last
+	fully-visible character, not one past last partially-visible character.
+
+	* tests/entry.test, library/entry.tcl(ttk::entry::See):
+	Added [update idletasks] calls, which are now needed in
+	a few more places.  * * * POTENTIAL INCOMPATIBILITY * * *
+
+2006-04-01  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c: Store layout templates in Ttk_Style table,
+	don't use separate layoutTable.  Store pointer to Style name
+	in Ttk_Style record.
+	* generic/tkTheme.c:  Misc. cleanups.
+	* generic/layout.c, generic/tkTheme.h, generic/notebook.c,
+	generic/paned.c, generic/treeview.c: Ttk_CreateSublayout prefixes
+	sublayout name with the parent style name.  [Fixes #1168548
+	"Custom styles for complex widgets"]
+
+2006-03-22  Joe English  <jenglish@users.sourceforge.net>
+	* generic/manager.c, generic/manager.h: Keep slave mapped state
+	in sync with the master mapped state, as per convention with
+	other Tk geometry managers.
+
+	* As a side effect, fixes #1455488, probably helps with
+	#1292219 and #1277227 as well.
+
+	* tests/notebook.test: Added extra [update] calls where needed,
+	since notebook tabs don't get mapped immediately anymore.
+
+	*** (MINOR) POTENTIAL INCOMPATIBILITY ***
+
+2006-03-22  Joe English  <jenglish@users.sourceforge.net>
+	* doc/treeview.n: Updated description of [$tv set] et al.,
+	to try to make it more clear that they take a list of items.
+
+2006-03-15  Joe English  <jenglish@users.sourceforge.net>
+	* library/icons.tcl: Added dialog/auth and dialog/busy stock icons
+	(taken from BWidget passwd.gif and hourglass.gif)
+	Create images immediately instead of deferring creation;
+	this only takes a few milliseconds.
+	Use fixed image names for better introspectibility (also:
+	eventually want to allow applications to redefine stock icons)
+
+2006-03-13  Joe English  <jenglish@users.sourceforge.net>
+	* library/treeview.tcl: BUGFIX(BrowseTo): [$tv selection set] takes
+	a list of items, not a single item.  [#1448421]
+
+2006-03-11  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c, doc/treeview.n: Added treeview 'bbox'
+	method [#1443306]
+
+2006-02-21  Joe English  <jenglish@users.sourceforge.net>
+	* library/altTheme.tcl, library/classicTheme.tcl,
+	library/defaults.tcl: Fix combobox padding so selection
+	doesn't overlap outer border.
+
+2006-02-20  Joe English  <jenglish@users.sourceforge.net>
+	* library/utils.tcl(tile::takesFocus): BUGFIX:
+	correctly handle -takefocus "".
+
+2006-02-15  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c, doc/notebook.n: (finally) added zero-argument
+	form of [$nb select], return the widget pathname of currently-selected
+	pane.
+
+2006-02-09  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c: Tweaked one-pixel glitch in radiobutton
+	indicators.
+
+2006-02-05  Joe English  <jenglish@users.sourceforge.net>
+	* library/winTheme.tcl, library/xpTheme.tcl:
+	Use symbolic font TkDefaultFont instead of hardcoding
+	Tahoma/MS Sans Serif 8.
+	* library/fonts.tcl: clarified comments: TIP#145-defined
+	fonts aren't exactly the same as the ones Tile uses.
+
+2006-02-05  Joe English  <jenglish@users.sourceforge.net>
+	* win/winTheme.c: remove dead code.
+	* win/xpTheme.c: Add sizegrip element (not yet used)
+
+2006-01-30  Joe English  <jenglish@users.sourceforge.net>
+	* win/winTheme.c(BorderElement):  Handle -relief solid by
+	passing BF_FLAT flag to DrawEdge().
+	* win/winTheme.c(ThumbElement): Remove -relief option,
+	scrollbar thumbs on windows are always raised.
+
+2006-01-30  Joe English  <jenglish@users.sourceforge.net>
+	* generic/progress.c: Add some unnecessary casts to
+	make MSVC shut up.
+
+2006-01-30  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c, library/treeview.tcl, doc/treeview.n:
+	Initial implementation of new syntax for [$tv identify] command --
+	[$tv identify row $x $y], [$tv identify column $x $y].
+
+2006-01-29  Joe English  <jenglish@users.sourceforge.net>
+	* library/utils.tcl(SaveGrab): Properly account for multiple
+	displays.  Attempt to properly account for multiple interps.
+	(#1411983).
+
+2006-01-29  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c, doc/style.n: Add [style lookup]
+	introspection command (#1406215).
+
+2006-01-26  Joe English  <jenglish@users.sourceforge.net>
+	* library/winTheme.tcl, library/xpTheme.tcl:
+	Hide the selection when entry widgets lose focus;
+	it scares the horses.
+
+2006-01-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/configure.in, generic/Makefile.in, generic/configure:
+	TEA update.
+
+2006-01-25  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* configure, configure.in: update to TEA 3.5
+	* tclconfig/tcl.m4:        TEA rcs 1.89 2006/01/25 21:25:02
+
+2006-01-25  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: Make sure $tab gets unmapped after
+	[$nb tab $tab -state hidden], even if there are no other
+	available tabs to select.  (No test case yet).
+
+2006-01-24  Michael Kirkham <muonics@users.sourceforge.net>
+	* generic/notebook.c: Restored SelectNearestTab() method of adjusting
+	to removed/hidden tabs, adapted to the post-1.64 slave framework.
+	(Deleting the last/current tab wasn't the only scenario that was causing
+	the first tab to be selected when it shouldn't.)
+	* tests/notebook.test: Added 9 more tests for exercising the above.
+
+2006-01-24  Michael Kirkham <muonics@users.sourceforge.net>
+	* tests/all.tcl: Check for Tk package being present before attempting
+	to destroy the main window.  Otherwise running all tests via tclsh
+	instead of wish results in an error at the end.
+
+2006-01-24  Michael Kirkham <muonics@users.sourceforge.net>
+	* generic/notebook.c: When the last tab is the current tab and
+	that tab is deleted, make the new last tab the new current tab,
+	instead of the first tab.
+
+2006-01-22  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c: ttk::label options -relief, -anchor,
+	-justify and -wraplength now have NULL defaults,
+	so that custom TLabel styles work properly.
+
+2006-01-22  Joe English  <jenglish@users.sourceforge.net>
+	* tclconfig/tcl.m4: Put provenance information back in
+	(tclconfig/tcl.m4 r1.85), take "-Wno-implicit-int" out
+	of CFLAGS_WARNING.  Again.
+
+2006-01-22  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* tclconfig/tcl.m4, configure: update to TEA 3.4 interim
+
+2006-01-20  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl, library/utils.tcl (new file):
+	Split tile.tcl up into two files.  'tile.tcl' contains
+	package initialization code  some theme-selection
+	logic, 'utils.tcl' contains library routines used
+	in widget implementations.
+
+2006-01-16  Joe English  <jenglish@users.sourceforge.net>
+	* library/progress.tcl: Oops. Remove deprecated aliases
+	tile::progressbar::start, tile::progressbar::stop
+	introduced in the last commit, these weren't part of
+	the public API in the first place.
+
+2006-01-16  Joe English  <jenglish@users.sourceforge.net>
+	* library/*.tcl: Namespace cleanup: move all widget binding
+	support routines from tile::$widgetClass namespace to
+	ttk::$widgetClass.
+
+2006-01-16  Joe English  <jenglish@users.sourceforge.net>
+	* generic/entry.c, library/entry.tcl: Removed compatibility
+	features [$e scan], and the 'anchor' internal tag and related
+	operations [$e selection from], [$e selection to], and
+	[$e selection adjust].
+
+	These aren't used by the widget bindings, and were only added
+	to accomodate megawidget packages that try to use core Entry
+	bindings on ttk::entry widgets.
+
+2006-01-14  Joe English  <jenglish@users.sourceforge.net>
+	* library/entry.tcl: Take focus on ButtonPress in readonly state
+	[Fixes #1400839]
+
+2005-12-31  Joe English  <jenglish@users.sourceforge.net>
+	* generic/progress.c: Fix layout so progress bar expands
+	to the full trough thickness (#1357605).
+
+2005-12-12  Joe English  <jenglish@users.sourceforge.net>
+	* tclconfig/tcl.m4: Sync with TEA tcl.m4 r1.81.
+	* configure, generic/configure: Regenerated.
+
+2005-12-12  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkElements.c: Default menubutton layout now
+	sets text flush-left [#1263470]. (NB: classic and XP themes
+	still unchanged.)
+
+2005-12-12  Joe English  <jenglish@users.sourceforge.net>
+	* generic/label.c: Move -anchor option from LabelElement
+	to TextElement.  (LabelElement uses text.anchor for
+	compound layout arrangement).
+	* generic/treeview.c: Add heading -anchor option [#1346328]
+
+2005-12-07  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c, doc/notebook.n, tests/notebook.test:
+	Added [$nb insert] command [Patch#1374514].
+
+2005-12-07  Joe English  <jenglish@users.sourceforge.net>
+	* configure.in, generic/configure.in, generic/Makefile.in,
+	generic/tkTheme.h, win/makefile.vc: Bumped version number
+	to 0.7.5, to account for recent ActiveTcl 8.4.12 release.
+	Skipping tile 0.7.4.
+	* configure, generic/configure: regenerated.
+
+	=== TILE 0.7.4 RELEASE SKIPPED.  THERE IS NO TILE 0.7.4. ===
+
+2005-12-06  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c: Make sure that sibling -labelwidgets are raised
+	above the labelframe [Fixes #1374778]
+
+2005-12-06  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: BUGFIX: Fix TabRemoved() logic to account for
+	the case where NextTab() is the current tab [Fixes #1370833
+	"notebook forget tab -> core dump"
+
+	=== ACTIVETCL 8.4.12 RELEASED somewhere around here ===
+
+2005-12-02  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* tclconfig/tcl.m4, configure.in, configure: update to TEA 3.4
+
+	* win/monitor.c (CreateThemeMonitorWindow, WndProc): use
+	Get|SetWindowLongPtr to support 64-bit Windows.
+
+2005-11-28  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* demos/demo.tcl: add package require Tk
+
+2005-11-20  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkElements.c: Default layout for radiobuttons and
+	checkbuttons no longer includes a border.
+	* library/defaults.tcl, library/altTheme.tcl, library/winTheme.tcl,
+	library/xpTheme.tcl, library/clamTheme.tcl, library/stepTheme.tcl,
+	demos/themes/blue.tcl: Increase -padding to compensate.
+	(Aqua and Classic themes use nondefault check/radiobutton layouts).
+
+2005-11-20  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c: Fix compiler warnings (0 instead of NULL
+	userData arguments).  Minor refactoring of ThemeButtonParms usage.
+
+2005-11-14  Joe English  <jenglish@users.sourceforge.net>
+	* tclconfig/tcl.m4: Updated to TEA tcl.m4 r1.75. [#1307513]
+	* configure, generic/configure: Regenerated.
+
+2005-11-14  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c: Refactoring: use Ttk_Manager API
+	to manage labelWidget.
+
+2005-11-14  Joe English  <jenglish@users.sourceforge.net>
+	* generic/manager.c(ManagerIdleProc): BUGFIX:
+	Only skip call to RecomputeLayout() if RecomputeSize() has
+	rescheduled another call to ManagerIdleProc().
+
+2005-11-14  Joe English  <jenglish@users.sourceforge.net>
+	* tclconfig/kde-qt.m4: Moved to tile-themes/tile-qt repository.
+
+2005-11-14  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl: Workaround for spurious <FocusOut> events
+	on OSX in Tk 8.5 [#1349811].
+
+2005-11-12  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c:  Improved initial geometry management:
+	[$tv column -width ...] affects widget request size iff
+	widget is currently unmapped.
+
+2005-11-11  Joe English  <jenglish@users.sourceforge.net>
+	* generic/scale.c: (duplicate code removal): Replace
+	ScaleIdentifyCommand with WidgetIdentifyCommand.
+	* generic/scale.c: Handle case where -from is greater
+	than -to [fixes #1353436 part 2]
+	* demos/demo.tcl(scales.pane): use -from 100 -to 0
+	instead of inverting range in command callback
+	(test case for previous fix)
+
+2005-11-10  Joe English  <jenglish@users.sourceforge.net>
+	* generic/manager.c, generic/manager.h, generic/frame.c:
+	Namespace cleanup: Maintainable => Ttk_Maintainable.
+	Dead code removal: removed unused procedure 'Manageable'.
+
+2005-11-10  Joe English  <jenglish@users.sourceforge.net>
+	* library/scale.tcl(Press): Recognize button press in
+	"*track" element as well as "*trough" (scale widgets
+	can be put together either way, depending on the theme).
+	[#1338254, patch from Victor Bonilla].
+
+2005-11-10  Joe English  <jenglish@users.sourceforge.net>
+
+	Compatibility option purge:
+
+	* generic/compat.h, tools/optiondiff.tcl: Removed.
+
+	* generic/button.c, generic/entry.c, generic/frame.c,
+	generic/scrollbar.c: Removed all compatibility options.
+
+	* generic/tkTheme.h: Removed TK_OPTION_COMPAT ...
+	* generic/tkTheme.c(TTKGetOptionSpec):  ... and processing of same.
+
+	* configure.in, generic/configure.in: Remove autoconf goo
+	for enabling compatibility options.
+
+2005-11-02  Joe English  <jenglish@users.sourceforge.net>
+	* library/dialog.tcl, doc/dialog.n:  Add '-parent' option,
+	allow user to explicitly specify transient parent.  If set to
+	the empty string, dialog isn't transient [fixes #1283014]
+
+2005-11-01  Joe English  <jenglish@users.sourceforge.net>
+	* configure.in, generic/configure.in, generic/Makefile.in,
+	generic/tkTheme.h, win/makefile.vc: Bumped version number to 0.7.3
+	* configure, generic/configure: regenerated.
+
+2005-10-27  Joe English  <jenglish@users.sourceforge.net>
+	* generic/scale.c(ScaleCleanup): BUGFIX: forgot to free
+	variable trace when widget is destroyed [#1338148]
+
+	=== TILE 0.7.2 TAGGED FOR RELEASE ===
+
+2005-10-19  Joe English  <jenglish@users.sourceforge.net>
+	* generic/paned.c(PanedGeometryRequestProc):
+	Only update pane request size if slave is currently unmapped,
+	in order to avoid unexpected pane resizes (esp. while the
+	user is dragging a sash [#1325286]).  Also fixed an off-by-one
+	bug in size computations (nSashes vs. nPanes).
+
+2005-10-14  Joe English  <jenglish@users.sourceforge.net>
+	* configure.in, generic/configure.in, generic/Makefile.in,
+	generic/tkTheme.h: Bumped version number to 0.7.2, will
+	make a new Tile release to match CVS snapshot included
+	with ActiveTcl 8.4.11.2.
+	* configure, generic/configure: regenerated.
+
+2005-10-08  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c: add some horizontal padding in treeview headers
+	[#1208194]
+
+2005-10-08  Joe English  <jenglish@users.sourceforge.net>
+
+	* generic/*.c: Don't Panic.
+
+	generic/blink.c: bug already found and fixed.
+	generic/label.c: program invariants, unreachable by inspection.
+	generic/manager.c, generic/widget.c: these were just landmines.
+
+	Left one call to Tcl_Panic() in, in tkTheme.c; this
+	is also a landmine, but it's in a place that developers
+	will hit before end users do.
+
+2005-10-08  Joe English  <jenglish@users.sourceforge.net>
+	* demos/themes/blue.tcl: fix 'pressed' feedback for
+	vertical scales (thanks to Victor Bonilla for catching this).
+
+2005-10-08  Joe English  <jenglish@users.sourceforge.net>
+	* library/notebook.tcl, doc/notebook.n:
+	Documentation clarification and namespace fix:
+	use "ttk::notebook::enableTraversal".  Earlier names
+	registered as deprecated aliases.
+	Changed notebook library procedure namespace to "ttk::notebook"
+	while at it.
+
+2005-10-08  Joe English  <jenglish@users.sourceforge.net>
+	* generic/widget.h, generic/*.c: API cleanup:
+	WidgetChanged(...) renamed to TtkRedisplayWidget / TtkResizeWidget.
+
+2005-10-07  Joe English  <jenglish@users.sourceforge.net>
+	* generic/scale.c:  Removed support for '-showvalue true'
+	(possibly to be be restored later).  Removed now-unused
+	-font and -foreground options.  Moved slider placement
+	logic out of Draw() hook into DoLayout() hook.
+
+2005-10-07  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c: Use round slider (kThemeThumbPlain)
+	for ttk::scale widget instead of pointy one.
+
+2005-10-07  Joe English  <jenglish@users.sourceforge.net>
+	* generic/scale.c: Remove -width widget option.
+	* generic/altTheme.c, generic/tkElements.c:
+	Rename -width element option to "-sliderthickness".
+
+	* generic/scale.c: Accidentally prematurely committed
+	partial fix for #1252656.  Oops.
+
+2005-10-04  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* configure: regen
+	* tclconfig/tcl.m4 (TEA_PRIVATE_TCL_HEADERS): add / to finish sed macro
+
+2005-10-02  Joe English  <jenglish@users.sourceforge.net>
+	* doc/frame.n, doc/labelframe.n: Added missing manpages.
+	* generic/frame.c: Removed ttk::labelframe -font option;
+	removed redundant -relief and -borderwidth option definitions
+	(defaults inherited from ttk::frame are OK).
+
+2005-09-30  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* generic/configure.in, generic/configure:
+	* configure.in, configure: TEA 3.3 uses win32 for Windows in
+	TEA_WINDOWINGSYSTEM.
+
+2005-09-29  Joe English  <jenglish@users.sourceforge.net>
+	* generic/scale.c, generic/tile.c, generic/tkElements.c,
+	generic/clamTheme.c, generic/stepTheme.c, macosx/aquaTheme.c,
+	win/xpTheme.c, library/tile.tcl, library/altTheme.tcl,
+	library/clamTheme.tcl, library/classicTheme.tcl,
+	library/defaults.tcl, library/stepTheme.tcl:
+	Removed old [ttk::progress] widget.
+
+2005-09-28  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl: Restored [update] call in LBTab procedure
+	(taken out 2005-07-23); this is needed after all (see #1090277).
+
+2005-09-23  Joe English  <jenglish@users.sourceforge.net>
+	* generic/entry.c, doc/entry.n: Changed 'invalid' state handling
+	logic: prevalidation never changes 'invalid' state bit,
+	and rejects edits if -validatecommand returns false even when
+	invalid state is set.  See #1302146 and tktable-tile-dev
+	discussion for more details.
+
+2005-09-20  Joe English  <jenglish@users.sourceforge.net>
+	* tclconfig/tcl.m4: Update to TEA 3.3 (tclconfig/tcl.m4 r1.72)
+	* configure.in, generic/configure.in: Bump TEA_VERSION.
+	* configure, generic/configure: Regenerated.
+
+2005-09-15  Joe English  <jenglish@users.sourceforge.net>
+	* configure.in, Makefile.in, generic/configure.in,
+	generic/Makefile.in, win/makefile.vc, generic/tkTheme.h,
+	generic/pkgIndex.tcl.in: Bumped version number to 0.7.1.
+	Removed distinction between VERSION and PATCHLEVEL,
+	use major.minor.patchlevel everywhere.
+	* configure, generic/configure: Regenerated.
+
+2005-09-13  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c, doc/style.n, library/*.tcl, tests/*.tcl:
+	Replaced [style default] command with the more sensibly-named
+	[style configure].  [style default] is temporarily retained
+	as a synonym so third-party code has a chance to upgrade.
+
+2005-09-13  Joe English  <jenglish@users.sourceforge.net>
+	* generic/compat.h, tools/optiondiff.tcl: Use -DENABLE_COMPAT
+	to turn compatibility options on, instead of -DNO_COMPAT to
+	turn them off.
+	* configure.in, generic/configure.in: "--disable-compat" is
+	now the default.
+	* configure, generic/configure: Regenerated.
+
+2005-09-12  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c(CheckbuttonInitialize):
+	BUGFIX: previous change introduced refcount leak.
+
+2005-09-11  Joe English  <jenglish@users.sourceforge.net>
+	* generic/widget.c(WidgetConstructorObjCommand):
+	Call initializeProc() before first call to Tk_SetOptions()
+	instead of after; this way initializeProc can set default
+	option values.
+	* generic/button.c: ttk::checkbutton -variable defaults to
+	the name of the widget. ttk::radiobutton -variable defaults to
+	"::selectedButton" [#1257319]
+
+2005-09-11  Joe English  <jenglish@users.sourceforge.net>
+	* trace.c, widget.h, button.c, entry.c, progress.c:
+	Reworked Ttk_TraceVariable() interface.
+	Trace callbacks may not reenter the interpreter,
+	and cannot signal errors.  ClientData does not need
+	to be a WidgetCore *; trace callbacks are responsible
+	for checking WidgetDestroyed() themselves.
+
+2005-09-10  Joe English  <jenglish@users.sourceforge.net>
+	* win/monitor.c: Remove debugging output.
+
+2005-09-07  Joe English  <jenglish@users.sourceforge.net>
+	* generic/paned.c, generic/progress.c: Add missing 'static'
+	declarations for internal functions.
+
+2005-09-04  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c, doc/notebook.n: Add "-padding" tab option,
+	extra internal padding [#1203759]
+	* demos/demo.tcl: Use the new feature.  Can eliminate a few
+	intermediate frames.
+	* generic/tile.c(EnumerateOptions): Handle chained Tk_OptionSpec
+	arrays.
+	* generic/layout.c(Ttk_PadBox): Ensure box width and height >= 1.
+
+2005-09-04  Joe English  <jenglish@users.sourceforge.net>
+	* generic/clamTheme.c: Fixed menubutton indicator.
+
+2005-08-30  Joe English  <jenglish@users.sourceforge.net>
+	* doc/checkbutton.n, doc/radiobutton.n: Fix markup errors,
+	added "WIDGET STATES" section.
+
+2005-08-22  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* generic/notebook.c:  removed use of // commenting
+	* generic/stepTheme.c: older C compilers dislike it
+	* generic/treeview.c (ConfigureHeading, ConfigureColumn):
+	* generic/manager.c (Ttk_ConfigureSlave): fix cast for mask
+
+2005-08-19  Joe English  <jenglish@users.sourceforge.net>
+	* notebook.c, paned.c, manager.c, manager.h:
+	ttk:notebook and ttk::paned widgets can now manage
+	siblings of ancestors in addition to direct descendants
+	like other GMs [Fixes: #1263510].
+	* demos/demo.tcl ("Scales" pane): Tweaked a bit to test
+	the above change.
+
+2005-08-19  Joe English  <jenglish@users.sourceforge.net>
+	* generic/manager.c: BUGFIX: DeleteManager() wasn't
+	fully cleaning up slave records (DeleteSlave instead of
+	Ttk_ForgetSlave).
+	* generic/manager.c(Maintainable): Don't call Tk_RestackWindow()
+	on sibling; this messes up keyboard traversal order.  Applications
+	must manage stacking order instead.
+
+2005-08-19  Joe English  <jenglish@users.sourceforge.net>
+	* generic/paned.c: Removed '#if !SHOVE_SASHES' conditional code.
+
+2005-08-18  Joe English  <jenglish@users.sourceforge.net>
+	* generic/manager.h, generic/manager.c, generic/notebook.c,
+	generic/paned.c: Ttk_Manager API rationalization phase 1:
+	renamed public functions and data structures; partial opacification;
+	added Ttk_PlaceSlave().
+	* generic/notebook.c, test/notebook.test: BUGFIX:
+	NextTab() wasn't actually returning the index of the next tab.
+	* generic/manager.h, generic/manager.c, generic/notebook.c,
+	generic/paned.c: More refactoring: Changed signature of
+	SlaveAdded() and SlaveRemoved() hooks.  Tried to factor out
+	SlaveConfigured / Ttk_ConfigureSlave, failed; these will
+	have to stick around for a bit longer.
+
+2005-08-17  Joe English  <jenglish@users.sourceforge.net>
+	* generic/widget.h, generic/widget.c, others:
+	Remove WIDGET_SPEC_END sentinel enum.
+
+2005-08-17  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c, generic/tkTheme.h, generic/notebook.c,
+	generic/treeview.c(Ttk_RebindSublayout):
+	Drop optionTable, tkwin arguments to Ttk_Rebind[Sub]Layout;
+	these don't ever change.
+
+2005-08-13  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c(Labelframe): made -relief and -borderwidth
+	options NULL by default, as per recent discussion on tktable-tile-dev
+	* library/altTheme.tcl, library/clamTheme.tcl,
+	library/classicTheme.tcl, library/defaults.tcl,
+	library/stepTheme.tcl, library/winTheme.tcl, demos/themes/blue.tcl:
+	Specify TLabelframe -relief and -borderwidth options in theme
+	definitions instead.
+
+2005-08-11  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c(NotebookDoLayout): BUGFIX:
+	Revert earlier change to tabrowBox computation,
+	original version was correct.
+
+2005-08-11  Joe English  <jenglish@users.sourceforge.net>
+	* generic/entry.c, doc/entry.n, tests/validate.test:
+	Entry widgets now set/clear the 'invalid' state bit depending
+	on the outcome of validation.
+
+2005-07-31  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c, generic/notebook.c:  Consolidated Labelframe
+	and Notebook theme parameter extraction.
+
+2005-07-31  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: (refactoring)
+	Use manager.h interface for geometry management.
+	Create a single tabLayout and reuse it for all tabs.
+	Couple minor bugfixes.
+	* generic/manager.c, generic/manager.h, generic/paned.c:
+	Change signature of SlaveRemoved hook.
+	* generic/frame.c, generic/manager.c:
+	Moved Maintainable(), made public.
+
+2005-07-29  Joe English  <jenglish@users.sourceforge.net>
+	* generic/widget.h: Declare WIDGET_SPEC_END enumerated value
+	outside the scope of struct WidgetSpec, to account for
+	C++ scope rules [#1247291, patch from Mats Bengtsson]
+
+2005-07-29  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c: Failed to compile if -DHAVE_UXTHEME_H was not set
+	[#1247278, patch from Mats Bengtsson]
+
+2005-07-27  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* configure, tclconfig/tcl.m4: correct _r AIX compiler tweak, and
+	check for X11 headers on Aqua as well.
+
+	* library/combobox.tcl (tile::combobox::Post): minor size
+	adjustments for dropdown geometry to fit right under entry.
+
+2005-07-26  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* library/combobox.tcl (tile::combobox::PopdownShell): use Tk
+	scrollbar under aqua until Ttk one is "native"
+
+2005-07-23  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl, library/tile.tcl: Redo grab handling
+	code to be more robust in the face of unexpected conditions [#1239190]
+
+	NOTE: comment from r1.17 "The [grab release] call in [Unpost]
+	queues events that later re-set the focus" appears to be
+	inoperative.  Removed the [update] call.
+
+2005-07-23  Joe English  <jenglish@users.sourceforge.net>
+	* library/entry.tcl: Initialize State(anchor); <B1-Motion> can
+	occur without preceding <ButtonPress-1> if a [grab release] intervenes.
+	* doc/dialog.n: Manpage updated to reflect implementation
+	(-command invoked before dismissing the dialog, not after).
+
+2005-07-20  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c: Support compilation under Windows 2000 (see #1235895)
+
+2005-07-20  Joe English  <jenglish@users.sourceforge.net>
+	* library/dialog.tcl, library/icons.tcl, doc/dialog.n (new):
+	added [ttk::dialog].
+
+2005-07-18  Joe English  <jenglish@users.sourceforge.net>
+	* library/scrollbar.tcl(Press): s/unit/units [#1240249]
+
+2005-07-13  Joe English  <jenglish@users.sourceforge.net>
+	* generic/entry.c: Only fire -textvariable trace in [$e configure]
+	if -textvariable was specified [#1236979]
+	* doc/entry.n: Corrected and clarified some details about validation
+	[#1236979]
+	* tests/validate.test: Added test case.
+
+2005-07-13  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c, library/treeview.tcl: Remove default
+	-borderwidth 2 for labels and treeview headings;
+	use theme settings instead.
+
+2005-07-13  Joe English  <jenglish@users.sourceforge.net>
+	* tools/genStubs.tcl, generic/ttkDecls.h: const-qualify stubs table.
+	* generic/ttkStubLib.c: regenerated.
+
+2005-06-30  Joe English  <jenglish@users.sourceforge.net>
+	* tclconfig/tcl.m4: Synced with sampleextension r1.69.
+	* configure, generic/configure: Regenerated. [#1228492]
+
+2005-06-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/clamTheme.c: Use default theme as parent, not "alt".
+	* generic/treeview.c, generic/altTheme.c:  Changed default treeview
+	item indicators to rightwards/downwards pointing arrows; moved
+	MSUE-style dinky boxed +/- sign indicators to "alt" theme.
+	(NB: default indicator still not quite right, but it's an
+	improvement.)
+
+2005-06-26  Joe English  <jenglish@users.sourceforge.net>
+	* library/button.tcl(tile::button::activate) Call [$w invoke]
+	directly instead of scheduling it in an [after idle] callback.
+	See #1227911 for discussion.
+
+2005-06-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c: Implemented 3- and 4- argument forms of
+	[style default] and [style map], as per docs.
+
+2005-06-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/cache.c(Ttk_FreeResourceCache): BUGFIX: "free named colors"
+	section was operating on the wrong hash table.
+
+2005-06-25  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c: (internal change) 'displayColumns'
+	points to list of columns instead of column indices.
+	Changed column resize behavior: last column expands
+	to fill available space.  This still isn't right
+	but at least it's usable now.
+
+2005-06-24  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c: Implemented 2-argument form of
+	[style layout $LayoutName] as per docs -- return layout spec.
+	* generic/layout.c, generic/tkThemeInt.h: added Ttk_UnparseLayoutSpec,
+	Ttk_NewStickyObj, for the above.
+
+2005-06-19  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c: MULTIPLE BUGFIXES: set, children, move commands
+	- crash in [$tv set $item $column] where $item has empty -values list.
+	- duplicate elements in [$tv children] caused infinite loop
+	- moving an item after itself corrupted tree.
+	New feature: [$tv set $item] returns a dictionary
+
+2005-06-18  Joe English  <jenglish@users.sourceforge.net>
+	* library/classicTheme.tcl, library/altTheme.tcl:
+	Fix progress bar colors.
+
+2005-06-18  Joe English  <jenglish@users.sourceforge.net>
+	* generic/label.c: -width option specifies the requested width
+	in characters of the text part of the label, regardless of
+	the value of -compound [#1108822].
+
+2005-06-18  Joe English  <jenglish@users.sourceforge.net>
+	* generic/label.c, generic/layout.c, generic/tile.c,
+	generic/tkTheme.h: Namespace police: renamed TK_COMPOUND_LAYOUT_*
+	=> TTK_COMPOUND_*.  Misc. other cleanups in label.c.
+	No functional changes.
+
+2005-06-18  Joe English  <jenglish@users.sourceforge.net>
+	* library/button.tcl: Guard against spurious <Button1-Enter> events;
+	fixes #1223103, hopefully fixes #1222605.
+
+2005-06-18  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl(Scroll): Avoid divide-by-zero error
+	if -values list is empty [fixes #1223104].
+	* library/notebook.tcl(CycleTab): Set focus when selecting
+	new tab with <Control-KeyPress-{Left|Right}>
+
+2005-06-11  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* demos/demo.tcl: Fixed the vertical progressbar so it works more
+	sensibly
+
+2005-06-09  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl: <KeyPress-Return> shouldn't post listbox;
+	removed binding ([fixed #1211497])
+
+2005-06-09  Joe English  <jenglish@users.sourceforge.net>
+	* configure.in, generic/configure.in, generic/Makefile.in,
+	generic/tkTheme.h: Bumped version number to 0.6.5
+	* configure, generic/configure: regenerated.
+
+	=== TILE 0.6.4 TAGGED FOR RELEASE ===
+
+2005-05-30  Joe English  <jenglish@users.sourceforge.net>
+	* configure.in, generic/configure.in, generic/Makefile.in,
+	generic/tkTheme.h: Bumped version number to 0.6.4
+	for upcoming ActiveTcl release.
+	* configure, generic/configure: regenerated.
+
+2005-05-30  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl: If combobox value isn't in list,
+	highlight first listbox entry [#1211322]
+	* library/combobox.tcl: tile::combobox::Unpost can be
+	called multiple times during a transaction (see #1208633);
+	subsequent calls should do nothing.
+
+2005-05-22  Joe English  <jenglish@users.sourceforge.net>
+	* library/treeview.tcl: Double-click on items with no
+	special double-click behaviour should be the same
+	as single-click binding, not a no-op (Fixes: #1186361).
+
+2005-05-22  Joe English  <jenglish@users.sourceforge.net>
+	* generic/entry.c:  Oops.  2005-03-22 change was sloppy;
+	conflated "foreground" and "background".  (Fixes #1206595)
+
+2005-05-22  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c: Set internal padding from -borderwidth
+	option only, don't query theme.  (Fixes: #1204179; but
+	see bug report this still isn't completely right.)
+
+2005-05-12  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl, library/tile.tcl: Restore previous
+	grab and focus windows when unposting combobox popdown
+	[#1199993]
+
+2005-05-11  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl:  Include widget name, toplevel name,
+	and "all" bindtags for combobox listbox, as per usual Tk
+	conventions [fixes #1200012].
+	Generate <<ComboboxSelected>> events when scrolling with
+	the mouse wheel too [fixes: #1200004]
+	(In general: this event should be generated in response
+	to any user action that selects an entry.)
+
+2005-05-11  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkElements.c, generic/tkEntry.c:
+	Moved default EntryLayout definition from tkElements.c to tkEntry.c.
+
+2005-05-05  Michael Kirkham <muonics@users.sourceforge.net>
+	* library/progress.tcl: Set progressbar's -value to 0 upon stop
+	so that indeterminate progressbars are not left active but
+	unanimated, and determinate progress bars can use it as a quick reset.
+
+2005-05-05  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c, doc/style.n: added [style element options]
+
+2005-04-20  Neil Madden  <tallniel@users.sourceforge.net>
+	* macosx/aquaTheme.c: Add 'static' qualifier to BoxToRect
+	utility function to fix correct scope.
+
+2005-04-20  Neil Madden  <tallniel@users.sourceforge.net>
+	* macosx/aquaTheme.c: Fixed layout of treeview header element
+	to use fixed height, and position labels correctly. Refactored
+	ButtonElementGeometry to provide a version which doesn't add
+	extra padding (needed for header buttons).
+	* generic/treeview.c: Minor fix, change use of ROWHEIGHT to
+	HEADINGHEIGHT when drawing header elements.
+
+2005-04-18  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c:  Added Aqua separator element
+	[Patch #1184649, contributed by Mats Bengtsson]
+
+2005-04-17  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c: Make menubutton labels left-aligned
+	instead of centered, as per Apple conventions [Fixes: #1183071]
+
+2005-04-17  Joe English  <jenglish@users.sourceforge.net>
+	* library/treeview.tcl: Avoid excessive calls to
+	[$tv configure -cursor ...] -- this is a lot more expensive
+	than it looks [Fixes: #1184746]
+
+2005-04-17  Joe English  <jenglish@users.sourceforge.net>
+	* configure.in, generic/configure.in, generic/Makefile.in,
+	generic/tkTheme.h: Bumped version number to 0.6.3
+	* configure, generic/configure: regenerated.
+
+2005-04-17  Joe English  <jenglish@users.sourceforge.net>
+
+	=== TILE 0.6.2p1 TAGGED FOR RELEASE ===
+	=== TILE 0.6.2 RECALLED ==
+
+2005-04-17  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: BUGFIX: notebook size computation
+	didn't account for internal pane padding [fixes #1182704]
+
+2005-04-15  Joe English  <jenglish@users.sourceforge.net>
+	* generic/widget.c:  *** BUGFIX *** fix memory leak
+	in widget construction, discovered by GPS.  [#1184091]
+
+2005-04-12  Joe English  <jenglish@users.sourceforge.net>
+
+	=== TILE 0.6.2 TAGGED FOR RELEASE ===
+
+2005-04-12  Joe English  <jenglish@users.sourceforge.net>
+	* configure.in, generic/configure.in, generic/Makefile.in,
+	generic/tkTheme.h: Bumped version number.
+	* configure, generic/configure: regenerated.
+
+2005-04-10  Joe English  <jenglish@users.sourceforge.net>
+	* generic/paned.c: Use layouts "Vertical.Sash"  / "Horizontal.Sash"
+	instead of "VSash" / "HSash".  Schedule relayout when theme changes.
+	* generic/clamTheme.c, library/clamTheme.tcl: Update sash specs.
+	* generic/widget.c(WidgetConstructorObjCmd): BUGFIX:
+	call getLayoutProc _after_ initializeProc.
+
+2005-04-09  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl: Use of deprecated aliases tbutton, tile::button,
+	etc. now issues a warning.
+	* tests/*.test: Don't use deprecated aliases tbutton, etc.
+
+2005-04-09  Joe English  <jenglish@users.sourceforge.net>
+	* configure.in, Makefile.in, generic/configure.in, generic/Makefile.in,
+	generic/pkgIndex.tcl.in generic/tile.c generic/tkTheme.h:
+	Added PATCHLEVEL macros, currently 0.6.1; provide a way
+	for application authors to distinguish releases from
+	CVS snapshots.
+	* configure, generic/configure: Regenerated.
+
+2005-04-08  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl:  Add combobox mouse wheel bindings [#1163055]
+
+2005-04-05  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkstate.c(StateSpecSetFromAny):
+	BUGFIX: don't assume objPtr->typePtr is non-NULL just because
+	Tcl_ListObjGetElements() succeeded -- that was never guaranteed,
+	and is no longer true.  [Fixes #1177266]
+
+2005-04-03  Joe English  <jenglish@users.sourceforge.net>
+	* generic/cache.c: Don't pass a NULL interp to Tk_AllocFontFromObj()
+	or other allocators [fixes #1151526].  Report allocation errors
+	as background errors.
+
+2005-03-31  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c(Labelframe): Added a '-labelspace'
+	style parameter to control spacing between label and
+	border when -labeloutside is set
+	* library/aquaTheme.tcl: set -labelspace 4 -labelinset 14,
+	to match Apple HIG. [Finally fixes #1098335, #1067229]
+
+2005-03-31  Joe English  <jenglish@users.sourceforge.net>
+	* doc/widget.n, generic/widget.h, generic/label.c, generic/button.c,
+	generic/notebook.c, generic/treeview.c:
+	-image option is now a list; first element is the image name,
+	remainder of list is a statemap that can override the default
+	image.  [Patch #1171118].
+
+	* * * POTENTIAL INCOMPATIBILITY * * * both with core widgets
+	and earlier tile releases.  This will bite if you use
+	images with spaces in their names.
+
+2005-03-29  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* generic/tkTheme.h: remove dup Ttk_GetOrientFromObj decl
+
+2005-03-27  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.tcl: Add ttk::labelframe -labelinset style option;
+	control amount of space between label and secondary edge.
+	[See #1098335]
+
+2005-03-27  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl, library/button.tcl: Don't use click-to-focus
+	if -takefocus is off.
+	* demos/demo.tcl: Set -takefocus 0 for toolbar buttons.
+
+2005-03-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/progress.c, library/progress.tcl, doc/progressbar.n:
+	Made [$pb start] and [$pb stop] first-class widget methods
+	instead of auxilliary routines (suggtestion from muonics)
+
+2005-03-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h, generic/ttk.decls:  Rename
+	Ttk_GetOrientationFromObj ==> Ttk_GetOrientFromObj.
+	Added to stubs table.
+	* generic/ttkDecls.h, generic/ttkStubInit.c: regenerated.
+
+2005-03-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/trace.c: Pass NULL pointer to trace callback when
+	linked variable is unset.
+	* generic/button.c, generic/entry.c, generic/progress.c:
+	Handle unset linked variables.
+
+2005-03-25  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* macosx/aquaTheme.c: removed magic define of
+	AVAILABLE_MAC_OS_X_VERSION_10_3_AND_LATER.  This should be
+	added in CFLAGS if required.
+
+2005-03-24  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c: fix ttk::progressbar elements for better native look.
+	(Change made 2005-03-14, forgot to commit).
+
+2005-03-22  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl(availableThemes): Only list themes registered
+	in the package database as tile::theme::*.
+
+2005-03-22  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c, generic/entry.c: Use different option database
+	name and database class for ttk::label -background option, to avoid
+	interference from X resource database [See #1104007].
+	* doc/label.n: -foreground and -font now real real ttk::label options.
+	* tools/optiondiff.tcl: Add real -foreground option to
+	a few other widgets.
+	* generic/compat.h: regenerated.
+
+2005-03-22  Joe English  <jenglish@users.sourceforge.net>
+	* generic/ttkStubLib.c: BUGFIX: Tile stub library initialization
+	had same bug as Tcl #1091431
+
+2005-03-22  Joe English  <jenglish@users.sourceforge.net>
+	* library/treeview.tcl: BUGFIX: only toggle -open for double-click
+	on tree item, not anywhere in tree.
+
+2005-03-20  Joe English  <jenglish@users.sourceforge.net>
+	* generic/clamTheme.c, library/clamTheme.tcl, generic/classicTheme.c:
+	Add sash elements.
+	* demos/demo.tcl(main demo pane): Use ttk::paned window.
+
+2005-03-20  Joe English  <jenglish@users.sourceforge.net>
+	* demos/demo.tcl: (re)organized.
+
+2005-03-18  Joe English  <jenglish@users.sourceforge.net>
+	* generic/paned.c: Defer pane placement to an idle callback.
+	Misc. horizontal/vertical glitch fixes.
+
+2005-03-18  Joe English  <jenglish@users.sourceforge.net>
+	* tclconfig/tcl.m4: Restore provenance line and CFLAGS_WARNING patch.
+	* generic/Makefile.in: Use ${INSTALL_PROGRAM} for shared library.
+
+2005-03-18  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* Makefile.in (AR): use @AR@, use INSTALL_PROGRAM for binaries.
+	(LIBS): Add MATH_LIBS (needed for fmod on some platforms)
+
+	* configure, tclconfig/tcl.m4: TEA 3.2 patch update
+
+2005-03-17  Joe English  <jenglish@users.sourceforge.net>
+	* library/fonts.tcl: Derefactored to account for platform variability.
+	Change default TkHeadingFont on Aqua and Windows [Fixes: #1163346]
+
+2005-03-17  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c, doc/treeview.n:
+	Add treeview -show option, selectively disable tree and/or headings.
+	* library/treeview.tcl: Changed treeview bindings to work
+	more like other tree widgets: double-click on item or press
+	disclosure button to toggle state (before, pressing anywhere
+	on the item toggled open/close state).  [Bryan Oakley]
+
+2005-03-17  Joe English  <jenglish@users.sourceforge.net>
+	* tclconfig/tcl.m4, Makefile.in, configure.in, generic/configure.in:
+	Upgrade to TEA 3.2 (tclconfig.m4 r1.59)
+	* configure, generic/configure: Regenerated.
+
+2005-03-16  Joe English  <jenglish@users.sourceforge.net>
+	* Makefile.in: Fix the "Joe added another library script but
+	forgot to update PKG_TCL_SOURCES" problem once and for all.
+
+2005-03-15  Joe English  <jenglish@users.sourceforge.net>
+	* library/xpTheme.tcl: Decrease Toolbutton padding from {8 4}
+	to {4 4} (suggestion from Damon Courtney).
+
+2005-03-15  Neil Madden  <tallniel@users.sourceforge.net>
+	* macosx/aquaTheme.c: Fixed to include tkInt.h so that pinstripe
+	alignment patch compiles against latest TkAqua. Adjusted geometry of
+	treeview heading buttons to remove excess padding, and adjusted the
+	selected/alternate states to display sort ascending/descending
+	indicators for now.
+
+2005-03-14  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c: fix ttk::progressbar elements for better native look.
+
+2005-03-13  Joe English  <jenglish@users.sourceforge.net>
+	* generic/paned.c, library/paned.tcl, doc/paned.n, tests/paned.test:
+	New ttk::paned widget, paned window manager.
+	* generic/manager.h, generic/manager.c (new): Support routines
+	for geometry managers.
+
+2005-03-13  Joe English  <jenglish@users.sourceforge.net>
+	* library/cursors.tcl (new, moved from library/treeview.tcl):
+	Map symbolic cursor names to platform-specific Tk cursor names
+	(rough draft -- just enough to support ttk::treeview and ttk::paned
+	on X11 right now).
+
+2005-03-13  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c(BackgroundElementDraw): Fix pinstripe alignment
+	in widget backgrounds [#1157739].  Thanks to Mats Bengtsson and
+	Daniel Steffen for tracking down how to fix this.
+
+2005-03-09  Joe English  <jenglish@users.sourceforge.net>
+	* library/aquaTheme.c: Don't stipple images in disabled buttons
+	(workaround for #1100117, probably a good idea in any event).
+
+2005-03-09  Joe English  <jenglish@users.sourceforge.net>
+	* generic/label.c: Use default "-justify left" instead of
+	"-justify center".
+
+2005-03-08  Joe English  <jenglish@users.sourceforge.net>
+	* generic/scroll.c, generic/treeview.c, generic/widget.h:
+	BUGFIX: avoid divide-by-zero in -yscrollcommand callback
+	when tree is empty.
+	Ensure -yscrollcommand called after [$tv configure -yscrollcommand].
+
+2005-03-08  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c(SelectTab): Fix typo.
+
+2005-03-07  Joe English  <jenglish@users.sourceforge.net>
+	* generic/clamTheme.c(Ttk_GCForColor) Check for -DMAC_OSX_TK
+	instead of -DMAC_OSX_TCL.
+	* generic/progress.c: BUGFIX: ensure CheckAnimation called in
+	[$pbar set]
+
+2005-03-06  Joe English  <jenglish@users.sourceforge.net>
+	* generic/clamTheme.c: Improved appearance for Entry and Combobox.
+	Handle -borderwidth 0.
+
+2005-03-05  Joe English  <jenglish@users.sourceforge.net>
+	* generic/clamTheme.c: (Patch from Michael Kirkham)
+	Workaround for Tk Aqua bug in Tk_GCForColor() [See #1115785]
+
+2005-03-04  Joe English  <jenglish@users.sourceforge.net>
+	* library/fonts.tcl: Add TkCaptionFont -- used as message text
+	in alert dialogs (different from TkHeadingFont, used for column
+	headers; TkCaptionFont is larger on X11).
+
+2005-03-03  Joe English  <jenglish@users.sourceforge.net>
+	* library/*.tcl: Avoid "creative writing" problems [#1123406].
+
+2005-03-01  Neil Madden  <tallniel@users.sourceforge.net>
+	* macosx/aquaTheme.c:
+	Added a 'Toolbar' style for the ttk::frame which picks up the
+	lighter pinstripe effect on Aqua. Also added support for Aqua list
+	header buttons to the Treeview widget.
+
+2005-03-01  Joe English  <jenglish@users.sourceforge.net>
+	* generic/label.c(TextDraw): Clip text if it's too wide
+	to fit in allocated parcel.  BUG: For multi-line text, this
+	will clip more than necessary.  But at least the treeview
+	widget is usable now.
+
+2005-02-28  Joe English  <jenglish@users.sourceforge.net>
+	* library/progress.tcl (new file, moved from demo.tcl):
+	'start' and 'stop' utility procedures for progress bars.
+	Handle timer cleanup in timer itself instead of <Destroy> binding.
+	* generic/progressbar.c: Added 'step' method; support for
+	-length option; handle errors from traces on linked -variables;
+
+2005-02-28  Michael Kirkham  <muonics@users.sourceforge.net>
+	* macosx/aquaTheme.c: Show track only instead of a non-animated
+	barber pole when drawing an indefinite ttk::progressbar with
+	-value 0.
+
+2005-02-27  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c, library/aquaTheme.tcl:
+	Add support for ttk::progressbar on Aqua (partial)
+
+2005-02-27  Joe English  <jenglish@users.sourceforge.net>
+	* generic/progress.c, doc/progressbar.n, tests/progress.test (new):
+	* Makefile.in, generic/Makefile.in win/makefile.vc, generic/tile.c,
+	library/defaults.tcl, library/clamTheme.tcl:
+	New ttk::progressbar widget.
+	* generic/tkElements.c, generic/clamTheme.c:
+	Add "pbar" element.
+	* generic/stepTheme.c, library/stepTheme.tcl:
+
+2005-02-27  Joe English  <jenglish@users.sourceforge.net>
+	* widget.h, widget.c, scale.c, scrollbar.c, separator.c:
+	Oriented widgets no longer hardcode the layout/style name;
+	[ttk::scrollbar .sb -orient horizontal -style Foo]
+	will use style "Horizontal.Foo" instead of "Horizontal.TScrollbar"
+	[Fixes #1145845]
+
+2005-02-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c: BUGFIX: Cancel pending <<ThemeChanged>>
+	calls at package cleanup time.  I *knew* I was forgetting something ...
+
+2005-02-24  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c: Schedule <<ThemeChanged>> calls
+	whenever any style parameter is set, not just when the
+	theme is changed.  Useful for interactive debugging.
+
+2005-02-24  Michael Kirkham  <muonics@users.sourceforge.net>
+	* generic/frame.c: Shift the top of the labelframe's border down
+	one pixel in "-labeloutside true" mode.  Otherwise it partly still
+	overlaps the border in the clam theme (just enough to show what
+	looks like half a line beneath the label).
+
+2005-02-13  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c: Redid labelframe layout calculations.
+	* generic/frame.c: Added "-labeloutside" style option
+	for Labelframes: Styles can specify whether label should appear
+	on top of the border or outside of it [Fixes: #1098335]
+	[sort-of fixes #1067229]
+	* library/clamTheme.c, library/aquaTheme.c: Use "-labeloutside true"
+
+2005-02-07  Joe English  <jenglish@users.sourceforge.net>
+	* library/treeview.tcl: Don't pollute global namespace [#1118216]
+
+2005-02-04  Michael Kirkham  <muonics@users.sourceforge.net>
+	* generic/entry.c: Use XFillRectangle instead of XDrawLine to draw
+	insertion cursor and work around missing cursor under all themes
+	in Aqua (#1115785).  Free cursor drawing GC.
+
+2005-02-03  Michael Kirkham  <muonics@users.sourceforge.net>
+	* win/makefile.vc: Modify windows pkgIndex.tcl generation to handle
+	spaces in $dir (#1112878).
+
+2005-01-31  Joe English  <jenglish@users.sourceforge.net>
+	* Makefile.in: Fix 'install-headers' and 'test' targets.
+	* Makefile.in, generic/Makefile.in: *Really* fix 'test' target
+	this time.
+
+2005-01-27  Michael Kirkham  <muonics@users.sourceforge.net>
+	* demos/autocomplete.tcl: Add example implementation demonstrating
+	inline auto-completion for comboboxes, with or without pre-sorted
+	value lists.
+
+2005-01-24  Michael Kirkham  <muonics@users.sourceforge.net>
+	* generic/notebook.c: Unmap tab slave when hidden so that, if all tabs
+	are hidden, the last hidden tab's slave is no longer shown.  When all
+	tabs are hidden and one is switched to the normal state, select that
+	tab (really, SelectNearestTab() whenever configuring a tab with an
+	invalid currentIndex).
+
+2005-01-24  Michael Kirkham  <muonics@users.sourceforge.net>
+	* generic/notebook.c: Preserve the current tab selection when the
+	  deleting a lower-index tab and fix Bug #1108204.
+
+2005-01-15 Michael Kirkham  <muonics@users.sourceforge.net>
+	* generic/notebook.c: Protect dummy layout tab (last patch) from
+	  NewTab() failing.
+
+2005-01-15 Michael Kirkham  <muonics@users.sourceforge.net>
+	* generic/notebook.c: Calculate tab height using a dummy tab if a
+	  notebook has no tabs to avoid issues with partial clipping and
+	  positioning of the bar below the tabs e.g. under Aqua.
+
+2005-01-10  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl: Added Tab and Shift-Tab keybindings
+	for combobox listboxes (#1090277).
+
+2005-01-07  Joe English  <jenglish@users.sourceforge.net>
+	* generic/ttkDecls.h(Ttk_InitStubs): Ttk_InitStubs now just
+	calls Tcl_PkgRequire(...) if -DUSE_TTK_STUBS not set.
+	* configure.in, Makefile.in: Build and install stub library;
+	install headers.  Replaced automake-legacy install-* rules.
+	* generic/configure.in: Cruft removal.
+	* configure, generic/configure: Regenerated.
+
+2005-01-05  Michael Kirkham  <muonics@users.sourceforge.net>
+        * doc/notebook.n, generic/notebook.c: Add a third "hidden" state
+          for notebook tabs.
+
+2005-01-02  Michael Kirkham  <muonics@users.sourceforge.net>
+        * library/notebook.tcl: Allow CycleTab to skip past disabled tabs.
+
+2004-12-31  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c, generic/tkTheme.c, generic/tkThemeInt.h:
+	Don't Panic:  Modify Ttk_GetElement so that it never returns NULL;
+	instead, if specified element isn't found return a no-op element.
+
+2004-12-31  Joe English  <jenglish@users.sourceforge.net>
+	* tools/genStubs.tcl: BUGFIX: proper handling of deprecated and
+	obsolete entry points.
+	* generic/tkTheme.h, generic/tkThemeInt.h, generic/tkTheme.c,
+	generic/ttk.decls, generic/layout.c, generic/image.c:
+	Added Ttk_RegisterElement(), replacement for Ttk_RegisterElementSpec:
+	takes a Tcl_Interp * argument for reporting error messages,
+	and returns an (opaque) Ttk_Element handle instead of TCL_OK/TCL_ERROR
+	* generic/ttkDecls.h, generic/ttkStubInit.c: Regenerated.
+	* (all): Use Ttk_RegisterElement instead of Ttk_RegisterElementSpec.
+
+2004-12-30  Joe English  <jenglish@users.sourceforge.net>
+	* tclconfig/tcl.m4: Sync with TEA tcl.m4 r1.54 (adds support for VC7).
+	* configure, generic/configure: Regenerated.
+
+2004-12-28  Joe English  <jenglish@users.sourceforge.net>
+	* tclconfig/teax.m4, generic/configure.in:
+	Added TEAX_FIX_LIB_SPECS; adjust @TCL_STUB_LIB_SPEC@ et al.
+	to work when using Windows/MSVC.
+
+2004-12-28  Joe English  <jenglish@users.sourceforge.net>
+	* doc/converting.txt: Recommend *not* using
+	[namespace import -force ttk::*] at global scope.
+
+2004-12-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c, doc/notebook.n: Added tab -state option,
+	either "normal" or "disabled"
+
+2004-12-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/configure.in: Use autoconf 2.5
+	* generic/Makefile.in: Remove unused cruft.
+
+2004-12-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tile.c: Add workaround for Tcl bug #1091431
+	"Tcl_InitStubs() failure crashes wish"
+
+2004-12-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/ttk.decls, generic/ttkDecls.h, generic/ttkStubInit.c,
+	  generic/ttkStubLib.c (new files): Stub library support
+	* generic/tile.c, generic/tkTheme.h: Stub library support
+	* generic/Makefile.in: Add rules to build stub library.
+	* win/makefile.vc, Makefile.in: Partial stub library support
+
+2004-12-26  Joe English  <jenglish@users.sourceforge.net>
+	* tclconfig/tcl.m4: Merge with sampleextension CVS HEAD (r1.52).
+
+2004-12-19  Joe English  <jenglish@users.sourceforge.net>
+	* generic/pixmapTheme.c(removed), Makefile.in, generic/Makefile.in,
+	win/makefile.vc, generic/tile.c, generic/widget.h, tests/image.test,
+	tests/layout.test: pixmap element factory no longer used;
+	subsumed by image factory.
+
+2004-12-19  Joe English  <jenglish@users.sourceforge.net>
+	* configure.in, generic/configure.in: Always AC_DEFINE(BUILD_tile)
+	* configure, generic/configure: regenerated.
+
+2004-12-10  Joe English  <jenglish@users.sourceforge.net>
+	* (all): Great Renaming:
+	:%s/TTK_\([A-Z][a-z]\)/Ttk_\1/g
+
+2004-12-10  Joe English  <jenglish@users.sourceforge.net>
+	* tclconfig/tcl.m4: Applied tea-die-dbgx-die.patch (#1081595)
+	* configure, generic/configure: Regenerated.
+
+2004-12-07  Joe English  <jenglish@users.sourceforge.net>
+	* tclconfig/teax.m4 (new file): Additional autoconf macros.
+
+2004-11-29  Joe English  <jenglish@users.sourceforge.net>
+	* library/altTheme.tcl, library/clamTheme.tcl, library/stepTheme.tcl
+	(TMenubutton defaults): Use -width -11 instead of -width 11
+	[fixes: #1075487 "tmenubutton draws long text badly for some themes"]
+
+2004-11-29  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h: Replace TK_STYLE_VERSION_2 #define
+	with an enumerated type.
+
+2004-11-28  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c(labelframe widget): Avoid excessive
+	calls to Tk_MaintainGeometry() [fixes: #997793 "labelframe-3.3
+	locks up on Aqua"]
+
+2004-11-27  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c: Save and restore previous GWorld in
+	all element Draw routines.  (Apparently fixes #1072421).
+
+2004-11-23  Joe English  <jenglish@users.sourceforge.net>
+	* library/aquaTheme.tcl: Decrease horizontal padding and minimum
+	width for button widgets.
+	* macosx/aquaTheme.c: Use "default" as parent theme instead of "alt".
+
+2004-11-23  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c: improved combobox; fix typo
+	(patch from Michael Kirkham sent to tktable-tile-dev)
+
+2004-11-09  Joe English  <jenglish@users.sourceforge.net>
+ 	* configure.in, generic/configure.in, generic/Makefile.in,
+	generic/tkTheme.h, win/makefile.vc: Bumped version number to 0.6
+	* library/classicTheme.tcl: Removed [package provide] call,
+	this is done in classicTheme.c.
+	* configure, generic/configure: Regenerated.
+
+2004-11-05  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* win/makefile.vc: Fix for bug #1059674 - load the right dll for
+	debug or threaded builds on windows.
+	* win/makefile.vc: Fixes from Vince Darley to permit installation
+	to paths that include spaces (bug #1023548). Also changed build
+	options to use the OPTS=xxx syntax. ie: OPTS=square,nouxtheme,nostubs
+
+2004-11-01  Joe English  <jenglish@users.sourceforge.net>
+	* tests/tile.test(tile-6.3): Fix bug reported by lvirden on c.l.t:
+	[package versions tile] can return more than one version number.
+
+2004-11-01  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* configure.in: Fix #921012 - enable build with msys+gcc.
+	* configure:    regenerated.
+
+2004-10-31  Joe English  <jenglish@users.sourceforge.net>
+
+	=== TILE 0.5 TAGGED FOR RELEASE ===
+
+2004-10-31  Joe English  <jenglish@users.sourceforge.net>
+
+	* generic/entry.c, library/combobox.tcl, library/combobox.n:
+	Added [$combobox current] command, track ordinal index of
+	currently-selected item (FR from JH).
+
+2004-10-31  Joe English  <jenglish@users.sourceforge.net>
+	* tclconfig/tcl.m4: gcc CFLAGS_WARNING: leave out -Wno-implicit-int
+	(in case of C++)
+	* library/altTheme.tcl: Use embossed look for disabled text
+
+2004-10-31  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* win/makefile.vc: Removed kroc theme installation lines.
+
+2004-10-30  Joe English  <jenglish@users.sourceforege.net>
+	* win/winTheme.c(TroughElement): Fix thread-safety issues;
+	respond to system color changes; changed logic for when
+	to use pattern brush instead of solid brush.
+
+2004-10-29  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* demos/themes/kroc:        Moved all pixmap themes to a new
+	* demos/themes/WinXP-Blue:  tile-themes cvs tree to separate
+	* demos/themes/Aquativo:    contributed themes from the core
+	                            theming code. Pixmap themes are now
+	                            loadable as ordinary tcl packages.
+
+	* generic/square.c: Sample widget to illustrate how to create
+	* generic/tile.c:   tile widgets. The call to the init function is
+	* win/makefile.vc:  only built if TTK_SQUARE_WIDGET is
+	defined. Needs adding to the configure build system.
+
+	* win/winTheme.c:   Handle the scrollbar trough natively.
+	* win/makefile.vc:  Added gdi32.lib to the link list.
+	* configure.in:
+	* configure:
+
+2004-10-27  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h: Added #ifdef'ed 'extern "C" { ... }' wrapper
+	for the benefit of C++ compilers.
+
+2004-10-27  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: Automatically select first tab added
+	(fixes: #1054507)
+	* generic/label.c(ImageTextElementDraw): Use correct bounding box
+	for label background area (fixes: #1054492)
+	* demos/demo.tcl: Minor tweaks to demo.
+
+2004-10-25  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* win/monitor.c:  Fix for #1053389 - use the monitor window to
+	* win/xpTheme.c:  obtain theme information if a widget has not
+	* win/winTheme.c: been mapped yet.
+
+2004-10-24  Joe English  <jenglish@users.sourceforge.net>
+
+	* generic/label.c(ImageDraw): Clip width and height to ensure
+	Tk_RedrawImage() doesn't extend outside window boundaries;
+	otherwise this leads to a crash in XGetImage() if the image
+	is partially transparent.
+
+2004-10-24  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/label.c:       Added an -embossed option to the text and
+	* library/winTheme.tcl:  label elements to support drawing the
+	text with an embossed look. This is used in winnative for all
+	disabled widgets.
+
+2004-10-24  Joe English  <jenglish@users.sourceforge.net>
+	* win/winTheme.c: Focus indicator for read-only comboboxes.
+	* win/xpTheme.c: Use separate elements for scrollbar thumb and grip
+	* library/winTheme.tcl: (bugfix) Change entry background to
+	frame color in disabled state as well as in readonly state [#1048888]
+
+2004-10-19  Joe English  <jenglish@users.sourceforge.net>
+	* tools/optiondiff.tcl:  Added hooks to easily change
+	"compatibility" options into "real" ones.  Made
+	-font, -foreground, and -background on ttk::labels,
+	and -foreground on check/radio/pushbuttons real options.
+	* generic/compat.h: Regenerated.
+
+2004-10-19  Joe English  <jenglish@users.sourceforge.net>
+	* library/keynav.tcl: Only override global <KeyPress-Tab>
+	and <PrevWindow> bindings under Tk 8.4; TIP #204 provides
+	the same functionality.
+
+2004-10-17  Joe English  <jenglish@users.sourceforge.net>
+	* library/defaults.tcl, library/classicTheme.tcl, library/altTheme.tcl:
+	Change entry and combobox background to frame color in
+	disabled state as well as in readonly state [#1048888]
+	* library/classicTheme.tcl: Fix -selectbackground to match
+	Tk 8.4 defaults.
+	* generic/entry.c: Make -selectborderwidth NULL by default
+	so theme settings take precedence.
+
+2004-10-14  Joe English  <jenglish@users.sourceforge.net>
+	* library/button.tcl: Added up- and down- arrow keyboard navigation
+	for radiobuttons.
+
+2004-10-12  Joe English  <jenglish@users.sourceforge.net>
+	* demos/demo.tcl:  Minor reorganization to demo program.
+
+2004-10-12  Joe English  <jenglish@users.sourceforge.net>
+	* library/classicTheme.tcl: Add -shiftrelief to toolbar buttons.
+
+2004-10-09  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h, generic/layout.c:
+	Added TTK_PlaceLayoutNode -- set parcel and place children.
+	Added TTK_UNIT flag -- experiment.
+	* generic/tkTheme.c: Added TTK_CloneElement, new element factory
+	(another experiment).
+
+2004-10-09  Joe English  <jenglish@users.sourceforge.net>
+	* generic/image.c: Fix memory leak in error path.
+
+2004-10-07  Joe English  <jenglish@users.sourceforge.net>
+	* library/treeview.tcl: BUGFIX: Missing <Leave> binding to
+	deactivate active heading.
+
+2004-10-05  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* library/combobox.tcl (tile::combobox::Post): set the listbox
+	height to values size, if < 10.
+	(tile::combobox::LBSelected): select in entry the LBselected item
+
+2004-10-05  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h, generic/tkstate.c, generic/button.c,
+	macosx/aquaTheme.c, win/xpTheme.c, demos/demo.tcl,
+	library/altTheme.tcl, library/clamTheme.tcl, doc/widget.n:
+	Use TTK_STATE_ALTERNATE for buttons with '-default active';
+	"default button" isn't general enough to merit a separate
+	state flag.
+
+2004-10-05  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl: Revert to r1.12, r1.13 was bogus.
+
+2004-10-05  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* Makefile.in (PKG_TCL_SOURCES): add treeview.tcl and
+	aquaTheme.tcl to install.
+
+2004-10-05  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c, library/treeview.tcl, doc/treeview.n:
+	Added column -anchor option.  Added heading -command option,
+	evaluated when column heading is pressed.  Track active heading,
+	update -cursor.
+
+2004-10-05  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c, generic/classicTheme.c, macosx/aquaTheme.c,
+	library/altTheme.tcl, library/aquaTheme.tcl, library/clamTheme.tcl,
+	library/classicTheme.tcl, library/defaults.tcl, library/stepTheme.tcl,
+	library/winTheme.tcl, library/xpTheme.tcl:
+	Use TNotebook.Tab as sublayout name instead of Tab.TNotebook.
+
+2004-10-04  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c: Don't use ETS_READONLY for combobox text fields
+	(fixes: #1032409)
+
+2004-10-04  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c: Put all the XP element information into one
+	big table.  Finally fixed memory leak.
+
+2004-10-04  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c, win/xpTheme.c: rough hack at native XP appearance.
+	Add workaround (sigh) for the stupid XDrawLines() off-by-one bug.
+
+2004-10-04  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c, generic/widget.c, generic/widget.h:
+	Made GetOptionValue, EnumerateOptions semi-public.
+
+	* generic/notebook.c, doc/notebook.n, library/notebook.tcl:
+	Merged "tabcget" and "tabconfigure" commands into "tab" command.
+
+	* * * INCOMPATIBILITY with tile 0.4 * * *
+
+2004-10-04  Joe English  <jenglish@users.sourceforge.net>
+	* library/fonts.tcl, library/treeview.tcl:
+	Define TkHeadingFont along with other symbolic fonts.
+
+2004-10-04  Joe English  <jenglish@users.sourceforge.net>
+	* all: TTK_GetLayout() now includes background element
+	automatically.  "*.background" not included in individual
+	layout specifications.
+
+2004-10-04  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkThemeInt.h, generic/layout.c, generic/tkTheme.c:
+	Reorganization & renaming; TTK_TemplateNode now semi-public.
+	* generic/tkThemeInt.h, generic/layout.c, generic/tkTheme.c:
+	Reorganized again. Added TTK_GetSubLayout().
+
+2004-10-04  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c: 'detach' command takes a list of items.
+	* doc/treeview.n: Doc fixes: 'detach' and 'delete' take a list of
+	items.
+
+2004-10-04  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* demos/demo.tcl: add simple tree widget demo of widget hierarchy
+
+2004-10-04  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl, library/combobox.tcl, library/button.tcl:
+	Added tile::CopyBindings utility procedure.
+
+2004-10-04  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tile.c, library/tile.tcl, tests/all.tcl:
+	Use $::tile::library intead of $::tile_library.
+	Set $::tile::version in _Init() routine.
+
+2004-10-03  Joe English  <jenglish@users.sourceforge.net>
+	* configure.in, generic/configure.in: Added --disable-compat
+	build-time option.
+	* configure, generic/configure: Regenerated.
+	* tools/optiondiff.tcl, generic/compat.h: NO_COMPAT_DEFAULTS unused.
+
+2004-10-03  Joe English  <jenglish@users.sourceforge.net>
+	* generic/treeview.c, doc/treeview.n, tests/treeview.test:
+	New treeview widget.
+	* generic/scroll.c, generic/widget.h: Support routines for
+	scrolling widget (half-baked)
+
+2004-09-29  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h: 'typedef enum {...} TTK_Orient'
+	instead of 'enum TTK_ORIENT { ... }', for consistency.
+
+2004-09-29  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h, generic/tkstate.c, doc/widget.n,
+	demos/demo.tcl, macosx/aquaTheme.c:
+	Renamed "indeterminate" state to "alternate"; can be
+	used as a sort of catch-all "alternate display" flag,
+	not just checkbutton tri-state values.
+
+2004-09-28  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h, generic/layout.c, generic/widget.c,
+	generic/entry.c, generic/notebook.c, generic/scale.c:
+	Rename TTK_LayoutReqSize() ==> TTK_LayoutSize().
+	Change order of arguments in TTK_DrawLayout() to match
+	TTK_LayoutSize() and TTK_PlaceLayout().
+	* generic/tkTheme.h, generic/tkThemeInt.h:
+	Added TTK_State typedef, clear up 'unsigned int' vs.
+	'unsigned long' confusion in places.
+
+2004-09-28  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h, generic/tkstate.c generic/widget.c:
+	Rename WidgetStateSpec ==> StateSpec.  Use onbits/offbits
+	for internal rep instead of mask/match.
+
+2004-09-28  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkElements.c: Split "separator" element
+	into vseparator, hseparator, and generic separator.
+
+2004-09-24  Joe English  <jenglish@users.sourceforge.net>
+	* generic/label.c(ImageDraw): Stipple over the image area,
+	to make it look "grayed-out" when TTK_STATE_DISABLED is set
+	(see #1031565)
+
+2004-09-23  Joe English  <jenglish@users.sourceforge.net>
+	* doc/man.macros(.SO): Use 4 columns for STANDARD OPTIONS
+	instead of 3.  .SE: Remove reference to options(n), Tile package
+	documents standard options in widget(n).
+	* doc/notebook.n, doc/separator.n: Updated .SO section.
+
+2004-09-22  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl: Select initial theme from X resource database.
+	Use "default" on X11 if it's not set.
+
+2004-09-21  Joe English  <jenglish@users.sourceforge.net>
+	* generic/entry.c: Fixed precedence rules for -selectforeground et al:
+	built-in default, style default, widget option, dynamic value.
+	* generic/layout.c: TTK_QueryOption() examines widget options now.
+	* generic/tkTheme.c, generic/tkTheme.h, generic/tkThemeInt.h:
+	TTK_QueryStyle() now private; TTK_LayoutStyle no longer used;
+	refactored.
+
+2004-09-20  Joe English  <jenglish@users.sourceforge.net>
+	* demos/repeater.tcl:  Added demonstration of custom widget classes.
+	(This may be useful enough to move into the main library...)
+	* demos/demo.tcl: Add repeating button demo.
+
+2004-09-19  Joe English  <jenglish@users.sourceforge.net>
+	* generic/clamTheme.c: Simplified.
+	* library/clamTheme.tcl: Remove unused settings.
+	* generic/clamTheme.c: Prevent rightmost tab from extending
+	past the client box when notebook is too narrow.
+
+2004-09-19  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkElements.c:  Fixed logic for XDrawLines workaround:
+	XDrawLines() only omits the last point, not the first.
+	* generic/notebook.c: Set USER1 and USER2 state flags for
+	leftmost and rightmost tabs, resp.
+	* win/xpTheme.c: use TABP_TABITEMLEFTEDGE for leftmost tab;
+	finally gets rid of the one-pixel glitch.  Can't fix the
+	rightmost tab, unfortunately.
+	* win/winTheme.c, library/winTheme.tcl, win/xpTheme.tcl:
+	More tweaks to notebook; notebook almost draws correctly now
+	under "Windows Classic" style.
+
+2004-09-19  Joe English  <jenglish@users.sourceforge.net>
+	* demos/themes/{Aquativo,kroc}.tcl: Use "Button.button" instead
+	of "Button.background"
+
+2004-09-19  Joe English  <jenglish@users.sourceforge.net>
+	* demos/demo.tcl: Use "ttk::" namespace instead of "t" prefix.
+
+2004-09-18  Joe English  <jenglish@users.sourceforge.net>
+	* library/keynav.tcl: Added 'keynav::traverseTo' (see TIP 204)
+	* library/notebook.tcl: Use keynav::traverseTo instead of directly
+	setting [focus].
+	* library/entry.tcl, library/combobox.tcl: Add <<TraverseIn>> bindings
+	for entry and combobox widgets.
+	* generic/frame.c: Added TLabelframe -underline option so it
+	supports mnemonic activation.
+	* generic/tile.tcl: Added mnemonic activation binding
+	for labels and labelframes (traverse to next widget).
+	* demos/demo.tcl: Minor updates to demonstrate improved keyboard
+	navigation abilities.
+
+2004-09-17  Joe English  <jenglish@users.sourceforge.net>
+	* demos/themes/blue.tcl: Updated to use 'image' element
+	factory instead of 'pixmap'.  Minor tweaks.
+
+2004-09-17  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl: BUGFIX: clicking in text area in editable
+	comboboxes posted the listbox instead of setting insert cursor.
+	(bug exposed by recent changes to layout.c).
+
+2004-09-17  Joe English  <jenglish@users.sourceforge.net>
+	* generic/defaults.tcl: Use #ffffff instead of activebg for
+	unchecked indicators.
+
+2004-09-17  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.c: BUGFIX: missing :: prefix on namespace eval.
+
+2004-09-16  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tile.c, generic/entry.c, generic/notebook.c,
+	library/tile.tcl: Tile widgets now defined in the "ttk::*"
+	namespace; t* and tile::* still provided as aliases for now.
+	* doc/*.n: Consistently use "ttk::*" in widget documentation.
+
+2004-09-16  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c: BUGFIX: initialization of defaultTheme to 0
+	removed in r1.70 was *not* dead code.
+
+2004-09-16  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: Squeeze tabs if there's not enough
+	space to display all of them at their natural width.
+
+2004-09-15  Joe English  <jenglish@users.sourceforge.net>
+	* generic/*.c: Use TTK_PlaceLayout instead of LayoutGeometry.
+	Renamed TTK_LayoutDraw() -> TTK_DrawLayout().
+
+2004-09-15  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* library/combobox.tcl: add mouse-over tracking as a default
+	ComboboxListbox behavior.
+	Only apply *TCombobox*Listbox.background white for X11.
+	(tile::combobox::PopdownShell): alter look to be more "standard"
+	with relief on toplevel instead of higlight around lb only.
+
+2004-09-15  Joe English  <jenglish@users.sourceforge.net>
+	* generic/image.c (new file), generic/tile.c: Added "image"
+	element factory, enhanced version of "pixmap" factory.
+	* Makefile.in, generic/Makefile.in, win/makefile.vc: Added image.c.
+	* generic/layout.c, generic/tkTheme.h: Added TTK_GetBorderFromObj
+	* demos/themes/WinXP-Blue.tcl: Use "style element create image"
+	instead of "pixmap".
+
+2004-09-15  Joe English  <jenglish@users.sourceforge.net>
+	* demos/demo.tcl(StateMonitor): Control-Shift-ButtonPress-1
+	now launches state monitor window if it's not currently active.
+	Put .states window content inside a TFrame so background
+	color is right.
+
+2004-09-14  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c: Use same inheritance chain for layout templates
+	as for elements (specific names to generic names, fallback in parent
+	theme.)  This way a custom style like "Blue.TButton" will inherit
+	the layout from "TButton".
+
+2004-09-14  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* library/combobox.tcl (tile::combobox::PopdownShell): make
+	popdown a transient of the parent toplevel.  This makes Win/Tk
+	recognize it as a child and doesn't lose focus from the main
+	toplevel when displaying the combobox (8.4.8+).
+
+2004-09-13  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c, doc/label.n: Added -justify and -wraplength
+	options to label widget.  (NB: I don't think these work right.)
+	* demos/demo.tcl ("Others" pane): Use [tlabel] instead of [message]
+	widget for help text.
+	* generic/compat.h: Regenerated.
+
+2004-09-13  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c:  Expand selected tab based on "-expandtab"
+	style option.  Put client area in main layout instead
+	of using a separate one.
+	* generic/tkTheme.h, generic/layout.c, generic/tkTheme.c:
+	Added TTK_ExpandBox(), TTK_QueryOption().
+	Removed TTK_RootNode() (no longer used).
+	* win/xpTheme.c, library/xpTheme.tcl: Use notebook -expandtab
+	feature instead of custom element and dynamic -padding.
+
+2004-09-12  Joe English  <jenglish@users.sourceforge.net>
+	* library/fonts.tcl:  Specify X11 font size in pixels even with Xft;
+	Xft doesn't seem to be any more consistent than core X11 wrt.
+	resolution.
+
+2004-09-10  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c, library/notebook.tcl:
+	Generate <<NotebookTabChanged>> from [$nb select]
+	instead of from the widget bindings, so the event
+	is delivered when the tab is changed under program
+	control as well as by the user.
+	* generic/tile.c, generic/widget.h: Added SendVirtualEvent()
+	utility routine.
+
+2004-09-10  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c: Finally fixed request-size calculations.
+	* tests/layout.test(new file): Added test case demonstrating
+	what was wrong with the old algorithm.
+
+2004-09-10  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* win/xpTheme.c (ThumbElementDraw): remove redundant state check
+	(XPTheme_Init): add IGNORE_THEMESIZE to notebook tab element data
+	to correct against layout engine changes.
+
+2004-09-08  Joe English  <jenglish@users.sourceforge.net>
+	* generic/label.c:  Changed layout computation to have slightly
+	better behavior when parcel is too small.   Added -justify
+	and -wraplength text element options.  Don't check for
+	failure conditions that Cant' Happen.
+	* generic/scale.c: Inlined getFontFromObj, getForegroundFromObj;
+	* generic/layout.c, generic/tkTheme.h: Remove getFontFromObj,
+	getForegroundFromObj, and adjustAnchor -- no longer used.
+	Added TTK_PlaceBox.
+
+2004-09-08  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c, generic/tkTheme.c, generic/tkThemeInt.h:
+	Store element names in ElementImpl structure, not LayoutNode.
+	Small refactoring of layout.c.
+
+2004-09-08  Joe English  <jenglish@users.sourceforge.net>
+	* generic/*.[ch]: Reorganizing internal data structures, phase 2:
+	TTK_Layout structure now includes recordPtr, optionTable, and Tk_Window
+	fields; don't need to pass these to TTK_LayoutDraw() etc.
+
+2004-09-08  Joe English  <jenglish@users.sourceforge.net>
+	* tkThemeInt.h, layout.c, tkTheme.c:
+	Reorganized internal data structures, phase 1:
+	+ Move element default values from ResourceMap into ElementImpl
+	+ Introduce TTK_Layout structure
+	+ Add resource map cache to ElementImpl
+	+ Remove struct ElementInstance;
+	* tkTheme.h, frame.c, notebook.c, scale.c, scrollbar.c:
+	Casualties of the above change.
+
+2004-09-08  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c: set -default normal as default.
+	* demos/demo.tcl: Set "*Button.default normal"
+	so default navigation does the right thing.
+
+2004-09-08  Joe English  <jenglish@users.sourceforge.net>
+	* widget.c(WidgetConstructorObjCommand):
+	Fix memory leak in failure path.  NOTE: Some leaks remain.
+
+2004-09-07  Joe English  <jenglish@users.sourceforge.net>
+	* tkThemeInt.h: New file; private routines moved here.
+	* layout.c(TTK_LayoutNode): width and height fields never used.
+	* layout.c, scrollbar.c: Added TTK_LayoutNodeReqSize().
+
+2004-09-07  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* win/makefile.vc:  Updated to support setting the INSTALLDIR to
+	* win/rules.vc:     a non-tcl directory (eg: site-lib).
+	                    Added shell target and include the demo in the
+	                    standard installation target.
+
+2004-09-06  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h, generic/clamTheme.c, generic/classicTheme.c,
+	generic/entry.c, generic/layout.c, generic/notebook.c,
+	generic/stepTheme.c, generic/tkElements.c, macosx/aquaTheme.c:
+	Remove TTK_STICK_ALL synonym; use TTK_FILL_BOTH everywhere.
+	Remove some unneeded TTK_EXPAND settings.
+
+2004-09-06  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/clamTheme.c: Added XFCE-style scale and progress bar
+	elements. Fixed the DrawSmoothBorder function to cope with small
+	widths or heights (for the progress bar).
+
+2004-09-04  Joe English  <jenglish@users.sourceforge.net>
+	* generic/label.c (new file): moved out of tkElements.c,
+	it's complex enough to warrant its own source file.
+	* generic/tkElements.c, generic/altTheme.c, generic/classicTheme.c:
+	Move Motif-like elements into new "classic" theme.
+	Streamlined and simplify default theme.
+	* library/*Theme.tcl: reviewed and reorganized.
+	* library/tile.tcl: $defaultBG, $activeBG, $troughColor
+	no longer used.
+	* generic/notebook.c, generic/altTheme.c, generic/tkElements.c:
+	Got rid of ugly default notebook element implementations,
+	use the "alt" implementation as the baseline instead.
+
+2004-09-06  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/clamTheme.c: Added workarounds for the off-by-one bug
+	in Tk's implementation of XDrawLine. This only affects the clam
+	theme. Win32 clam now matches X11 clam look. This hack can be
+	disabled by #defining WIN32_XDRAWLINE_HACK 0.
+
+2004-09-03  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl: Automatically select the appropriate
+	platform-specific theme (xpnative, winnative, aqua, or alt)
+	so application code doesn't need to worry about this anymore.
+	* demos/demo.tcl: Initialize V(THEME) to current theme.
+
+2004-09-03  Joe English  <jenglish@users.sourceforge.net>
+	* library/fonts.tcl: update comments.
+
+2004-09-02  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* library/fonts.tcl: simplify font creation code, remove bold
+	weighting for x11 font default.
+
+2004-09-02  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h, generic/layout.c, generic/frame.c,
+	generic/scale.c: Refactoring: added TTK_LayoutNodeInternalPadding,
+	use where appropriate.
+
+2004-09-02  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* library/xpTheme.tcl: readd SystemButtonFace as default bg
+
+	* generic/altTheme.c (TabElementDraw): account for off-by-one
+	* generic/notebook.c (TabElementDraw): drawing difference for
+	XDrawLines on Windows
+
+2004-09-02  Joe English  <jenglish@users.sourceforge.net>
+	* doc/scrollbar.n: Added.  Decision: "-command"
+	is a script prefix, not a command prefix (see
+	tktable-tile-dev archives).
+	* library/scrollbar.tcl: Treat "-command" as a string,
+	not a list.
+	* generic/scrollbar.c: Minor formatting cleanups.
+
+2004-09-02  Joe English  <jenglish@users.sourceforge.net>
+	* library/notebook.tcl:  Fix "buried focus" problem;
+	selecting a tab could leave the keyboard focus on
+	an unmapped window.  Fix bug in MnemonicActivation.
+	(For the record: I think the earlier behavior, always
+	set focus to the notebook widget itself, is more correct
+	regardless of what Windows does :-)
+
+2004-09-02  Joe English  <jenglish@users.sourceforge.net>
+	* library/clamTheme.tcl(Tab.TNotebook):
+	Fix color glitch in active notebook tab border
+	(spotted by dkf).
+
+2004-09-02  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* library/notebook.tcl (tile::notebook::MnemonicActivation):
+	(tile::notebook::CycleTab, tile::notebook::Select): only focus
+	into tab on second <1>, and only generate NotebookTabChanged when
+	we are changing tabs.
+
+2004-09-01  Joe English  <jenglish@users.sourceforge.net>
+	* generic/widget.c: fix memory leak (corePtr->layout)
+	* generic/tkTheme.c: fix memory leak (TTK_Style defaultsTable)
+
+2004-09-01  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c, generic/tkTheme.h, generic/tkTheme.c:
+	Refactoring: build LayoutTemplate from LayoutSpec instead
+	of the other way around.
+
+2004-09-01  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c(FrameMargins): Tweak: use TTK_AddPadding
+	instead of inline code.
+
+2004-08-31  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h: Removed unused DEFAULT_* #defines
+	* generic/tkTheme.h, generic/altTheme.c, generic/stepTheme.c,
+	generic/tkElements.c: DEFAULT_BORDERWIDTH is theme-specific.
+	* generic/tkTheme.h: Remove #ifdeffery:
+	Use TIP 145 symbolic name for DEFAULT_FONT; use classic X11
+	default for DEFAULT_BACKGROUND and DEFAULT_FOREGROUND
+	(platform themes will override this anyway).
+
+2004-08-31  Joe English  <jenglish@users.sourceforge.net>
+ 	* configure.in, generic/configure.in, generic/Makefile.in,
+	generic/tkTheme.h, win/makefile.vc: Bumped version number to 0.5
+	* configure, generic/configure: Regenerated.
+
+2004-08-30  Joe English  <jenglish@users.sourceforge.net>
+	* library/combobox.tcl:  Generate <<ComboboxSelected>>
+	virtual event when item is selected from popdown listbox
+	(suggestion from Jeff Godfrey).  Use option database to
+	make listbox font match entry field font (bug report
+	from Jeff Godfrey).  Also set default background for
+	listbox.  Position listbox above combobox if it would extend
+	below the the screen.
+
+2004-08-29  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c, win/winTheme.c, library/xpTheme.tcl:
+	Changes to notebook layout (see #1015652).
+
+2004-08-27  Joe English  <jenglish@users.sourceforge.net>
+	* generic/entry.c, library/combobox.tcl, doc/combobox.n:
+	Add -postcommand combobox option.
+
+2004-08-25  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* library/*.tcl: whitespace police, minor code corrections
+
+2004-08-24  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/altTheme.c:    TTK_UniformPadding takes a short. MSVC is
+	* generic/clamTheme.c:   noisy about using int's with this so
+	* generic/entry.c:       added a cast to reduce the noise.
+	* generic/frame.c:
+	* generic/notebook.c:
+	* generic/tkElements.c:
+
+	* win/makefile.vc: Default to building with Tk stubs. Add
+	NOSTUBS=1 to the command line to link against tk84.dll for older
+	versions of Tk 8.4.
+
+	* win/winTheme.c: Added some padding to the indicator elements.
+	Added an implemementation of the Scale slider using the winnative
+	drawing functions.
+
+	* win/winTheme.c:  Made the winnative scrollbar a bit more
+	windows-like. The thumb isn't shown when disabled and the thumb
+	was a little too large before. It's now the correct width/height.
+
+2004-08-19  Joe English  <jenglish@users.sourceforge.net>
+	* demos/demo.tcl: Added separator to demo.
+
+2004-08-18  Joe English  <jenglish@users.sourceforge.net>
+	* generic/separator.c (new file), generic/tkElements.c,
+	doc/separator.n (new file), generic/tile.c, library/tile.tcl,
+	Makefile.in, generic/Makefile.in, win/makefile.vc:
+	Added separator widget.
+
+2004-08-18  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* win/xpTheme.c (XPTheme_Init): add 4px padding between indicator
+	and text for radio|checkbuttons
+
+	* generic/scrollbar.c (ScrollbarSetCommand): disable the scrollbar
+	when there is nothing to scroll.
+	* win/xpTheme.c (ThumbElementDraw): don't draw the thumb when
+	state is disabled
+
+2004-08-18  Joe English  <jenglish@users.sourceforge.net>
+
+	=== TILE 0.4 TAGGED FOR RELEASE ===
+
+2004-08-19  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* win/makefile.vc: Make default build add HAVE_UXTHEME_H. User can
+	add NOUXTHEME=1 to the command line to avoid this is required.
+
+2004-08-13  Joe English  <jenglish@users.sourceforge.net>
+	* tclconfig/tcl.m4: Synced with TEA 3.1
+	(sampleextension/tclconfig/tcl.m4 r1.51).
+	* configure.in, Makefile.in: Update for TEA 3.1.
+	* generic/configure.in, generic/Makefile.in: Update for TEA 3.1.
+	Check for HAVE_UXTHEME_H on Windows.
+	* configure, generic/configure: Regenerated.
+
+2004-07-11  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl, demos/demo.tcl: Added tile::availableThemes,
+	tile::setTheme.
+
+2004-07-05  Joe English  <jenglish@users.sourceforge.net>
+	* generic/widget.h, generic/*.c: Added WIDGET_INHERIT_OPTIONS macro.
+	* demos/demo.tcl: Added combobox pane.
+	* macosx/aquaTheme.c: Failed attempt at native comboboxes on OSX.
+	* library/combobox.tcl: raise popup after deiconifying;
+	this is needed under OSX.
+
+2004-07-01  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c: Native appearance for combobox widgets.
+	* library/combobox.tcl: BUGFIX: possible for LBSelect to be
+	called when is actually selected; account for this.
+	* library/combobox.tcl: BUGFIX: don't post listbox when disabled.
+	* library/combobox.tcl: Workaround for [grab -global] not really
+	grabbing globally on Windows.
+	* win/winTheme.c: Added 'Field' element so entry borders drawn
+	correctly again.
+	* generic/entry.c: -selectborderwidth 0 -insertwidth 1
+	now the default, since that's what most themes use.
+
+2004-07-01  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* Makefile.in (PKG_TCL_SOURCES): add combobox.tcl for install
+
+2004-06-30  Joe English  <jenglish@users.sourceforge.net>
+	* generic/entry.c, library/tile.tcl, library/combobox.tcl:
+	New combobox widget.
+	* generic/altTheme.c, generic/tkElements.c, win/xpTheme.c,
+	macosx/aquaTheme.c, generic/clamTheme.c, library/clamTheme.tcl:
+	Use "field" element instead of "border" for entry and combobox
+	widgets.
+
+2004-06-30  Joe English  <jenglish@users.sourceforge.net>
+	* generic/scrollbar.c, generic/widget.h, generic/widget.c:
+	Factored out ScrollbarIdentifyCommand; usable in other widgets.
+
+2004-06-29  Joe English  <jenglish@users.sourceforge.net>
+	* generic/clamTheme.c: BUGFIX/TWEAK: scrollbar arrows
+	not properly centered in parcel.
+
+2004-06-27  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c, generic/clamTheme.c, generic/tkElements.c,
+	generic/tkTheme.h: Factored out common code DrawArrow(), ArrowSize().
+
+2004-06-26  Joe English  <jenglish@users.sourceforge.net>
+	* library/entry.tcl: BUGFIX: selection anchor drifted
+	when dragging across it.
+	* generic/entry.c, library/entry.tcl: scan, selection from,
+	and selection adjust commands moved from C to Tcl.
+	(These commands are only needed for compatibility).
+
+2004-06-20  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c, library/aquaTheme.tcl:
+	Added support for TEntry widget on OSX.
+
+2004-06-19  Joe English  <jenglish@users.sourceforge.net>
+	* library/winTheme.tcl, library/xpTheme.tcl:
+	Use system colors for -selectbackground and -selectforeground options.
+	Tweaked button padding and width for XP buttons.
+
+2004-06-18  Joe English  <jenglish@users.sourceforge.net>
+	* library/entry.c: Query current style for foreground, selection,
+	and insert cursor colors
+	* generic/tkTheme.c, generic/tkTheme.h: Added TTK_LayoutStyle(),
+	TTK_QueryStyle().
+	* library/defaults.tcl, library/clamTheme.tcl, library/defaults.tcl:
+	Add entry colors.
+
+2004-06-18  Joe English  <jenglish@users.sourceforge.net>
+	* library/entry.tcl: Overhauled bindings.  Button-2 scanning
+	now implemented entirely in Tcl; internal selection anchor
+	([$e selection from], [$e selection to], [$e selection adjust])
+	no longer used.
+	* library/entry.c: Not changed, actually.  Unused 'scan'
+	and 'selection' methods kept around, for BWidget compatibility.
+
+2004-06-17  Joe English  <jenglish@users.sourceforge.net>
+	* library/notebook.tcl: figured out why Control-Shift-Tab Notebook
+	binding wasn't working: XFree86 ISO_Left_Tab brokenness.  Fixed now.
+	* generic/entry.c: + BUGFIX: never displayed selection if
+	-exportselection was false.  + Reposition layout as soon
+	as 'xview' command called.
+
+2004-06-16  Joe English  <jenglish@users.sourceforge.net>
+	* generic/entry.c: Make sure 'xview' command returns
+	up-to-date information, even if widget hasn't been redisplayed
+	(see test entry-3.2).  Fix [scan dragto] corner case.
+	* generic/entry.c:  Fix off-by-one bug in EntryVisibleRange():
+	Tk_PointToChar() returns [0 .. numChars], *not* [0 .. numChars-1]
+	as the documentation indicates.  Double-checked other calls
+	to Tk_PointToChar().
+
+2004-06-16  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c, library/xpTheme.tcl:  Added XP-style entry widgets.
+	* win/winTheme.tcl: Tweaked.
+	* library/entry.tcl: workaround: Command modifier matches NumLock
+	on Windows.
+
+2004-06-15  Joe English  <jenglish@users.sourceforge.net>
+	* generic/entry.c, library/fonts.tcl: Add symbolic font
+	TkTextFont (not defined in TIP #145), so entry widgets
+	can use the right font (non-bold) on X11.
+	(It would probably be easier to just drop the Motif L&F
+	and use a medium-weight font like everyone else does...)
+
+2004-06-14  Joe English  <jenglish@users.sourceforge.net>
+	* generic/entry.c, library/entry.tcl: (new files) Added entry widget.
+	* generic/compat.h: Regenerated.
+	* generic/altTheme.c: New FieldBorder element, for entry widget
+	* generic/tkElements.c:
+	* generic/blink.c (new file), generic/widget.h:
+	Added BlinkCursor utility.
+	* generic/widget.h, generic/widget.c:
+	Factored out WidgetEnsembleCommand.
+
+2004-06-11  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* configure, configure.in: add MACOSX build variant info
+	* Makefile.in: add fonts.tcl to PKG_TCL_SOURCES and aquaTheme.c
+	for MACOSX builds.
+
+2004-06-11  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h, generic/tkstate.c, generic/tile.c,
+	demos/demo.tcl, tests/tile.test: Added 'readonly' state
+
+2004-06-10  Joe English  <jenglish@users.sourceforge.net>
+	* tkTheme.c, tkElements.c: TTK_GetTheme(interp, NULL) no longer
+	returns default theme.  Use TTK_GetDefaultTheme() instead.
+	* tkTheme.c: Factored BuildResourceMap() out of NewElementInstance()
+	* tkTheme.c(BuildResourceMap): Ignore accidental mismatches caused
+	by prefix-matching in TkGetOptionSpec (e.g. "-textvariable" matching
+	"-text").
+
+2004-06-09  Joe English  <jenglish@users.sourceforge.net>
+	* library/fonts.tcl: New file.
+	* library/tile.tcl, library/defaults.tcl, library/altTheme.tcl,
+	demos/themes/*.tcl:  Changed "ButtonFont" to TkDefaultFont,
+	as per TIP #145.  Slightly cleverer heuristics to guess
+	what to use as default font.
+
+	* * * POTENTIAL INCOMPATIBILITY * * *
+	Custom themes using "ButtonFont" must use TkDefaultFont instead.
+
+2004-06-06  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h, generic/tkElements.c, generic/altTheme.c:
+	Removed old/deprecated TTK_LAYOUT_* macros
+
+2004-06-06  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c: BUGFIX: setting -default option incorrectly
+	triggered -state option processing.
+
+2004-06-05  Joe English  <jenglish@users.sourceforge.net>
+	* tools/optiondiff.tcl, generic/compat.h(COMPAT_OPTION macro):
+	Use distinct resource db names for compatibility options
+	instead of "unused".  This seems to fix the last of the
+	fatal BWidget errors.
+
+2004-06-05  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c (-width option): Workaround for bug #967209
+	* generic/tkTheme.c: Partially disable element/widget option
+	compatibility checks as workaround for workaround.
+	* generic/notebook.c: BUGFIX: wrong type for notebook -padding
+	option (caught by test nulloption-1.3)
+
+2004-06-04  Joe English  <jenglish@users.sourceforge.net>
+	* demos/themes/blue.tcl: Added warning about using "blue"
+	as a basis for building other pixmap themes.
+
+2004-05-29  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c: move "-anchor" option from Base
+	to Label; -anchor now a compatibility option for buttons,
+	checkbuttons, &c.
+	* generic/compat.h: Regenerated.
+	* generic/button.c, generic/tkElements.c, generic/pixmapTheme.c:
+	BUGFIX: Turns out that the Tk_ImageChangedProc can't be NULL after all.
+
+2004-05-16  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c: button -width option needs to have NULL default
+	so theme can specify default.
+
+2004-05-14  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* win/makefile.vc: Fixed bug #916398 - pkgIndex.tcl creation.
+
+2004-05-11  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c: Add -width and -height options to frame, labelframe
+	* generic/compat.h: Regenerated.  This time with Tk 8.4, oops.
+	* tools/optiondiff.tcl: Make sure Tk 8.4 is used to generate
+	compatibility resources.
+
+2004-05-10  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c, generic/compat.h: Made label '-font'
+	and '-foreground' options compatibility resources instead
+	of real resources.
+	* demos/demo.tcl: Reworked 'Theme' menu
+	* generic/button.c: Added default values for options
+	-width, -borderwidth, -relief; try to improve BWidget compatibility.
+
+2004-04-28  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* Makefile.in: Added missing clamTheme.tcl (spotted by Neil Madden)
+
+2004-04-27  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c(FrameOptionSpecs),generic/button.c(LabelOptionSpecs):
+	-background is now a compatibility resource
+	* tools/optiondiff.tcl: BUGFIX: correctly compute defaults for synonym
+	options; widget defaults enabled by default now.
+	* generic/compat.h: Regenerated.
+
+	Tile should now be compatible with the BWidget toolkit.
+	Drawback: "-background" widget option for frames and labels
+	is no longer effective.
+
+2004-04-27  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/notebook.c:  Add stdio.h for sprintf and sscanf prototypes.
+	* generic/scale.c:
+
+	* win/monitor.c:       Only define WIN32_LEAN_AND_MEAN for MSVC.
+	* win/winTheme.c:
+	* win/xpTheme.c:
+
+	* demos/themes/blue.tcl: Added some more images to the blue theme
+	for scrollbar, slider and progress bar elements.
+
+2004-04-25  Joe English  <jenglish@users.sourceforge.net>
+	* generic/clamTheme.c, library/clamTheme.tcl:
+	Added notebook elements.  Minor display tweaks.
+
+2004-04-23  Joe English  <jenglish@users.sourceforge.net>
+	* generic/compat.h, generic/frame.c(Labelframe):
+	Added support for -labelwidget option.
+	* tests/labelframe.test: (new file) Tests for the above.
+
+2004-04-23  Joe English  <jenglish@users.sourceforge.net>
+	* generic/clamTheme.c, library/clamTheme.tcl:
+	New theme, inspired by the XFCE family of GNOME themes.
+
+2004-04-22  Joe English  <jenglish@users.sourceforge.net>
+	* library/notebook.tcl, doc/notebook.n: Added
+	[tile::notebook::enableTraversal] procedure;
+	enables mnemonic activation for notebook tabs
+	and <Control-Tab> bindings.
+	* demos/demo.tcl: added mnemonics to a couple of tabs in demo.
+
+2004-04-22  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* generic/notebook.c (TabOptionSpecs): add -underline option for tabs
+
+	* library/winTheme.tcl: make select tab "raised"
+
+2004-04-05  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c, generic/tkElements.c:
+	Added "-shiftrelief" to Padding element; removed
+	Pressable/PushableBorderElement.
+	* generic/tkTheme.h, generic/layout.c: TTK_RelievePadding
+	takes an extra parameter.
+	* generic/layout.c(TTK_RelievePadding): BUGFIX: was
+	shifting relief by twice as much as it should have.
+	* generic/altTheme.c win/winTheme.c, win/xpTheme.c:
+	"Highlight" element renamed to "Focus" element.  "Highlight"
+	now refers (only) to external ring (default indicator,
+	focus indicator in classic theme).
+	* win/xpTheme.c: Added workaround for bogus results
+	from GetThemePartSize().
+	* win/xpTheme.c: Removed FocusElement; can inherit from winTheme.c
+	* win/xpTheme.c: Account for borderwidth in Labelframe.border.
+
+2004-04-03  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c: added native progress bar and scale elements;
+	Tweaked Notebook element layouts; geometry should be correct now.
+	Added background pattern.
+	Fixed off-by-one bug in BoxToRect; add extra padding around
+	buttons to account for drop shadow.
+	* generic/layout.c: For layout nodes with children,
+	use max(node size, child size + padding) for width, height.
+	* generic/layout.c: Added TTK_AddPadding
+
+2004-03-31  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tile.c: BUGFIX: don't provide package tile unless
+	init script succeeds.
+	* generic/widget.c(CoreEventHandler): Compress <Expose> events:
+	don't schedule redisplay until the last one arrives.
+	Also mini-bugfix: 'Expose' and 'Configure' events shouldn't
+	share the same switch branch (see 2004-03-16 change).
+
+2004-03-31  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* win/winTheme.c:  For some reason the windows stuff stopped building
+	* win/xpTheme.c:   on my Win2k system. Adding WIN32_LEAN_AND_MEAN
+	* win/monitor.c:   fixes the build.
+
+	* demo/themes/blue: Redid the radio and check button pixmaps.
+
+2004-03-29  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: BUGFIX: [$notebook tabconfigure ...]
+	didn't redisplay widget.
+
+2004-03-28  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c: BUGFIX: get border width from theme,
+	not from -borderwidth resource.
+	* macosx/aquaTheme.c, library/aquaTheme.tcl:
+	Redid button elements, added notebook and labelframe elements.
+	Accounted for focus, default buttons, background/inactive
+	widgets, lots of other enhancements.
+
+2004-03-28  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkstate.c, generic/tkTheme.c, doc/widget.n:
+	New TTK_STATE values: "background", "indeterminate", "invalid",
+	"default".
+	* generic/button.c(ButtonConfigure): Track TTK_STATE_DEFAULT.
+	* win/xpTheme.c: ButtonElement no longer needed, use GenericElement
+	instead.
+	* generic/widget.c(CoreEventProc):
+	Track ActivateNotify, DeactivateNotify, set TTK_STATE_BACKGROUND.
+	* macosx/aquaTheme.c: Use TTK_STATE_BACKGROUND, TTK_STATE_INDETERMINATE
+
+2004-03-28  Joe English  <jenglish@users.sourceforge.net>
+	* generic/configure.in: More tweakage in an attempt to recognize MacOSX.
+	* generic/configure: regenerated.
+
+2004-03-27  Joe English  <jenglish@users.sourceforge.net>
+ 	* configure.in, generic/configure.in, generic/Makefile.in,
+	generic/tkTheme.h, win/makefile.vc: Bumped version number to 0.4
+	* generic/configure: Regenerated.
+
+2004-03-27  Joe English  <jenglish@users.sourceforge.net>
+	* macosx/aquaTheme.c, library/aquaTheme.tcl, library/tile.tcl,
+	generic/widget.h, demos/demo.tcl: First cut at native OSX
+	Aqua theme, using Appearance Manager API.
+
+2004-03-27  Joe English  <jenglish@users.sourceforge.net>
+
+	=== TILE 0.3 TAGGED FOR RELEASE ===
+
+2004-03-27  Joe English  <jenglish@users.sourceforge.net>
+	* ./Makefile.in: Added menubutton.tcl to PKG_TCL_SOURCES;
+	removed unused fossil $(AM_xxx) references.
+
+2004-03-27  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c, generic/tkElements.c:
+	Use -arrowsize instead of -width for arrow elements.
+
+2004-03-22  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c: Use TP_SPLITBUTTON and TP_SPLITBUTTONDROPDOWN
+	for menubuttons.
+	* generic/altTheme.c: Lose the vertical separator in
+	Menubutton.indicator.
+	* library/winTheme.tcl, library/xpTheme.tcl: More spacing tweaks.
+	Still not quite right.
+	* demos/demo.tcl: Moved toolbar compound control from
+	side control panel into toolbar.
+
+2004-03-21  Joe English  <jenglish@users.sourceforge.net>
+	* generic/gunk.h: Check for MAC_OSX_TK.
+
+2004-03-21  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tile.c, generic/widget.h, generic/button.c:
+	Recognize "-state active" compatibility option.
+	Accept all "-state" values, interpret as "normal".
+
+2004-03-20  Joe English  <jenglish@users.sourceforge.net>
+	* tools/optiondiff.tcl: Tried adding default values for
+	compatibility resources.  BWidgets still breaks.
+	Disabled feature, compile with -DCOMPAT_DEFAULTS to reenable.
+	* generic/compat.h: regenerated.
+	* generic/tkTheme.c, generic/tkTheme.h:
+	Ignore compatibility resources when filling in element options.
+
+2004-03-20  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl, library/button.tcl: Moved
+	button-specific 'activate' procedure into button.tcl.
+	Don't generate <<Arm>> and <<Disarm>> events; I forget
+	what these were for in the first place.
+
+2004-03-18  Joe English  <jenglish@users.sourceforge.net>
+	* library/defaults.tcl, library/altTheme.tcl, library/winTheme.tcl,
+	library/xpTheme.tcl: Added Toolbutton style.
+	* demos/demo.tcl, demos/toolbutton.tcl:
+	Added demonstration of how to define custom styles.
+
+2004-03-16  Joe English  <jenglish@users.sourceforge.net>
+	* generic/widget.c: *Correct* workaround for geometry
+	problems in the XP theme.  Sigh.
+
+2004-03-16  Joe English  <jenglish@users.sourceforge.net>
+	* generic/widget.c: Call UpdateLayout() on the first
+	ConfigureNotify event, to work around geometry problems
+	in the XP theme and missing <<ThemeChanged>> events.
+
+2004-03-17  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* win/makefile.vc: Added a demo target.
+
+2004-03-15  Joe English  <jenglish@users.sourceforge.net>
+	* library/menubutton.tcl: BUGFIX: wasn't clearing active state.
+	Reverse post direction if menu would extend off-screen.
+
+2004-03-14  Joe English  <jenglish@users.sourceforge.net>
+	* library/menubutton.tcl, library/winTheme.tcl, library/xpTheme.tcl,
+	win/winTheme.c, win/xpTheme.c, generic/altTheme.c:
+	Ported menubutton implementation to windows:
+	Made bindings platform-specific bindings to avoid
+	[grab]-related lockups with native menus.
+	Added native-ish XP menubutton (sort of).
+
+2004-03-14  Joe English  <jenglish@users.sourceforge.net>
+	* library/menubutton.tcl: New file
+	* generic/button.c, generic/altTheme.c, generic/tkElements.c,
+	library/altTheme.tcl, library/defaults.tcl,
+	library/stepTheme.tcl, library/tile.tcl: Added menubutton widget
+
+2004-03-14  Joe English  <jenglish@users.sourceforge.net>
+	* library/scale.tcl: Make sure State array is properly initialized,
+	in case we get an unexpected B1-Motion event (various conditions
+	involving grabs can cause this).
+
+2004-03-14  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkElements.c, generic/tkTheme.h, win/winTheme.c,
+	win/xpTheme.c: Made NullElement public.
+
+2004-03-14  Joe English  <jenglish@users.sourceforge.net>
+	* generic/cache.c, generic/tkTheme.h, generic/tkTheme.c
+	BUGFIX: Tk_GetImage() interp parameter must not be NULL,
+	otherwise errors (e.g., missing image) cause a coredump.
+	Use Tcl_BackgroundError() instead.
+
+2004-03-13  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c: Finally worked out all the off-by-one bugs
+	in scrollbar arrows.  I think.
+
+2004-03-12  Joe English  <jenglish@users.sourceforge.net>
+	* tools/optiondiff.tcl, generic/compat.h: Added.
+	* generic/button.c, generic/frame.c, generic/scrollbar.c:
+	Experiment: added Tk 8.4 compatibility resources to all widgets.
+
+2004-03-09  Joe English  <jenglish@users.sourceforge.net>
+	* generic/configure.in, generic/aclocal.m4:
+	Autocruft removal: moved contents of aclocal.m4 into configure.in.
+	* generic/configure: Regenerated
+	* generic/button.c, generic/frame.c: Use "Pad" as -padding option
+	class, for (forward-) compatibility.
+
+2004-03-09  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c, win/winTheme.c:  Fixed.
+
+2004-03-09  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h, generic/tkTheme.c, generic/altTheme.c,
+	generic/tkElements.c, generic/layout.c, generic/stepTheme.c,
+	generic/notebook.c, generic/pixmapTheme.c, win/winTheme.c,
+	win/xpTheme.c: Changed ElementDrawProc() signature to
+	take a TTK_Box instead of separate x,y,width,height parameters.
+	* Removed adjustAspect(), adjustPadding(); added TTK_AnchorBox.
+	* Various cleanup.
+
+2004-03-06  Joe English  <jenglish@users.sourceforge.net>
+	* doc/Geometry.3: added.
+	* doc/man.macros: Imported from tcl/doc/man.macros r1.4
+	* generic/tkTheme.h: Renamed TTK_PlaceBox() to TTK_StickBox();
+	changed signature of TTK_RelievePadding().
+
+2004-03-05  Joe English  <jenglish@users.sourceforge.net>
+	* Imported "kroc" theme, contributed by David Zolli <kroc@kroc.tk>
+
+2004-03-02  Joe English  <jenglish@users.sourceforge.net>
+	* generic/Makefile.in: tcl.m4 r1.41 changed LIBS to PKG_LIBS;
+	missed that earlier.
+
+2004-02-28  Joe English  <jenglish@users.sourceforge.net>
+	* doc/*.n: Updated documentation slightly.
+	* generic/widget.c, tests/tile.test: Error detection
+	when changing -style option.  (Theme changes with custom
+	styles still not handled correctly).
+
+2004-02-28  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c: Refactoring: Split Label widget
+	up into Base part and Label part; other widgets inherit
+	from Base instead of Label.  Moved -relief option
+	to Label widget.  Label widget gets extra appearance-related
+	resources since those tend to be customized by the application more.
+	* generic/notebook.c: Removed -anchor, -font, and -padding
+	Tab options.
+
+2004-02-22  Joe English  <jenglish@users.sourceforge.net>
+	* generic/cache.c, generic/tkTheme.h:
+	Added TTK_RegisterNamedColor(); initial support for named colors.
+	* win/monitor.c: Register Windows system colors as named
+	colors whenever we receive a WM_SYSCOLORCHANGED message.
+
+2004-02-22  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c, generic/tkTheme.h: Added TTK_UseTheme()
+	* win/monitor.c: Always (try to) set xpnative theme on WM_THEMECHANGED
+
+2004-02-21  Joe English  <jenglish@users.sourceforge.net>
+	* (all): First cut at user-defined -style support
+	* generic/tkTheme.c, generic/tkTheme.h:
+	Add a Tcl_Interp* parameter to TTK_CreateLayout(), place to leave
+	error messages.
+	* generic/widget.c, generic/widget.h: getLayoutProc signature
+	changed.  Default getLayoutProc now uses -style option if set.
+	* generic/notebook.c, generic/scale.c, generic/scrollbar.c:
+	Updated other widgets for API change.  (NB: notebook,
+	scale, and scrollbar don't support custom -styles yet).
+	* demos/demo.tcl: Added Toolbar.Button, Toolbar.Checkbutton
+	custom styles to demo.
+	* win/xpTheme.c, library/xpTheme.tcl: Added native toolbar
+	buttons on Windows XP.  Minor layout tweaks to XP theme.
+
+2004-02-21  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c: Hardcode element padding instead of
+	using GetThemeMargins().
+	* generic/layout.c, generic/tkTheme.h: Add TTK_MakePadding utility.
+
+2004-02-21  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c, library/xpTheme.tcl: Reorganized and simplified
+	XP Theme.  More elements use GenericElementSpec now.
+	Finally got GetThemeMargins to work (trick: use TMT_CONTENTMARGINS),
+	except for the fact that GetThemeMargins just plain doesn't work.
+	* win/xpTheme.c, win/winTheme.c, library/tile.tcl, demos/demo.tcl:
+	Use package names "tile::theme::xpnative" and "tile::theme::winnative".
+
+2004-02-20  Joe English  <jenglish@users.sourceforge.net>
+ 	* configure.in, generic/configure.in, generic/Makefile.in,
+	generic/tkTheme.h, win/makefile.vc: Bumped version number to 0.3
+	* configure, generic/configure: Regenerated.
+
+2004-02-20  Joe English  <jenglish@users.sourceforge.net>
+	* library/altTheme.c: Minor tweaks to notebook appearance.
+	* generic/notebook.c: Minor tweaks.
+
+2004-02-20  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c: BUGFIX: defaultTheme->parentPtr
+	was not initialized properly.
+	* generic/layout.c(TTK_BuildLayout): Tcl_Panic()
+	if an element cannot be found.  This is a temporary solution.
+	* generic/tkElements.c: Update Scale layouts.
+
+2004-02-19  Joe English  <jenglish@users.sourceforge.net>
+	* generic/xpTheme.c: BUGFIX: TTK_StateTableLookup
+	doesn't like NULL state tables.
+
+2004-02-18  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c, generic/tkTheme.h, generic/altTheme.c,
+	  generic/tkElements.c, win/winTheme.c:
+	  Factored out TTK_RelievePadding.
+	* generic/altTheme.c, win/winTheme.c, win/xpTheme.c,
+	  generic/tkTheme.h, generic/tkstate.c:
+	  Factored out TTK_StateTableLookup.
+	* generic/altTheme.c, generic/stepTheme.c:
+	  remove incorrect assignment gcvalues.line_style = JoinMiter
+
+2004-02-18  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl, library/altTheme.tcl, library/defaults.tcl,
+	  library/stepTheme.tcl, library/winTheme.tcl, library/xpTheme.tcl:
+	  Moved default -font specification from option database into themes.
+	* generic/button.c, generic/frame.c: -font option is NULL by default
+
+2004-02-18  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c: always USE_CACHE.  Removed now-dead code.
+	* generic/cache.c(TTK_ClearCache): BUGFIX: NULLs may appear in cache.
+
+2004-02-17  Joe English  <jenglish@users.sourceforge.net>
+	* demos/demo.tcl: Use 'eval [package unknown] ...'
+	([package unknown] is a command prefix)
+
+2004-02-16  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkElements.c: Fix #898371 "problem displaying non-english
+	characters"
+
+2004-02-16  Joe English  <jenglish@users.sourceforge.net>
+
+	=== TILE 0.2 TAGGED FOR RELEASE ===
+
+2004-02-16  Joe English  <jenglish@users.sourceforge.net>
+ 	* configure.in, generic/configure.in, generic/Makefile.in,
+	generic/tkTheme.h, win/makefile.vc: Bump version number to 0.2
+	* configure, generic/configure:  Regenerated.
+
+2004-02-16  Joe English  <jenglish@users.sourceforge.net>
+	* configure.in: don't set TCL_PKGPATH (not used anywhere).
+
+2004-02-15  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c(ReliefElement): Handle border widths other than 2.
+	* generic/frame.c: Update geometry when -borderwidth changed.
+
+2004-02-15  Joe English  <jenglish@users.sourceforge.net>
+	* doc/*.*: Added as much documentation as I could stand to write ...
+	* README.txt: Updated.
+
+2004-02-15  Joe English  <jenglish@users.sourceforge.net>
+	* demos/demo.tcl: Added 'Widget State...' dialog,
+	for tracking/changing widget states.
+
+2004-02-15  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tile.c, generic/widget.h: Reserve space
+	for "-cursor" option, so "$w cget -cursor" works.
+
+2004-02-13  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl: Add aliases "tile::widgetclass" for each
+	widget "twidgetclass".  Idea: users can try 'namespace import tile::*'
+
+2004-02-13  Joe English  <jenglish@users.sourceforge.net>
+	* doc/notebook.n: Added.
+
+2004-02-13  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: BUGFIX: 'end' is not a legal index
+	for most operations (bonehead mistake).
+
+2004-02-13  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c(TTK_PlaceBox, TTK_PackRight):
+	BUGFIX: don't allocate boxes larger than the containing parcel
+	(fixes #896703)
+
+2004-02-12  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c: BUGFIX: Confused 'mask' and 'flags'
+	members of struct Tk_OptionSpec.
+
+2004-02-12  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c: Remove CloneElementImpl();
+	not needed since getting rid of [style elementconfigure]
+	Added [style element names].
+
+2004-02-12  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c: Use Tk_GetImage in LabelConfigureProc();
+	this fixes the last of the major known performance problems.
+
+2004-02-12  Joe English  <jenglish@users.sourceforge.net>
+	* generic/cache.c, generic/pixmapTheme.c:
+	Add caching for images as well.
+	* generic/cache.c, generic/tkTheme.c: And Tk_3DBorders.
+	* generic/cache.c: Factored out boilerplate code.
+
+2004-02-12  Joe English  <jenglish@users.sourceforge.net>
+	* generic/cache.c (new file), generic/tkTheme.c:
+	Added resource cache; attempt to solve bug #893844
+
+2004-02-12  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c: BUGFIX: NewStyle doesn't take any arguments.
+	[ Apparently Jeff was fixing this bug at the same time I was,
+	  see next ChangeLog entry :-) ]
+	* tclconfig/tcl.m4: Add -Wstrict-prototypes to gcc's CFLAGS_WARNING,
+	  which would have caught the above bug.
+	* generic/layout.c(NewLayoutOp): Fix problem caught by above.
+	* generic/configure: Regenerated.
+
+2004-02-12  Jeff Hobbs  <jeffh@ActiveState.com>
+	* generic/tkTheme.c (NewStyle): specify args for NewStyle so
+	cranky compilers don't error out.
+
+2004-02-11  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c: Change checkbutton and radiobutton
+	layouts to always use (the equivalent of) -anchor w
+	instead of -anchor center.
+
+2004-02-11  Joe English  <jenglish@users.sourceforge.net>
+	* generic/themes/blue.tcl: Tweaked notebook settings.
+	Use "NeXT-style" scrollbars, as a demonstration of
+	how to do this in script-defined themes.
+
+2004-02-11  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkElements.c: Fixed LabelElement geometry management
+	so that -anchor and -width work together.
+
+2004-02-11  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* configure:
+	* tclconfig/tcl.m4: updated to r1.44, fix TCL_INCLUDES on Windows
+
+2004-02-11  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c, library/notebook.tcl, tests/notebook.test,
+	demos/demo.tcl: Renamed [$nb raise $pane]  to [$nb select $pane]
+	(advice from dkf).
+
+2004-02-11  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* win/makefile.vc: Use tkstubs if building against Tk 8.5.
+	* generic/altTheme.c: Use the new-style layout specification to
+	get the highlight drawn close to the text.
+
+2004-02-10  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c: Moved "-relief" option from TButton
+	to parent class TLabel.  It might move around again.
+	* demos/demo.tcl: Uncovered another bug: -anchor and -width
+	do not mix well.  Need to investigate further.
+
+2004-02-10  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c, generic/tile.c, generic/widget.h:
+	Added -state option to labels, buttons, checkbuttons,
+	and radiobuttons for compatibility with standard Tk widgets.
+
+2004-02-10  Joe English  <jenglish@users.sourceforge.net>
+	* win/winTheme.c, library/winTheme.tcl:
+	Tweaks to make buttons look (almost) correct.
+	(Focus ring still drawn in the wrong color)
+
+2004-02-10  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* Makefile.in: add missing stepTheme.tcl lib file and change
+	install-doc to install-html and make install-doc a noop for now.
+
+	* configure:        Updated to TEA3 spec with minor mods to make
+	* configure.in:     things work with private headers better.
+	* tclconfig/tcl.m4:
+
+2004-02-10  Joe English  <jenglish@users.sourceforge.net>
+        * generic/tkTheme.c: Added [style theme names] command
+	* generic/tkTheme.c, others: Default theme now
+	named "default" instead of (in addition to) "".
+
+2004-02-10  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkElements.c, generic/altTheme.c,
+	generic/notebook.c, demos/themes/Aquativo.tcl,
+	demos/themes/WinXP-Blue.tcl, demos/themes/blue.tcl:
+	Renamed "compound" element to "label" element.
+
+2004-02-10  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkElements.c: Fix display glitch in button default ring
+	(classic theme).
+	* generic/tkTheme.h: Remove redundant #defines
+
+2004-02-09  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c, generic/tkTheme.h:
+	Use TK_OPTION_STRING for "match-any" element option types
+	instead of TK_OPTION_END.
+
+2004-02-09  Joe English  <jenglish@users.sourceforge.net>
+	* (all): Dead code removal:
+	* generic/pixmapTheme.c: Removed SkinObjCmd (use 'style' instead)
+	* generic/tkTheme.c: Removed [style info layout],
+	TTK_GetLayoutSpecFromObj
+	* generic/pixmapTheme.c: Don't register "skin" theme
+	(this isn't really a "theme", it's an "engine");
+	remove unused data structures.
+
+2004-02-09  Joe English  <jenglish@users.sourceforge.net>
+	* (all): New API.
+	style definetheme ==> style theme settings
+	style createtheme ==> style theme create
+	style settheme ==> style theme use
+	style createelement ==> style element create
+	style createlayout, style definelayout ==> style layout
+
+2004-02-09  Joe English  <jenglish@users.sourceforge.net>
+	* (all): Use namespace "tile" instead of namespace "Tile".
+
+2004-02-09  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: BUGFIX: Notebook didn't respond
+	properly to <<ThemeChanged>> messages.
+
+2004-02-08  Joe English  <jenglish@users.sourceforge.net>
+	* generic/widget.h, generic/widget.c, generic/scrollbar.c,
+	generic/scale.c, generic/button.c, generic/frame.c,
+	generic/notebook.c: Refactoring: removed WidgetSetLayout,
+	added getLayoutProc hook.
+	* generic/widget.c, library/tile.tcl: Use <<ThemeChanged>>
+	virtual event to notify widgets of theme change,
+	instead of the [$w configure -style [$w cget -style]] hack.
+
+2004-02-07  Joe English  <jenglish@users.sourceforge.net>
+	* library/stepTheme.tcl: Make selected notebook tab larger
+	than the others.
+	* generic/notebook.c: Mods to make the above work.
+	* generic/tkTheme.h, generic/layout.c:
+	TTK_LayoutReqSize() now takes a 'state' parameter,
+	to make the above work.
+	Fixed argument order of TTK_LayoutGeometry while I'm at it.
+
+2004-02-07  Joe English  <jenglish@users.sourceforge.net>
+	* doc/*.n: First cut at actual documentation!
+
+2004-02-05  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* demos/themes/pkgIndex.tcl: Don't provide pixmap theme packages
+	if the image subdirectory does not exists. Fixes missing Gtk themes.
+	* demos/demo.tcl: Fixed error in the demo script that caused
+	incorrect display of the vertical progress widget at startup.
+
+2004-02-04  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/scale.c: Fix the position of the scale label text.  Also
+	cleaned some warnings from VC++ concerning double to int
+	conversion.
+
+2004-02-03  Joe English  <jenglish@users.sourceforge.net>
+	* generic/Makefile.in: added missing @TK_XINCLUDES@
+	* generic/layout.c: BUGFIX: off-by-one error in TTK_BoxContains.
+	* generic/notebook.c: Track active tab.
+	(@@@ NOTE this is a tiny bit glitch-prone.)
+
+2004-02-03  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c(TTK_ParseLayout): made -sticky news the default.
+	* demos/themes/*.tcl: added focus ring; simplified some;
+	other tweaks.
+
+2004-02-03  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c, generic/tkTheme.h:
+	Added TTK_RegisterElementFactory(), [style createelement $name $type]
+	* generic/tkTheme.c: add [style createtheme]
+	* generic/pixmapTheme.c: Use TTK_RegisterElementFactory()
+	* demos/themes/blue.tcl: Updated to use new API
+
+2004-02-02  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c, library/defaults.tcl, library/stepTheme.tcl,
+	win/xpTheme.c: Use "Tab.TNotebook" and "Client.TNotebook"
+	instead of "TNotebookTab" / "TNotebookClient".
+	* generic/notebook.c: Another attempt to make borderwidth > 1
+	work properly.  Still not completely right.
+	* generic/altTheme.c: Better-looking notebook tabs.
+
+2004-02-02  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: BUGFIX: bonehead error in RemoveTab()
+	* generic/Makefile.in: added 'valgrind' target
+	* tests/scrollbar.test, tests/tile.test: change to work with
+	-singleproc true.
+
+2004-02-01  Joe English  <jenglish@users.sourceforge.net>
+	* win/monitor.c: made internal routines 'static'.
+	* win/xpTheme.c, generic/tkTheme.h, generic/tkTheme.c:
+	Move clientData parameter from Theme to ThemeEnabledProc
+
+2004-02-01  Joe English  <jenglish@users.sourceforge.net>
+	* demos/demo.tcl, generic/stepTheme.c, generic/altTheme.c:
+	More tweaks to scrollbars.  Still not quite right,
+	but a bit simpler.
+
+2004-02-01  Joe English  <jenglish@users.sourceforge.net>
+	* demos/themes/blue/button-n.gif: Fiddled with the GIMP,
+	replaced this with a badly-done shaded doohickey.
+	* demos/themes/blue/button-{h,p}.gif, others: Not changed,
+	I'm through fiddling with the GIMP.
+
+2004-02-01  Joe English  <jenglish@users.sourceforge.net>
+	* demos/demo.tcl: Create widgets in correct keyboard traversal order.
+	Add "Track focus" dialog.
+	* (all): Fix miscellaneous keyboard traversal and focus issues.
+	* generic/button.c, generic/tile.c, generic/widget.h:
+	"" now default -takefocus value; only traversable widgets
+	have default "tile::takefocus".
+	* generic/notebook.c: Draw tabs from outside-in.
+	* generic/notebook.c, library/notebook.tcl: Fix focus and
+	traversal issues.
+	* library/tile.tcl (tile::takefocus): Return 0 if widget
+	is not viewable (??? Why doesn't tk_focusNext/Prev handle this?)
+
+2004-02-01  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c: added -padding resource, [$nb forget],
+	[$nb index current], [$nb index end], [$nb tabs],
+	[$nb tabcget], [$nb tabconfigure].
+	* generic/layout.c: Added TTK_LayoutNodeInternalParcel().
+
+2004-01-31  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c: BUGFIX: off-by-one error in CountLayoutNodes.
+
+2004-01-29  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkElements.c: Remove unused fields from
+	CompoundElement.  Separate ImageTextElement and TextElement
+	instead of using ClientData hack in TextElement.
+	* generic/tkTheme.c: Remove unused fields from struct Style.
+	Remove unused routine TTK_FindStyle().
+
+2004-01-28  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c: Added TTK_ParseLayout(), TTK_ParseLayoutSpec().
+	* generic/tkTheme.c: Added [style definelayout] command.
+	* demos/themes/blue.tcl: Changed to use [style definelayout]
+	instead of [skin createlayout].
+
+2004-01-28  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c: Reorganized code.  No substantive changes.
+
+2004-01-28  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h, generic/layout.c: Fixed layout engine algorithm.
+	* generic/tkElements.c: Updated scrollbar layouts to use
+	new layout scheme.
+	* demos/demo.tcl: Added new demo showing why this makes a difference.
+
+2004-01-27  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c(TTK_GetPaddingFromObj): Replaced screwball
+	code with something more sensible.  What was I thinking?
+
+2004-01-27  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h(TTK_Box): Rename "h" and "w" fields
+	to "height" resp. "width".  Should have done this a while ago...
+	* generic/frame.c, generic/layout.c, generic/notebook.c,
+	generic/pixmapTheme.c, scale.c, generic/scrollbar.c:
+	Updated.
+
+2004-01-27  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c generic/tile.c generic/tkElements.c
+	generic/tkTheme.h win/xpTheme.c:
+	Renamed TkGet{ButtonDefaultState,CompoundLayout}FromObj -> TTK_Get*
+	* generic/layout.c: Added TTK_GetStickyFromObj().
+	* generic/notebook.c: Added -sticky option for tabs.
+
+	* generic/tkTheme.c: Refactored StyleObjCmd/StyleInfoObjCmd
+	to handle multi-level ensembles.
+
+2004-01-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h(TTK_CleanupProc):
+	Removed unused Tcl_Interp parameter from TTK_CleanupProc's.
+	* generic/pixmapTheme.c, generic/scrollbar.c,
+	generic/tkTheme.c, win/monitor.c:
+	Same.
+
+2004-01-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/widget.h, generic/widget.c: Split 'displayProc' hook
+	into separate 'layoutProc' and 'displayProc' hooks.
+	* generic/button.c, generic/frame.c, generic/notebook.c,
+	generic/scale.c, generic/scrollbar.c: Updated accordingly.
+
+2004-01-26  Joe English  <jenglish@users.sourceforge.net>
+	* tclconfig/tcl.m4: Upgrade to current version from
+	sampleextension (r1.41 2003/12/10)
+	* generic/Makefile.in, generic/configure.in, generic/pkgIndex.tcl.in:
+	Updated to work with new tcl.m4.
+	* generic/configure: regenerated
+
+	*** INCOMPATIBILITY: ./configure.in, ./Makefile.in *** NOT UPDATED ***
+	Couldn't get these to work.  (Jeff?)
+
+2004-01-26  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* win/wintheme.c: Seems scrollbar buttons are flat when pressed.
+	* library/winTheme.tcl: Progress bar should be COLOR_HIGHLIGHT.
+	* win/xpTheme.c: Add frame/labelframe themed elements. I can't get
+	the text correct yet so it's commented out.
+
+2004-01-25  Joe English  <jenglish@users.sourceforge.net>
+	* demos/themes/WinXP-Blue.tcl: Removed duplicate "tab"
+	element definition so the theme will load.  Put "-background"
+	and "-foreground" specifications back.  Set Button.background
+	padding to 4 to fix display glitch.
+
+2004-01-25  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/pixmapTheme.c: Fixed the tiling code and added a minimum
+	size option to sort out the pixmap based scrollbars.
+	* demos/themes/Aquativo.tcl:   Fixed themes to use new pixmap option.
+	* demos/themes/WinXP-Blue.tcl:
+
+2004-01-25  Joe English  <jenglish@users.sourceforge.net>
+	* demos/demo.tcl: Tweaked layout.
+	* demos/themes/blue.tcl, demos/themes/blue/*.gif:
+	Tweaked appearance.  "blue" theme is now *really* blue.
+
+2004-01-25  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c, demos/demo.tcl: Added TLabelframe widget.
+	* generic/layout.c: Added TTK_PlaceBox and TTK_FILL_* defines.
+	* generic/tkElements.c: TextElement now optionally clears
+	background area before drawing text.
+
+2004-01-25  Joe English  <jenglish@users.sourceforge.net>
+	* demos/demo.tcl, demos/themes/*.tcl, generic/stepTheme.c:
+	use 'tile::theme::$themeName' instead of 'tile::$themeName'
+	for theme package names.
+
+2004-01-24  Joe English  <jenglish@users.sourceforge.net>
+	* demos/themes/WinXP-Blue.tcl: Miscellaneous tweaks.
+	Added "tab" element for Notebook widget.
+
+2004-01-24  Joe English  <jenglish@users.sourceforge.net>
+	* generic/frame.c, demos/demo.tcl: Added TFrame widget,
+	which turned out to require a lot more changes than I
+	would have thought:
+
+	* generic/widget.h: GeometryProc renamed to SizeProc;
+	unused TTK_Padding argument removed.  SizeProc now
+	returns 1/0, indicating whether the widget should make
+	a geometry request or not, to prevent excessive recalculations.
+
+	* generic/widget.c, generic/tile.c: All widgets now take
+	a -class resource.  Which means we also have to implement:
+
+	* generic/widget.c, generic/widget.h: New READONLY_OPTION
+	mask bit for widget OptionSpecs.
+
+2004-01-22  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c: Removed unused 'clientData' member from
+	GenericElementData.
+	* generic/scale.c, generic/tkElements.c, win/xpTheme.c:
+	Un-merge horizontal and vertical scale elements again;
+	changed layouts to select appropriately-oriented
+	element.
+	* win/xpTheme.c: use 'winnative' as the parent theme.
+
+2004-01-22  Joe English  <jenglish@users.sourceforge.net>
+	* library/winTheme.tcl: Fix line endings.
+	* generic/gunk.h: Add missing include files.
+
+2004-01-22  Joe English  <jenglish@users.sourceforge.net>
+	* generic/winTheme.c, library/winTheme.tcl: Added
+	first cut at Windows-native theme [from Patch #875243]
+
+2004-01-22  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/tkTheme.c: Added introspection of layouts to return a
+	list as used for the skin createlayout command.
+
+2004-01-21  Joe English  <jenglish@users.sourceforge.net>
+	* demos/demo.tcl:  Change checkbutton packing back
+	to -expand x / -sticky ew again.  Put theme list
+	back in order.
+
+2004-01-21  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* demos/themes/Aquativo.tcl: Improved the theme import.
+	* generic/pixmapTheme.c:     Fixed the image tiling code.
+	* demos/demo.tcl:            Re-added the console showing.
+
+	* demos/demo.tcl: Fix a bug in the previous demo cleanup.
+
+2004-01-19  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* demos/demo.tcl: code cleanup.  remove all use of pack gm.
+
+2004-01-18  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/pixmapTheme.c: Use padding to prevent child pixmaps or
+	* library/xpTheme.tcl:   elements from overwriting the edges of
+	* win/xpTheme.c:         troughs.
+
+2004-01-18  Joe English  <jenglish@users.sourceforge.net>
+	* demos/themes/WinXP-Blue.tcl: add a bit of padding
+	and specify a minimum -width for buttons.
+
+2004-01-17  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* library/tile.tcl:    Fix a couple of problems with the XP theme
+	* library/xpTheme.tcl: using the new 'style default' command.
+
+	* demos/themes/Aquativo.tcl:   Trying to simplify the use of
+	* demos/themes/WinXP-Blue.tcl: pixmap collections. We can unpack
+	* demos/themes/blue.tcl:       Gtk theme packs under demos/themes/
+	and use them unaltered. By keeping the tcl scripts in the same
+	directory (demos/themes) we can generate the pkgIndex for them.
+
+2004-01-16  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.tcl: Tracked down performance problem
+	with "alt" theme: notebook tabs were using a -font that
+	wasn't used in a "real" widget, and hence wasn't cached.
+	(@@@ Need to solve the general problem at some point).
+
+2004-01-16  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c, generic/scale.c, generic/tkTheme.c:
+	Various bugfixes relating to window or area sizes <= 0.
+
+2004-01-16  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c, generic/tile.c, generic/tkElements.c,
+	generic/widget.h: TilePart now gone.  Added TLabel widget.
+	* library/altTheme.tcl, library/defaults.tcl,
+	library/stepTheme.tcl, demos/demo.tcl Tweaks to make toolbar
+	buttons in demo continue to sort-of work.
+	* library/tile.tcl, library/xpTheme.tcl: moved XP settings
+	out of tile.tcl.
+
+2004-01-16  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* configure:
+	* configure.in (LIBS): add user32.lib for Windows
+
+2004-01-16  Joe English  <jenglish@users.sourceforge.net>
+	* generic/scale.c, library/scale.tcl:  Get trough
+	border width from element, not from the widget resource
+	(widget resource might not be used in all themes).
+
+2004-01-15  Joe English  <jenglish@users.sourceforge.net>
+ 	* demos/demo.tcl, generic/altTheme.c, generic/scrollbar.c,
+ 	generic/tile.c, generic/tkElements.c, generic/tkTheme.c,
+ 	generic/widget.h, tests/tile.test, win/xpTheme.c:
+	Removed the "Tile" widget; it has served its purpose.
+
+2004-01-15  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c, generic/scrollbar.c, generic/scale.c:
+	TTK_LayoutFindNode now only examines the last component
+	of element names.
+
+2004-01-16  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* demos/themes/Aquativo.tcl: Added Gtk import theme. You should
+	follow the instructions in the head of this file to fetch the
+	theme package itself.
+
+2004-01-15  Joe English  <jenglish@users.sourceforge.net>
+	* generic/pixmapTheme.c, demos/demo.tcl, demos/themes/blue/theme.tcl:
+	Reorganized PixmapElement; [style elementconfigure] no longer used.
+	* generic/tkTheme.c: Removed [style elementconfigure],
+	and a whole bunch of now-dead code.
+	* generic/tkTheme.c: Configuring a style now updates existing
+	widgets (@@@ not immediately though; need to call WorldChanged)
+	* generic/stepTheme.c: Specify minimum thumb size;
+	fix horizontal scrollbar layout.
+
+2004-01-15  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/pixmapTheme.c: Completed the tile-fill function.
+	* generic/tkTheme.h:  Put back support for theme client data for
+	* generic/tkTheme.c:  use in the xpnative theme.
+	* demos/demo.tcl:     Enable delayed loading of pixmap themes.
+	* demos/themes/blue/theme.tcl: Some changes -- more to do.
+
+2004-01-14  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c, generic/scale.c, generic/stepTheme.c,
+	generic/tile.c, generic/tkElements.c, win/xpTheme.c:
+	Simplified scrollbar, scale, and progressbar layouts.
+	* library/altTheme.tcl, library/defaults.tcl,
+	library/stepTheme.tcl, library/tile.tcl:
+	Got rid of the last use of [style elementconfigure].
+
+2004-01-14  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c: removed [style configure] command.
+	* generic/tkTheme.c: BUGFIX: missing Tcl_IncrRefCounts
+	in ResourceMap.  (Actually this is a temporary workaround;
+	real bug is that changes to styles don't have any effect
+	on existing widgets).
+
+2004-01-14  Joe English  <jenglish@users.sourceforge.net>
+	* library/altTheme.tcl, library/defaults.tcl,
+	library/stepTheme.tcl, library/tile.tcl:
+	Replaced all uses of [style configure] with
+	[style map] or [style default].  Next to go:
+	[style elementconfigure].
+
+2004-01-13  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.h, generic/tkTheme.c:
+	Replaced TTK_SetThemeClientData() with TTK_RegisterCleanup(),
+	themes can register an arbitrary number of cleanup hooks.
+	* generic/pixmapTheme.c: Fixed memory leak introduced in last rev.
+
+2004-01-13  Joe English  <jenglish@users.sourceforge.net>
+
+	* Added [style definetheme], [style map], and [style default].
+	Partially updated theme definitions to use these instead
+	of [style configure], [style elementconfigure].
+	Also added memory leak.
+
+2004-01-14  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* demos/themes/blue/theme.tcl: Added image border option.
+	* generic/pixmapTheme.c: Do tiling of the image.
+
+2004-01-13  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/pixmapTheme.c:  Correct Tk_Image handling in the
+	GenericElement. Tk_GetImage and Tk_FreeImage must be paired.
+
+	* Makefile.in:            Added a pixmap theme engine along
+	* generic/Makefile.in:    with a really ugly demo theme 'blue'
+	* generic/altTheme.c:     under demos/themes/blue.
+	* generic/notebook.c:
+	* generic/pixmapTheme.c:  This includes support for creating
+	* generic/stepTheme.c:    TTK_LayoutSpec descriptions from
+	* generic/tile.c:         a tcl list. See the blue/theme.tcl
+	* generic/tkElements.c:   file for a sample.
+	* generic/tkTheme.c:
+	* generic/tkTheme.h:
+	* generic/widget.h:
+	* library/pkgIndex.tcl:
+	* library/tile.tcl:
+	* win/Tile.dsp:
+	* win/makefile.vc:
+	* win/xpTheme.c:
+	* demos/demo.tcl:
+	* demos/themes/blue/*.gif:
+	* demos/themes/blue/theme.tcl:
+
+2004-01-12  Joe English  <jenglish@users.sourceforge.net>
+	* generic/button.c, generic/tkElements.c:
+	Added -width resource for labels/buttons/&c;
+	requested width (minimum width if negative) in characters.
+	NB: only used if "-compound text" specified.
+
+2004-01-12  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tile.c, generic/button.c: Moved *button widget
+	implementations into separate file.
+	* generic/widget.h: made string tables for -orient, -default,
+	and -compound resources global.
+	* notebook.c: Removed unused "-side" option.
+
+2004-01-12  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkTheme.c, generic/tkTheme.h: Removed
+	TTK_GetThemeFromObj (dead code).
+
+2004-01-11  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c: fix state map for notebook Tab elements.
+	* generic/tkTheme.c (AllocateResources): Error detection.
+
+2004-01-10  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/scale.c:      Fixed progress bar geometry bug and got
+	* generic/tkElements.c: the xp theme working.
+	* generic/tile.tcl:     Added themeing for the notebook elements.
+	* win/xpTheme.c:        The client element wont show up until we
+	use a themed frame widget though.
+
+	* demos/demo.tcl: Added more lines to show issues with scrollbar.
+	* win/xpTheme.c:  Created a generic oriented element. This
+	resolves a problem with the vertical thumb and is useful for
+	troughs and such. Scale themed with minor bugs to iron out.
+
+2004-01-10  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c: Refactored BorderElementSpec.
+	* generic/altTheme.c: Shadow colors for indicators.
+
+2004-01-10  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/scale.c:      Merged the vtrough/htrough elements.
+	* generic/scrollbar.c:
+	* generic/tkElements.c:
+	* library/tile.tcl:
+	* win/xpTheme.c:
+
+	* demos/demo.tcl:       Added progress widget. This is
+	* generic/scale.c:      really just a special case of the
+	* generic/tkElements.c: scale widget. Some bugs to fix yet
+	* generic/tile.c:       and the slider needs fixing in
+	* library/tile.tcl:     all but classic theme.
+
+	* library/scale.tcl: Added repeat motion for the scale.
+	* win/xpTheme.c: Corrected slider breakage so it builds.
+
+2004-01-09  Joe English  <jenglish@users.sourceforge.net>
+	* widget.c: Added postConfigureProc widget hook,
+	for post-configuration operations that need to reenter
+	the interpreter.
+	* tile.c: -variable and -textvariable options now
+	work properly (read when configured, not just when
+	variable changes).
+
+2004-01-09  Joe English  <jenglish@users.sourceforge.net>
+	* generic/scale.c: Set attached -variable and invoke
+	-command in [scale set] (where it's safe) instead
+	of in the Display callback (where it isn't).
+
+2004-01-09  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c, generic/scale.c,
+	generic/scrollbar.c, generic/stepTheme.c,
+	generic/tile.c, generic/tkElements.c, generic/tkTheme.h,
+	library/scrollbar.tcl, library/tile.tcl, win/xpTheme.c:
+	Merged hslider/vslider and hthumb/vthumb elements.
+
+2004-01-09  Joe English  <jenglish@users.sourceforge.net>
+	* all: Rename TK_WIDGET_STATE_* => TTK_STATE_*.
+	* all: Rename "label" element => "text".
+
+2004-01-08  Joe English  <jenglish@users.sourceforge.net>
+	* generic/trace.c: New file, split out from tile.c.
+
+2004-01-08  Joe English  <jenglish@users.sourceforge.net>
+	* generic/notebook.c, library/notebook.tcl, tests/notebook.test,
+	library/tile.tcl, demos/demo.tcl: Added an ugly but functional
+	Notebook widget.
+	* generic/layout.c, generic/tkTheme.h, generic/widget.c:
+	Expose some TTK_Box-related layout functions needed by the above.
+
+2004-01-07  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* tkTheme.h:     Added TTK_SetThemeClientData and
+	* tkTheme.c:     TTK_GetThemeClientData permit data to be
+	associated with a theme engine. This also registers a deletion
+	callback that is called when the theme is deleted.
+	Added A TTK_SetThemeEnabledProc. This lets you register a function
+	that is called during SetTheme. If this returns false, then the
+	theme's parent is used (and checked too). This means XP can
+	default to the alt theme if themeing is disabled.
+
+	* win/monitor.c: New file implements an invisible window to
+	catch global window messages from Windows.
+	* generic/tile.c: Hook in the monitor window.
+
+2004-01-06  Joe English  <jenglish@users.sourceforge.net>
+	* generic/track.c: various bugfixes; first version
+	didn't work properly when mouse cursor dragged
+	away from "pressed" element and then released.
+
+2004-01-06  Joe English  <jenglish@users.sourceforge.net>
+	* generic/track.c: New utility, TrackElementState
+	* generic/scrollbar.c, library/scrollbar.tcl:
+	Updated TScrollbar to use TrackElementState;
+	[$scrollbar elementstate] widget method no longer needed.
+	* Scrollbar finally displays "active" state properly!
+
+2004-01-06  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/tkElements.c:  Permit variable width trough for win32
+	* library/tile.tcl:      style scale (doesn't change geometry).
+
+	* generic/tkTheme.c:     Fix element lookup to look over multiple
+	dot-separated names. eg: Z.x.y -> x.y -> y then lookup the same in
+	the parent theme.
+
+	* generic/scale.c:       Improved the scale implementation.
+	* generic/tkElements.c:  Can now pick a slider style for all
+	* win/xpTheme.c:         styles. Made less of it hardcoded  too.
+	* library/scale.tcl:
+	* library/tile.tcl:
+
+2004-01-02  Joe English  <jenglish@users.sourceforge.net>
+	* generic/scrollbar.c, library/scrollbar.tcl:
+	Removed -first and -last resources (no longer needed after
+	thumb element simplified.)
+	Removed -troughcolor resource.
+
+2004-01-06  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/tkTheme.c: Change element lookup scheme to search parent
+	themes for the full element name, then the generic name which
+	fixes a problem in the scale widget which re-uses the trough
+	element.
+
+2004-01-06  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tile.c: BUGFIX: failed to clean up -textvariable
+	variable trace, leading to a crash.
+	* tests/tile.test: added test case for above.
+
+2004-01-05  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/scale.c:      Added a themed scale widget.
+	* library/scale.c:      Scale widget bindings.
+	* generic/tkElements.c: Added a slider element and implementation
+	of troughcolor for troughs. Used by scale and scrollbar widgets.
+	* generic/stepTheme.c:  Playing with drawing 3D circles.
+	* generic/tile.c:       Added -bd and -bg short options.
+	* generic/scrollbar.c:  Implemented -troughcolor.
+	* win/xpTheme.c:        XP scale support.
+
+2004-01-04  Joe English  <jenglish@users.sourceforge.net>
+	* library/scrollbar.tcl: BUGFIX: Button-2 scanning
+	didn't work when scrollbar was attached to a real widget.
+	* generic/scrollbar.c, library/scrollbar.tcl,
+	generic/tkElements.c, generic/altTheme.c, generic/stepTheme.c,
+	win/xpTheme.c: Move scrollbar thumb geometry calculations
+	entirely into the scrollbar widget; thumb element implementations
+	don't need to worry about first / last anymore.
+	Minimum thumb size now works.
+	* generic/layout.c, generic/tkTheme.h: Additional utilities
+	needed to support the above.
+
+2004-01-02  Joe English  <jenglish@users.sourceforge.net>
+	* demos/demo.tcl: Added compound checkbuttons to toolbars;
+	demonstrating a conceptual error in the layout engine.
+	* generic/altTheme.c: Workaround for above error.
+
+2004-01-02  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* demos/demo.tcl: Added a scrolled text widget to the client
+	frames as I think this shows off the scrollbars more clearly to
+	people unfamiliar with the code. Also hooked in a theme menu and
+	the tile widget.
+
+	* generic/altTheme.c: Added a subpackage declaration to enable
+	introspection of the available themes.
+	* win/xpTheme.c: Added local elements for the tile widget for
+	testing purposes.
+
+	* generic/layout.c:   Themes may register new elements without
+	* generic/tkTheme.h:  registering new styles. So the element lookup
+	* generic/tkTheme.c:  (TTK_GetElement) must be given a starting	theme
+	and cannot just use the style's recorded theme. This error caused
+	the xp theme to always use 'alt' elements. So by passing the
+	current theme and style, we can find the correct element to use.
+
+2003-12-30  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c, generic/tkElements.c,
+	generic/tkTheme.c, generic/tkTheme.h, generic/widget.c,
+	library/tile.tcl: Changed element resource lookup algorithm
+	again; now examines settings from style.  This is still not
+	right, but getting closer to something sensible.
+	* library/tile.tcl: Fix display of "active" and "pressed"
+	states for check & radiobuttons.
+
+2003-12-30  Joe English  <jenglish@users.sourceforge.net>
+	* generic/widget.c: Add WorldChanged ClassProc, so font changes
+	are recognized.
+
+2003-12-28  Joe English  <jenglish@users.sourceforge.net>
+	* generic/stepTheme.c: fix compiler warnings (signed vs unsigned)
+	* library/tile.tcl, library/button.tcl: moved bindings for
+	Button, Checkbutton, and Radiobuttons into separate file.
+
+2003-12-13  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/altTheme.c:    Make the focus ring a bit more like
+	 the windows focus ring.
+
+2003-12-10  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/stepTheme.c:   Implemented OPENSTEP style checkbutton
+	* library/tile.tcl:      and radiobutton indicators.
+
+	* win/xpTheme.c:         Fix the shading in the vertical thumb
+	                         when pressed.
+				 Make xpnative a child of the alt theme.
+				 This makes the focus highlight more
+	                         nearly correct and if themeing is
+	                         disabled we should revert to the alt
+	                         style anyway.
+
+2003-11-29  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/tkElements.c:  Replaced Scrollbar.trough with .vtrough and
+	* win/xpTheme.c:         .htrough as gradient fills are drawn
+	                         differently for each orientation. Used in
+				 xpTheme so XP scrollbars now appear correct.
+
+	* win/Makefile.vc:       Added user.lib for DrawFocusRect.
+
+2003-11-26  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tkElements.c, generic/altTheme.c, library/tile.tcl:
+	HighlightElement: only draw focus ring if widget has keyboard focus.
+	* generic/layout.c, generic/scrollbar.c: Made TTK_LayoutNode opaque.
+
+2003-10-28  Joe English  <jenglish@users.sourceforge.net>
+	* library/tile.tcl: Scrollbars should not take keyboard focus.
+	* library/scrollbar.tcl: set thumb state to pressed on ButtonPresss-2
+
+2003-10-26  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c: draw focus ring (in the wrong place)
+
+2003-10-21  Joe English  <jenglish@users.sourceforge.net>
+	* Added -textvariable option.
+
+2003-10-20  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c: scrollbar display tweaks.
+	* library/scrollbar.tcl: clicking in trough scrolls by pages.
+
+2003-10-20  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c, library/tile.tcl:  Minor appearance
+	tweaks for XP.
+
+2003-10-20  Joe English  <jenglish@users.sourceforge.net>
+	* generic/scrollbar.c, generic/tkElements.c,
+	library/tile.tcl, library/scrollbar.tcl:
+	Added [scrollbar elementstate] command; "pressed / !pressed"
+	feedback for individual scrollbar elements.
+
+2003-10-20  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c: Changed layout specification internals.
+	This is still Not Quite Right, but closer now.
+
+2003-10-20  Joe English  <jenglish@users.sourceforge.net>
+	* generic/layout.c: Quick and dirty hack to layout engine
+	to overcome fundamental design flaws.  More comprehensive
+	fix forthcoming...
+
+2003-10-20  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* generic/altTheme.c:   Implemented a Highlight element to allow
+	* generic/tkElements.c: placing the highlight in different parts
+	* library/tile.tcl:     of the layout.
+
+	* generic/widget.h: Avoid XP code if the headers do not
+	* win/xpTheme.c:    support themeing.
+
+	* win/makefile.vc: Added a working install target for win32.
+
+	* demos/demo.tcl: Added some menu items as we'll want to look into
+	this at some point. Included a 'console' item for win32.
+
+2003-10-17  Joe English  <jenglish@users.sourceforge.net>
+	* Great Renaming: A "StyleEngine" is now called a "Theme".
+
+2003-10-17  Joe English  <jenglish@users.sourceforge.net>
+	* Added TTK_GetDefaultTheme(), TTK_GetCurrentTheme().
+	* Added [style settheme $theme] command.  Widget -style
+	resource currently unused except to trigger a theme change;
+	need to figure out what to do with this later.
+
+2003-10-17  Joe English  <jenglish@users.sourceforge.net>
+	* tkTheme.[ch]: CHECKPOINT: halfway through implementing
+	new "Style" data structure -- have to check in and go now.
+
+2003-10-17  Joe English  <jenglish@users.sourceforge.net>
+	* widget.h, widget.c, tile.c: BUGFIX: recompute geometry
+	when -compound, -text, and other geometry-influencing
+	resources change.
+
+2003-10-17  Joe English  <jenglish@users.sourceforge.net>
+	* Makefile.in, generic/Makefile.in: added 'install' target.
+
+2003-10-16  Joe English  <jenglish@users.sourceforge.net>
+	* layout.h: merged into tkTheme.h
+	* (all): Use 'TTK_' prefix for all style engine-related public symbols
+
+2003-10-16  Joe English  <jenglish@users.sourceforge.net>
+	* tile.c(TileOptionSpecs): remove unneeded -highlightthickness,
+	-highlightcolor resources.
+	* demo/demo.tcl: remove dead code
+
+2003-10-16  Joe English  <jenglish@users.sourceforge.net>
+	* Refactoring: consolidate common code into WidgetGeometry(),
+	WidgetDisplay().
+	Removed TkDrawLayout(), TkLayoutGeometry() (no longer used).
+	Added TTK_FreeLayout(), fixed memory leak.
+	Added numerous subtle bugs.
+
+2003-10-16  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* win/xpTheme.c:          Added XP themed scrollbar elements.
+	* library/tile.tcl:       Missing the gradient fill in trough.
+
+	* generic/stepTheme.c:    Isolated NeXTStep theme stuff to a new
+	* win/makefile.vc:        file and added a thumb element for this
+	* generic/makefile.in     in addition to the widget layout.
+	* Makefile.in:
+
+	* generic/scrollbar.c:    Switch to registering widget layouts
+	* generic/tile.c:         per style engine. This allows a widget to
+	* generic/tkElements.c:   have different elements for different
+	* generic/tkTheme.c:      styles (think nextstep scrollbars)
+	* generic/tkTheme.h:
+	* generic/widget.h:
+	* demos/demo.tcl:
+
+2003-10-16  Joe English  <jenglish@users.sourceforge.net.
+	* generic/tkTheme.c(FreeStyleEngine): Free layout table.
+
+2003-10-15  Joe English  <jenglish@users.sourceforge.net>
+	* generic/tile.c:
+	  _Correct_ proper error handling.
+	  Removed unnecessary -indicatorcolor resource from
+	  checkbuttons and radiobuttons.
+	* library/tile.tcl:
+	  Better feedback for pressed checkbuttons in "classic" theme.
+
+2003-10-15  Joe English  <jenglish@users.sourceforge.net>
+	* generic/widget.c: Proper error handling in widget
+	'configure' commands.
+	* generic/tile.c: Proper error detection for bad -variable
+	specifications.
+
+2003-10-14  Joe English  <jenglish@users.sourceforge.net>
+	* library/keynav.tcl: Added comments.
+
+2003-10-14  Pat Thoyts  <patthoyts@users.sourceforge.net>
+
+	* win/xpTheme.c (InitElementData): handle creation of elements
+	before they are mapped.
+	* win/xpTheme.c: Fix type for VC++ building.
+
+2003-10-13  Joe English  <jenglish@users.sourceforge.net>
+	* win/xpTheme.c: fix display glitches.
+
+2003-10-13  Joe English  <jenglish@users.sourceforge.net>
+	* generic/altTheme.c, generic/scrollbar.c, generic/tkElements.c,
+	library/scrollbar.tcl: Renamed up.arrow, &c, elements
+	to uparrow &c.
+
+2003-10-13  Joe English  <jenglish@users.sourceforge.net>
+	* license.terms: added.
+
+2003-10-13  Joe English  <jenglish@users.sourceforge.net>
+	* tests/*.*: Patched so test suite runs again.
+
+2003-10-13  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	* generic/tkTheme.c: use tkInt.h only on Win32
+	* generic/tkTheme.h (NO_PRIVATE_HEADERS): defined for !WIN32 plats
+
+	* generic/tkTheme.c: use tkInt.h to get stubs decl correct for
+	TkGetOptionSpec usage.
+
+	* Makefile.in (INCLUDES): add srcdir/generic to includes
+
+	* win/xpTheme.c (ADDED):       moved xpTheme.c to win/ subdir.
+	* generic/guts.h (REMOVED):    noted need for tkWinInt.h
+	* generic/xpTheme.c (REMOVED):
+
+	* aclocal.m4:   TEA build system
+	* configure:
+	* configure.in:
+	* Makefile.in:
+
+	* generic/altTheme.c: cast correction
+
+2003-10-13  Jeff Hobbs  <jeffh@ActiveState.com>
+
+	=== Initial import into SourceForge CVS repository ===
+
+2003-10-12  Joe English  <jenglish@flightlab.com>
+	* Scrollbars mostly working now.
+	* Removed *settings resource, UpdateSettings -- do this in
+	elements instead.
+
+2003-09-26  Joe English  <jenglish@flightlab.com>
+	* Several tweaks to make demo.tcl look reasonable.
+
+2003-09-26  Joe English  <jenglish@flightlab.com>
+	* src/tkTheme.c: Changed element lookup strategy (again):
+	"Button.border" will look for "Button.border", then "border" in
+	the current engine, then for "border" in the parent engine
+	(instead of "Button.border").  This seems to work better.
+	Realized that earlier restructuring had misimplemented
+	the TIP 48 semantics.
+
+2003-09-26  Pat Thoyts  <patthoyts@users.sourceforge.net>
+	* src/xpTheme.c: Fix the XP theme so it builds.
+	* src/widget.h:  Fix the xpnative style to not crash.
+	* src/tile.c:
+
+2003-09-25  Joe English  <jenglish@flightlab.com
+	* Added first draft of script-level access to style engine.
+
+2003-09-25  Joe English  <jenglish@flightlab.com
+	* tkTheme.c: Updated out-of-date comments.
+	Gave self harsh lecture about failing to update comments
+	when changing the code.
+
+2003-09-24  Joe English  <jenglish@flightlab.com
+	* Applied patch below, tweaked so the code will
+	build on my machine again.
+
+2003-09-24  Pat Thoyts  <patthoyts@users.sourceforge.net>
+	* src/altTheme.c: Use TkPutImage which works under Win32.
+	* src/tkTheme.c: Renamed TkStylePkgFree to avoid a clash with the
+	                 Tk internal function of this name.
+	* win/Makefile.vc:
+	* win/rules.vc:    Provide a set of MSVC build scripts.
+	* win/nmakehlp.c:
+
+2003-09-16  Joe English  <jenglish@flightlab.com>
+	* Initial implementation of a scrollbar.
+
+2003-09-15  Joe English  <jenglish@flightlab.com>
+	* Split "TilePart" up into "CorePart", "TilePart", and "LabelPart".
+	Made more routines semi-public.
+	Added three tenths of a scrollbar implementation.
+
+2003-09-13  Joe English  <jenglish@flightlab.com>
+	* Added -compound element.
+
+2003-09-13  Joe English  <jenglish@flightlab.com>
+	* Added -image element.
+
+2003-09-13  Joe English  <jenglish@flightlab.com>
+	* Minor style tweaks.
+
+2003-09-13  Joe English  <jenglish@flightlab.com>
+	* Added -underline option; added keyboard navigation package.
+
+2003-09-12  Joe English  <jenglish@flightlab.com>
+	* Fixed more check/radiobutton layout glitches.
+	Layout manager didn't need that much of a rethink
+	after all.
+
+2003-09-12  Joe English  <jenglish@flightlab.com>
+	* Added variable traces for check/radio buttons.
+	Mostly functional now.
+
+2003-09-12  Joe English  <jenglish@flightlab.com>
+	* Imported code from TIP 109 implementation to draw
+	better-looking radio / checkbuttons.
+	(Not Quite Right, since the TIP 109 implementation needs
+	to peek at Tk's internals to do its thing, and I
+	took that bit out.)
+
+2003-09-11  Joe English  <jenglish@flightlab.com>
+	* Fixed some tcheckbutton layout glitches.
+
+2003-09-11  Joe English  <jenglish@flightlab.com>
+	* Added semifunctional, ugly tcheckbutton widget.
+	Need to rethink layout manager now.
+
+2003-09-11  Joe English  <jenglish@flightlab.com>
+	* Added tbutton widget
+
+2003-09-08  Joe English  <jenglish@flightlab.com>
+	* tkTheme.c: renamed internal data structures and variable names
+	to improve consistency.
+	* tkTheme.c: removed custom Tcl_ObjType styleObjType (see
+	tcl-core message for why).
+	* tkTheme.c: removed last vestiges of ThreadSpecificData.
+	* tkTheme.c: Store element implementations in a linked list
+	instead of an array.
+	* widget.c, tile.c: BUGFIX: setting -style to a nonexistent style
+	crashed.  Failed to propagate TCL_ERROR return codes.
+
+2003-09-08  Joe English  <jenglish@flightlab.com>
+	* Refactoring: attempt to split up generic & Tile-specific widget
+	code.
+	* 'WidgetCore' must be first member of widget structure;
+	simplified WidgetCommandProc() signature accordingly.
+
+2003-09-08  Joe English  <jenglish@flightlab.com>
+	* Refactoring: extract Tk_StateMapLookup() from UpdateSettings().
+
+2003-09-08  Joe English  <jenglish@flightlab.com>
+	* Added 'padding' element, Tk_GetPaddingFromObj().
+
+2003-09-07  Joe English  <jenglish@flightlab.com>
+	* tile.c(TileWidgetCmd): Refactoring:
+	replaced parallel enum/array and switch statement
+	with Tcl_GetIndexFromObjStruct and indirect function call.
+
+2003-09-07  Joe English  <jenglish@flightlab.com>
+	* tkstate.c (WidgetStateSpecUpdateString):
+	BUGFIX: coredump if mask == 0.
+
+2003-09-04  Joe English  <jenglish@flightlab.com>
+	* Make style engine responsible for extracting widget resources
+	instead of element implementations (see tcl-core message for details).
+
+2003-09-04  Joe English  <jenglish@flightlab.com>
+	* Simplified element methods (see tcl-core message for details).
+
+2003-09-03  Joe English  <jenglish@flightlab.com>
+	* tkTheme.[ch]: Nuked Tk_NameOfStyle; YAGNI.
+
+2003-09-03  Joe English  <jenglish@flightlab.com>
+	* tkTheme.[ch]: Reorganized and simplified style engine
+	data structures.  As a side effect, also fixed bug #793825.
+
+2003-09-02  Joe English  <jenglish@flightlab.com>
+	* tkTheme.[ch]: Refactoring: replace two-level element
+	lookup scheme with one-level TTK_GetElement.
+
+2003-09-02  Joe English  <jenglish@flightlab.com>
+	* tkTheme.[ch]: Cloned tk/generic/tkStyle.c; changed Tk_* to TTK_*,
+	so I can modify style engine locally without having to patch
+	the core.
+
+2003-09-01  Joe English  <jenglish@flightlab.com>
+	* Added support for -anchor option
+
+2003-08-31  Joe English  <jenglish@flightlab.com>
+	* Added "label" element, first cut at declarative layout utilities.
+
+2003-08-29  Joe English  <jenglish@flightlab.com>
+	* Initial snapshot release.
+

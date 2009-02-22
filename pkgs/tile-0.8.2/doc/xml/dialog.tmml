@@ -1,0 +1,195 @@
+<manpage cat="cmd" id="dialog" title="dialog" version="0.8">
+<!-- This file was automatically generated.  DO NOT EDIT (yet)! -->
+<!-- 
+     Copyright (c) 2005 Joe English
+ -->
+<?TROFF.TH title="dialog" section="n" date="0.8" source="tile" manual="Tile Widget Set" ?>
+<namesection>
+<name>ttk::dialog</name>
+<desc>create a dialog box</desc>
+</namesection>
+<synopsis>
+<syntax>
+<b>package require ttk::dialog</b> ?<m>0.8</m>?
+
+<b>ttk::dialog</b> <m>pathname</m> ?<m>options...</m>?
+<b>ttk::dialog::define</b> <m>dialogType</m> ?<m>options...</m>?
+</syntax>
+</synopsis>
+<section>
+<title>DESCRIPTION</title>
+<p>A dialog box is a transient top-level window 
+containing an icon, a short message, an optional, longer, detail message,
+and a row of command buttons.
+When the user presses any of the buttons,
+a callback function is invoked
+and then the dialog is destroyed.
+</p>
+<p>Additional widgets may be added in the dialog <i>client frame</i>.
+</p>
+</section>
+<section>
+<title>OPTIONS</title>
+<optionlist>
+<optiondef>
+<name>-title</name>
+<dbname>n/a</dbname>
+<dbclass>n/a</dbclass>
+<desc>Specifies a string to use as the window manager title.
+</desc>
+</optiondef>
+<optiondef>
+<name>-message</name>
+<dbname>n/a</dbname>
+<dbclass>n/a</dbclass>
+<desc>Specifies the message to display in this dialog.
+</desc>
+</optiondef>
+<optiondef>
+<name>-detail</name>
+<dbname>n/a</dbname>
+<dbclass>n/a</dbclass>
+<desc>Specifies a longer auxiliary message.
+</desc>
+</optiondef>
+<optiondef>
+<name>-command</name>
+<dbname>n/a</dbname>
+<dbclass>n/a</dbclass>
+<desc>Specifies a command prefix to be invoked when the user presses
+one of the command buttons.  
+The symbolic name of the button is passed as an additional argument
+to the command.
+The dialog is dismissed after invoking the command.
+</desc>
+</optiondef>
+<optiondef>
+<name>-parent</name>
+<dbname>n/a</dbname>
+<dbclass>n/a</dbclass>
+<desc>Specifies a toplevel window for which the dialog is transient.
+If omitted, the default is the nearest ancestor toplevel.
+If set to the empty string, the dialog will not be a transient window.
+</desc>
+</optiondef>
+<optiondef>
+<name>-type</name>
+<dbname>n/a</dbname>
+<dbclass>n/a</dbclass>
+<desc>Specifies a built-in or user-defined dialog type.
+See <ref refid="predefined-dialog-types">PREDEFINED DIALOG TYPES</ref>, below.
+</desc>
+</optiondef>
+<optiondef>
+<name>-icon</name>
+<dbname>n/a</dbname>
+<dbclass>n/a</dbclass>
+<desc>Specifies one of the stock dialog icons,
+<b cat="AMBIGUOUS ambiguous cmd">info</b>, <b>question</b>, <b>warning</b>, <b cat="AMBIGUOUS ambiguous cmd">error</b>,
+<b>auth</b>, or <b>busy</b>.
+If set to the empty string (the default), no icon is displayed.
+</desc>
+</optiondef>
+<optiondef>
+<name>-buttons</name>
+<dbname>n/a</dbname>
+<dbclass>n/a</dbclass>
+<desc>A list of symbolic button names.
+</desc>
+</optiondef>
+<optiondef>
+<name>-labels</name>
+<dbname>n/a</dbname>
+<dbclass>n/a</dbclass>
+<desc>A dictionary mapping symbolic button names to textual labels.
+May be omitted if all the buttons are predefined.
+</desc>
+</optiondef>
+<optiondef>
+<name>-default</name>
+<dbname>n/a</dbname>
+<dbclass>n/a</dbclass>
+<desc>The symbolic name of the default button.
+</desc>
+</optiondef>
+<optiondef>
+<name>-cancel</name>
+<dbname>n/a</dbname>
+<dbclass>n/a</dbclass>
+<desc>The symbolic name of the "cancel" button.
+The cancel button is invoked if the user presses the Escape key
+and when the dialog is closed from the window manager.
+If <b>-cancel</b> is not specified, 
+the dialog ignores window manager close commands (WM_DELETE_WINDOW).
+</desc>
+</optiondef>
+</optionlist>
+</section>
+<section>
+<title>WIDGET COMMANDS</title>
+<dl>
+<dle>
+<dt><b>ttk::dialog::clientframe</b> <m>dlg</m></dt>
+<dd>Returns the widget path of the client frame.
+Other widgets may be added to the client frame.
+The client frame appears between the detail message and the command buttons.
+</dd>
+</dle>
+</dl>
+</section>
+<section id="predefined-dialog-types">
+<title>PREDEFINED DIALOG TYPES</title>
+<p>The <b>-type</b> option, if present, specifies default values 
+for other options.  <b>ttk::dialog::define</b> <i>type options...</i>
+specifies a new stock dialog <i>type</i>.  
+The following stock dialog types are predefined:
+</p>
+<example>
+ttk::dialog::define ok \
+    -icon info -buttons {ok} -default ok
+ttk::dialog::define okcancel \
+    -icon info -buttons {ok cancel} -default ok -cancel cancel
+ttk::dialog::define yesno \
+    -icon question -buttons {yes no}
+ttk::dialog::define yesnocancel \
+    -icon question -buttons {yes no cancel} -cancel cancel
+ttk::dialog::define retrycancel \
+    -icon question -buttons {retry cancel} -cancel cancel
+</example>
+</section>
+<section>
+<title>STOCK BUTTONS</title>
+<p>The following ``stock'' symbolic button names have predefined labels:
+<b>yes</b>, <b>no</b>, <b>ok</b>, <b>cancel</b>, and <b>retry</b>.
+</p>
+<p>It is not necessary to list these in the <b>-labels</b> dictionary.
+</p>
+</section>
+<section>
+<title>EXAMPLE</title>
+<example>
+proc saveFileComplete {button} {
+    switch -- $button {
+    	yes { # save file ... }
+	no  { exit }
+	cancel { # no-op }
+    }
+}
+
+ttk::dialog .saveFileDialog \
+    -title "Save file?" \
+    -icon question \
+    -message "Save file before closing?" \
+    -detail "If you do not save the file, your work will be lost" \
+    -buttons [list yes no cancel] \ 
+    -labels [list yes "Save file" no "Don't save"] \
+    -command saveFileComplete \
+    ;
+</example>
+</section>
+<seealso>
+<ref>tk_messageBox(n)</ref>
+<ref>wm(n)</ref>
+<ref>toplevel(n)</ref>
+</seealso>
+</manpage>

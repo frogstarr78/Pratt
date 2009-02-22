@@ -1,0 +1,89 @@
+#
+# configure.in,v 1.39 2007/12/16 18:20:55 jenglish Exp
+#
+
+AC_REVISION(1.39)
+AC_INIT([tile],[0.8.2])
+AC_CONFIG_AUX_DIR(tclconfig)
+
+# Usual Tcl stuff:
+#
+TEA_INIT([3.6])
+TEA_PATH_TCLCONFIG
+TEA_LOAD_TCLCONFIG
+TEA_PATH_TKCONFIG
+TEA_LOAD_TKCONFIG
+
+TEA_PREFIX
+
+TEA_SETUP_COMPILER
+
+TEA_ADD_SOURCES([])
+#TEA_ADD_HEADERS([])
+TEA_ADD_INCLUDES([-I. -I\"`${CYGPATH} ${srcdir}/generic`\"])
+#TEA_ADD_LIBS([])
+#TEA_ADD_CFLAGS([])
+#TEA_ADD_STUB_SOURCES([])
+#TEA_ADD_TCL_SOURCES([])
+
+TEA_PRIVATE_TCL_HEADERS
+TEA_PRIVATE_TK_HEADERS
+
+# Build stuff:
+#
+TEA_ENABLE_THREADS
+TEA_ENABLE_SHARED
+TEA_ENABLE_SYMBOLS
+TEA_CONFIG_CFLAGS
+
+TEA_PATH_X
+
+# Platform-specific stuff:
+#
+case "${TEA_WINDOWINGSYSTEM}" in
+    win32)
+	CLEANFILES="*.lib *.dll *.exp *.ilk *.pdb"
+	TEA_ADD_LIBS([gdi32.lib user32.lib])
+	TEA_ADD_SOURCES([\$(WIN_OBJECTS)])
+	# Check if we have uxtheme.h for xpnative look
+	AC_CHECK_HEADER([uxtheme.h], [AC_DEFINE(HAVE_UXTHEME_H)],
+		[AC_MSG_NOTICE([xpnative theme will be unavailable])],
+		[#include <windows.h>])
+	;;
+    aqua)
+	TEA_ADD_INCLUDES([-I${TK_TOP_DIR_NATIVE}/macosx])
+	TEA_ADD_LIBS([-framework Carbon])
+	TEA_ADD_SOURCES([\$(MACOSX_OBJECTS)])
+	;;
+    x11)
+	;;
+esac;
+
+CLEANFILES="$CLEANFILES pkgIndex.tcl"
+AC_SUBST(CLEANFILES)
+
+AC_DEFINE(USE_TCL_STUBS,[1],[Should always be 1])
+AC_DEFINE(USE_TK_STUBS,[1],[Should always be 1])
+AC_DEFINE(BUILD_tile,[1],[Set to 1 when building package])
+
+TEA_MAKE_LIB
+
+# Fix PKG_STUB_LIB_FILE: 
+#	+ base name is "ttkstub", not "tilestub"
+#	+ do not include version number in library name 
+#
+if test "${TEA_PLATFORM}" = "windows" -a "$GCC" != "yes"; then
+    PKG_STUB_LIB_FILE=ttkstub.lib
+else
+    PKG_STUB_LIB_FILE=libttkstub.a
+fi;
+
+TEA_PROG_WISH
+
+CONFIGURE_OUTPUTS="Makefile config.cache config.log config.status"
+AC_SUBST(CONFIGURE_OUTPUTS)
+
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
+
+#*EOF*

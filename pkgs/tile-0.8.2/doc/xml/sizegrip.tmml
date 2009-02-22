@@ -1,0 +1,82 @@
+<manpage cat="cmd" id="sizegrip" title="sizegrip" version="0.8">
+<!-- This file was automatically generated.  DO NOT EDIT (yet)! -->
+<!--  sizegrip.n,v 1.5 2007/10/16 00:59:23 jenglish Exp
+    
+     Copyright (c) 2006 Joe English
+ -->
+<?TROFF.TH title="sizegrip" section="n" date="0.8" source="tile" manual="Tile Widget Set" ?>
+<namesection>
+<name>ttk::sizegrip</name>
+<desc>A silly widget</desc>
+</namesection>
+<synopsis>
+<syntax>
+<b>ttk::sizegrip</b> <m>pathName</m> ?<m>options</m>?
+</syntax>
+</synopsis>
+<section>
+<title>DESCRIPTION</title>
+<p>A <b>sizegrip</b> widget (also known as a <i>grow box</i>)
+allows the user to resize the containing toplevel window
+by pressing and dragging the grip.
+</p>
+</section>
+<section>
+<title>STANDARD OPTIONS</title>
+<sl cat="stdopt" cols="4">
+<li>-class</li>
+<li>-cursor</li>
+<li>-state</li>
+<li>-style</li>
+<li>-takefocus</li>
+</sl>
+</section>
+<section>
+<title>WIDGET COMMAND</title>
+<p>Sizegrip widgets support the standard
+<b>cget</b>, <b>configure</b>, <b>instate</b>, and <b>state</b>
+methods.  No other widget methods are used.
+</p>
+</section>
+<section>
+<title>PLATFORM-SPECIFIC NOTES</title>
+<p>On Mac OSX, toplevel windows automatically include a built-in
+size grip by default.
+Adding an <b>ttk::sizegrip</b> there is harmless, since
+the built-in grip will just mask the widget.
+</p>
+</section>
+<section>
+<title>EXAMPLES</title>
+<example>
+# Using pack:
+pack [ttk::frame $top.statusbar] -side bottom -fill x
+pack [ttk::sizegrip $top.statusbar.grip] -side right -anchor se
+
+# Using grid:
+grid [ttk::sizegrip $top.statusbar.grip] \
+    -row $lastRow -column $lastColumn -sticky se
+# ... optional: add vertical scrollbar in $lastColumn,
+# ... optional: add horizontal scrollbar in $lastRow
+</example>
+</section>
+<section>
+<title>BUGS</title>
+<p>If the containing toplevel's position was specified
+relative to the right or bottom of the screen
+(e.g., <b>[wm geometry ...</b> <i>w</i><b>x</b><i>h</i><b>-</b><i>x</i><b>-</b><i>y</i><b>]</b>
+instead of <b>[wm geometry ...</b> <i>w</i><b>x</b><i>h</i><b>+</b><i>x</i><b>+</b><i>y</i><b>]</b>),
+the sizegrip widget will not resize the window.
+</p>
+<p>ttk::sizegrip widgets only support "southeast" resizing.
+</p>
+</section>
+<seealso>
+<ref>widget(n)</ref>
+</seealso>
+<keywords>
+<keyword>widget</keyword>
+<keyword>sizegrip</keyword>
+<keyword>grow box</keyword>
+</keywords>
+</manpage>

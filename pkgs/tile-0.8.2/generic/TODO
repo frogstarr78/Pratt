@@ -1,0 +1,493 @@
+[18 Jan 2004] Default/Classic "groove" border is wrong on X11 --
+use "alt" borders instead.
+
+[16 Mar 2005] -- request from Damon Courtney -- "split" menubuttons.
+	Extra features needed in ttk::menubutton: "-command" option,
+	"identify" method.
+
+[8 Mar 2005] -- ttk::progressbar -- use [$pb start] / [$pb stop].
+	[$pb start] should take arguments to control speed of cylon block.
+
+[9 Mar 2005] -- possible bug: [ttk::frames] with custom styles
+    don't compute reqwidth properly; fails to account for -padding
+    (see nbtest.tcl); 
+    [10 minutes later]: Nope, was apparently mistaken; it does work.
+
+[2 Mar 2005] -- AllocateResource --
+    allow TK_OPTION_COLOR, other options to have NULL defaults.
+
+
+[20 Dec 2004] - winnative theme -- toolbar buttons -- 
+    should have "thin" borders, not "thick" ones.
+    Same probably goes for labels too.
+
+[3 Oct 2004]: Treeview -- drag scrollbar down really fast -- can scroll
+"past end" of widget. [fixed?]
+
+[28 Sep 2004]: Swap argument order in TTK_DrawLayout: layout, state, d
+[done]
+
+
+[28 Sep 2004]: element "geometryProc" now "sizeProc"; eventually
+need to get around to updating all the element definitions.
+
+[21 Sep 2004]: It's now safe to redefine layouts; make this legal.
+(plus fix memory leak).  Still can't redefine elements though.
+
+[19 Sep 2004]: Dump Tk_Draw3DBorder() and related routines -- it does 
+the Wrong Thing on Windows more often than not.  (LIGHT_GC and DARK_GC 
+don't match System3DLight and System3DDarkShadow; "extra" border color
+(??? what does Windows call this???) not chosen correctly; draws
+wrong pattern for entry fields, listboxes, etc.)  Better to just
+do this by hand.
+
+[19 Sep 2004]: DrawEdge() actually  uses 4-color borders, not 3-color.
+This causes a(nother) notebook glitch if winnative theme is used when 
+"Windows XP style" is selected.  In "Windows Classic style", the 4th 
+color (inner upper/left) matches the frame color so the glitch isn't 
+visible.  Fix later.
+
+[17 Sep 2004]: To seriously think about: interactive test harness 
+for regression-testing look and feel.
+
+CONSIDER: Possibly: avoid setting 'pressed', 'active' in disabled state,
+so themes don't need to check 'active !disabled'.  OTOH, there's
+no reason an element can't be active and disabled at the same time,
+and some themes might want to treat that specially.
+
+[16 Sep 2004]: Make sure 'disabled' state properly supported in all
+themes.  (Should override 'active' and 'pressed' feedback, others)
+Consider: add 'readonly' state support for checkbuttons, others.
+[4 Mar 2005]: Definitely add 'readonly' support for checkbuttons --
+useful for output-only checkbuttons (e.g., "checklist" progress windows).
+
+
+[10 Sep 2004] altTheme BorderElement -- separate into BorderElement
+and DefaultRing, or separate BorderElement and ButtonBorderElement.
+
+TTK_StateMapLookup -- don't need interp parameter or error message.
+Make TTK_StateMap type "more opaque".
+
+[2 Sep 2004]: Request from JH: Explicit support in notebook widget
+for "fattening" tabs; expand selected tab's parcel to overlap neighbors.
+[done, 13 Sep 2004]
+
+[4 Sep 2004] Layout engine: TODO:
+    Remove TTK_STICK_ALL alias for TTK_FILL_BOTH; redundant and confusing [done]
+    TTK_EXPAND confusing, possibly get rid of it;
+    expand elements with no PACK_* bits set and/or last in group instead
+
+Theme engine routines: 'recordPtr' parameter ought to be a "void *",
+not (ClientData).
+
+[29 Aug 2004]: Consider: use focus ring in notebook tabs in all themes
+(except OSX, classic).
+
+[18 Aug 2004]: Requests from Jeff:
+    + add margins around check/radiobutton indicators (esp. XP theme) 
+      [done, JH,PT]
+    + [style theme use] should return current theme [done]
+    + Need separator widget. [done]
+    + Make scrollbars autodisable when full [done, JH]
+
+[5 Jul 2004]: Looks like XDrawRectangle() emulation on MacOSX does *not*
+have the off-by-one glitch.  Which makes it incompatible with the
+real XDrawRectangle, which does...
+
+[5 Jul 2004]: combobox: BUG: MacOSX: "pull-down" interaction doesn't
+work, only "pop-down" does.
+
+[1 Jul 2004]: combobox binding quirk (shared w/readonly BWidget combobox):
+Pulldown listbox; drag outside listbox; release:  Listbox stays posted
+(this may or may not be right).  Press inside listbox: selection "blinks"
+to pressed item, then reverts back (This is definitely wrong).
+Oakley combobox cancels listbox in step 1.
+
+[1 Jul 2004]: combobox: BUG: CBListbox <Destroy> binding doesn't clean up
+the right variable. [fixed]
+
+[1 Jul 2004]: Combobox (on Windows) BUG:
+Press; drag over listbox; drag off of listbox; release;
+click scrollbar thumb & drag up & down -- listbox selection changes.
+(Check on Unix).  Probable cause: at this point, combobox has
+grab, listbox never got <ButtonPress> event, but did get <B1-Motion>.
+Listbox probably confused.  (Oakley combobox does the same thing).
+
+BUG: Windows: post listbox (popdown or pulldown and drag away);
+click on another window; other window activates, listbox stays
+posted until main app gets keypress.  Can even end up below main window.
+(Probably due to [grab -global] not working the same on Windows)
+(Oakley and BWidget comboboxes don't have this problem -- 
+what do they do differently?)
+[Maybe fixed: unpost when listbox gets <FocusOut> event]
+[That seems to be what BWidget and Oakley boxes do, too]
+
+BUG: Combobox on Windows: Possible to iconify toplevel while listbox
+is active. [Maybe fixed, see above]
+
+BUG: Combobox on Windows: main toplevel is inactive (unfocused)
+when listbox posted (BWidget too, but not Oakley.  Oakley combobox
+leaves focus on entry widget, passes <Key-Up> and <Key-Down>
+to listbox directly.  Other keys handled by entry (and listbox
+loses curselection, which is probably not right))
+
+[from JH on clt -- same issue as above]
+<412ADA9C.60609@removethis.activestate.com>
+| [...] It still has the issue (on Windows) that when
+| the toplevel drops down, the host toplevel loses focus.  Note
+| that this doesn't happen with the win32 combobox control.  I'm
+| not 100% sure how they manage this trick (I have a few guesses,
+| but am not sure).
+                                                                                
+BUG: Grabs in general are problematic.
+
+[30 Jun 2004]: For consideration: Make -xscrollcommand, -yscrollcommand
+command prefixes instead of script prefixes?
+
+| jenglish    Right now -xscrollcommand is a string, to
+|             which additional arguements are appended "as if" they were
+|             list elements; and the result is intepreted as a script.
+| jenglish    My proposed change: -xscrollcommand is
+|             interpreted as a list, to which additional arguments are
+|             appended; and the result is invoked as a command
+| tclguy      jenglish - I fully support that
+| tclguy      jenglish - I suspect that is a remnant of the
+|             days pre-8.0 when lists weren't real structures
+| tclguy      jenglish - I know similar things need fixing in the core still
+
+
+
+
+[29 Jun 2004]: Clam theme: Frame widgets: Need to support -borderwidth 0.
+(Probable solution: treat zero borderwidth as no border, nonzero as 2).
+(Add note in "Programmer-visible changes", subheading "theme-dependant
+stuff").
+
+[26 Jun 2004]: Entry widget binding bug: 
+press, drag back and forth slowly -- behaves one way
+press, drag back and forth quickly -- behaves another way.
+Sort this out.  (Probably cause: "slowly" behaviour
+is what it's intended to do, but dragging the mouse
+too quickly skips past a transition state in entry::ExtendTo)
+[fixed]
+
+[17 Jun 2004]:
+Entry: POSSIBLY: after configuring -exportselection false,
+do nothing in LostSelection.  Maybe.
+Possibly: Let FetchSelection return data even if -exportselection false
+(user could have explicitly used [selection own])
+BUG: If -exportselection false, still display selection. [fixed]
+
+[17 Jun 2004]:
+Make sure EntryPlaceTextLayout is called whenever anything that
+affects it is changed;  [$entry xview] isn't the only place that
+requires up-to-date information.
+
+bind TEntry <<TraverseIn>> { %W selection range 0 end; %W icursor end }
+
+[14 Jun 2004]: WidgetDestroyed -- check Tcl_InterpDeleted(corePtr->interp),
+other Possibly Bad Things.  (maybe).
+
+[12 Jun 2004] Argh.  WidgetSubcommandProcs take arguments in 
+different order than Tcl_ObjCmdProcs (closure last vs. closure first).
+Sigh.
+
+[8 Jun 2004]: Possibly: treat "-state active" the same as "-state normal".
+
+[8 Jun 2004]: TraceVariable -- Variable trace procedures should
+return 'void' for now, since we're not doing anything with the
+return value.
+
+[May 2004]: leaving -width option default blank causes 
+BWidget incompatibilities (breaks Label).  Setting a default
+overrides theme defaults.  Decide which is more important.
+
+[30 Apr 2004]: dkf_fontSel dialog problems: 
+sample text frame sets -width and -height options,
+which TFrame doesn't use.  (Rationale: height and width 
+of a frame are normally controlled by geometry manager 
+based on children.   This turns out to be wrong: 
+[grid/pack propagate $f 0] can be used to make the
+frame's -width/height take precedence. (only do this
+in FrameConfigure though, otherwise layout blinks.) [fixed 11 May 2004]
+dkf_fontSel also uses resource-queries on scratch widgets
+(like BWidget does) for label -font resource; this breaks. [fixed 10 May 2004]
+
+[23 Apr 2004]: TODO: Add  <<Invoke>> bindings for TLabel and TLabelframe
+(set focus to next focusable sibling / first focusable child).
+
+[5 Apr 2004, JH]: "change the padding of a tnotebook dynamically doesn't
+force a resize of the children"
+
+22 Apr 2004: Focus problems w/notebook widget: mnemonic activation
+can leave focus on unmapped widget.
+
+Consider: Pass 'state' to element geometry procs too?
+
+Progressbars should not take focus.
+ 
+[3 Apr 2004] Vertical progress bars should grow up, not down.
+
+
+[19 Mar 2004]: Documentation: consistentize terminology:
+	+ the "-command" option is a _script_ which is _evaluated_.
+	  Also: _script prefix_ (-xscrollcommand, &c), 
+	  _script template_ (-validatecommand &c).
+	  Consider: maybe -xscrollcommand should be a _command prefix_;
+	+ Widgets have "options" (not "resources", that's an Xt thing...)
+	+ Decide one way or the other "tfoobutton" or "foobutton".
+	+ [20 Jun 2004]: always use bold (or italic, decide) for manpage xrefs.
+
+(TMML keywords index: idea: specify a list of common prefixes
+to strip when sorting, so eg "TTK_Box" is sorted under "B",
+not under "T" with all the rest of the "TTK_" stuff.
+Also: Remove duplicates in column 2.)
+
+[Configure] -- any way to specify a minimum Tk dependency in configure script?
+
+[20 Feb 2004]: generic/layout.c(BuildLayout): Don't Panic. [fixed,31Dec2004]
+
+[14 Mar 2004]: menubuttons -- popdown -- should stay in {pressed active} state
+until the menu is dismissed.
+Oddity: On XP: click menubutton (tile or standard) to post menu;
+move mouse away; other widgets still get <Enter> and <Leave> events 
+until the mouse enters the menu; then others stop hot-tracking.
+
+[14 Mar 2004] TODO: double-check menubutton state transitions on X11.
+[Checked; they were wrong.  Still are, actually, but it's
+difficult to get this right without cooperation from the [menu]
+widget implementation.]
+
+[14 Mar 2004]: pixmapTheme.c -- need to do error-checks re: missing
+images earlier.
+
+[14 Mar 2004]: Consider using Tcl_BackgroundError() where appropriate.
+(Note: it's probably not appropriate during <Expose> processing,
+unless the error condition can be fixed or disabled.)
+
+[22 Feb 2004]: Don't use SystemButtonFace as default background
+in classic or other non-Windows themes (unless you also use
+SystemWindowText as default foreground) -- some high-contrast
+color schemes use white-on-black. [done]
+
+[21 Feb 2004]: TODO: work out sensible fallback algorithm for
+layouts and styles, so users can define custom styles without
+having to worry about every possible theme.
+
+[21 Feb 2004]: Display/layout glitch: demo program, XP theme:
+"Close button" in "Widget states" dialog is the wrong size when
+first created.  Reselecting the theme fixes.  
+Suspicion: perhaps GetThemePartSize() doesn't work when the window 
+is not realized, so initial geometry wrong?  But why just this widget?
+Another bug in [grid]? [Probably fixed, 16 Mar 2004] [Fix confirmed]
+
+@@@ [10 Feb 2004] Revisit label/compound element: this is starting
+    to really bother me.
+
+@@@ [10 Feb 2004] New bug: label/compound element: 
+    -anchor and -width do not mix.  [fixed]
+
+@@@ TODO: SOON: Plug all memory leaks.  Lots of known ones,
+    possibly a few unknown ones too.
+
+@@@ BUG: <<ThemeChanged>> messages not processed if widget is not realized.
+    (See also: bug #835997) [fixed, 16 Mar 2004].
+
+@@@ Issue: Don't even think about using the Tile widgets on a PseudoColor 
+    visual.  All hell breaks loose.  (This is another instance of the
+    resource management problem affecting fonts and images).
+    [Should be fixed now, 12 Feb 2004]
+
+Issue: May need state-based dynamic widget settings too
+(most useful: -image and -cursor).
+
+AllocateResource: Tk_GetFont() calls are extremely expensive
+unless the font is already in use.  Using named fonts doesn't help.
+Same is probably true for colors and borders, and is definitely
+true for images. [Should be fixed now, 12 Feb 2004]
+
+@@@ Investigate performance issues.  TWS is getting to be 
+    as slow as GTK+. [see above] [much better now]
+
+Problem: [style map TNotebook -borderwidth { focus 2  {} 1 }]
+doesn't do the right thing: will normally use the default 1
+when computing geometry, which will not allocate enough space
+for when the widget has focus.  Possible solutions:
+    + special-case: add -maxborderwidth option
+    + add 'geometry' state bit, user can specify { geometry 2 focus 2 {} 1}
+
+Possibly: Issue <<WorldChanged>>, <<ThemeChanged>> virtual events
+    [Q: Can we register a C-language event handler for these?] 
+    [A: Yes.]
+    [done; but see BUG, above] [above BUG fixed now]
+
+@@@ NEED: introspection/debugging features 
+    (what elements make up a layout, what resources get set, &c).
+
+@@@ [style default/map] -- make sure changes get propagated to ElementImpl's.
+    [style map] -- validate statemaps [done]
+
+@@@ change TTK_LAYOUT_AROUND to TTK_LAYOUT_BORDER; update WidgetGeometry()
+   to use TTK_LAYOUT_BORDER-tagged element to set internal padding.
+   [On second thought, don't.  May not be necessary]
+
+@@@ Layout engine BUG: TTK_LAYOUT_INSIDE, TTK_LAYOUT_BORDER nodes
+	must be the sole children of their parent node, otherwise
+	reqsize calculation is wrong.  (probable cause of problem: 
+	INSIDE/BORDER flags lack a packing specification).
+	[ Fixed now, 28 Jan 2004 ]
+
+
+@@@ TTK_LayoutFindNode, [$sb identify], &c -- need a way to identify
+    nodes by name instead of class. [??? Probably not needed anymore ???] 
+
+~~ Layout engine:
+    + Reimplement; the current design is subtly but fatally flawed.
+      [ done, 28 Jan 2004 ]
+
+    + Change ElementSpec draw procedure to take a TTK_Box instead
+      of separate x, y, width, height arguments. [done, 9 Mar 2004]
+
+~~ General:
+    + Use TK_OPTION_STRING instead of TK_OPTION_END for TTK_OPTION_ANY [done]
+    + Need per-engine cleanup procedures. [done, PT]
+    + Rethink resource allocation (AllocateResource,DeallocateResources)
+    + [style configure] should schedule a WorldChanged call
+    + WorldChanged handler should reload all elements [done]
+    + Need: windows-native theme (use native (non-XP-theme) widgets) [started]
+    + Need: MacOSX-native theme (ditto).
+    + Need to support both "native/default" L&F and highly-customized L&F
+      (Ex: http://www.iit.demokritos.gr/~petasis/Tcl/PeculiarButtons.gif)
+    + Consider: distinguish "engines" from "themes" a la Gnome --
+      "engines" provide specific element implementations, themes
+      bind them to individual elements.  Rationale: a theme
+      may want to pick up e.g., borders from altTheme, 
+      other elements drawn using pixmap element from pixmapTheme,
+      frame borders from classic theme.
+      (Maybe not; an "engine" is just a package that defines elements
+      or element factories, no need to make this a first-class entity).
+
+~~ Frames, labelframes:
+    + Need -width, -height options.  These don't have any effect
+      if you use [pack] or [grid], but may be useful for [place] [done]
+    + [13 Feb 2005] labelframe: min req. size doesn't account for label.
+      [Fixed]
+
+~~ Buttons, checkbuttons, radiobuttons:
+    + Label widgets should take -relief option, possibly -borderwidth 
+    + rename 'compound' element to 'label', 'label' => 'text' [done]
+    + add -width resource to text element; negative -width => minimum. [done]
+    + [$checkbutton configure -variable foo] does not set state [fixed]
+    + [$label configure -textvariable foo] does not update -text [fixed]
+    + alt theme: focus ring should go around text (in check/radio buttons)
+      (maybe we can get away with not doing this...)
+      [fixed, but this broke -anchor option]
+    + check/radiobutton -anchor option does not work in alt theme.
+      (Can either get focus ring in the right place or a working -anchor,
+      but not both.)
+    + alt theme: buttons: move focus ring back into BorderElement;
+      this shouldn't shift in/out on press/release. 
+      (OR: move shift in/out logic from PressableBorderElement 
+      into PaddingElement -- better solution) [done, 5Apr2004]
+    + Schedule redraw/resize when image changes.
+
+~~ Scrollbars:
+    + classic theme: scrollbar arrows don't look quite right.
+    + alt theme: scrollbar arrows don't look quite right. [should be fixed]
+    + scrollbar elements don't activate/prelight on hover. [fixed]
+
+~~ Notebook: (suggestions from dkf)
+    + Track active state for tabs [done]
+    + add [$nb index current] [done]
+    + Generate <<NotebookTabChanged>> on raise. [done]
+    + Possibly: [$nb index $labelName] -- interpret $labelName as pattern.
+      (Not done: conflicts with [$nb index current], [$nb index end];
+      not very useful in the context of L10N)
+    + a way to reorder tabs, and insert tabs at places other than the end
+      [$nb insert $idx $child options...]; if $child is already in,
+    	this moves it?
+    + Ctrl-Tab / Ctrl-Shift-Tab to switch panes
+    [this is turning out to be rather tricky to do ...]
+    [Resolution: Won't do. Ctrl-Tab is the only way to tab out of a Text
+    widget, don't want to override this.]
+    [Changed mind: DKF convinced me that this is really desirable.
+     Still don't know how to do it.]
+    [22 Apr 2004: Done, finally]
+    + On raise -- set focus to first child of raised pane. [no, don't]
+    + Possibly: allow focus on tabs?  (<Key-Left>, <Key-Right> switches tabs)
+      Better: Focus on notebook widget, current tab implicitly has focus. [done]
+    + Possibly: [$nb select] instead of [$nb raise] [done]
+    + Possibly: a way to pack widgets inside tabs (gtk+), and/or in 
+      the area to the right of the tabs (Mozilla).
+    + -sticky option for panes -- determine how to place child
+      widget in client parcel [done]
+    + Possibly (but probably not): allow non-child widgets to 
+      be added as panes (not supporting this simplifies things
+      a LOT though).
+    + Possibly: -raisecommand, -leavecommand for tabs?
+      [No: see tktable-tile-dev discussion.  <<NotebookTabChanged>> suffices]
+    + Handle case where widget is not wide enough to display all tabs
+      (display left, right tabscroll arrows at right end of tab row)
+      [Resolution: best approach is to squeeze all tabs.
+      Scrolling tab row and stacked tabs are horrible usability-wise;
+      not going to add all that complexity for the benefit
+      of bad UIs.] [done, 16 Sep 2004]
+    + [JH] Theme-specific left and right padding for tab area
+    (needed for correct L&F on XP) [done, 13 Sep 2004]
+
+    + BUG: doesn't display properly if borderwidth > 1 [N/A anymore]
+    + Possibly: add -side {top|bottom|left|right} option;
+    + Possibly: add -side option with same values as labelframe -labelanchor
+    + Possibly: add per-tab -side option
+
+~~ Windows native theme:
+    + Scrollbar trough not always drawn w/right color (stippled?)
+    + Pushbuttons don't show default indicator or focus ring [fixed]
+    + Focus ring drawn in the wrong color
+    + Check/radiobutton indicators: if you select one of the "large"
+      display settings, these look wrong.
+    + FrameControlElements automatically adapt to system color changes,
+      elements that use a -background resource do not (maybe this
+      should be fixed in Tk instead (TIP 156?))
+      [fixed, 22 Feb 2004].
+
+~ Eventually:
+    + Make 'alt' theme the default (or something even simpler), 
+      move Motif L&F to "classic" theme. [done]
+
+~ Possible refactorings:
+    + Reattach Layouts to Styles?
+    + Merge ElementInstances into LayoutNodes?
+    + Split up tkTheme.c; it's huge.  
+    + Use a tree of LayoutOps to specify layouts internally
+      instead of an array of LayoutInstructions. [done]
+    + Add "-padding" (and "-ipadding"?) options to LayoutOps
+    + Possibly: remove "Padding" element (or not: needed
+      to make widget -padding option work.)
+
+
+~ Miscellaneous:
+    + See http://www.kroc.tk/tcl/tk_look
+      (Update 5 Mar 2004: http://www.kroc.tk/tclkit/tile_demo.kit ;
+       imported into tile.)
+    + http://groups.google.com/groups?hl=en&lr=&ie=UTF-8&threadm=3FBD203B.20303%@activestate.com&rnum=47&prev=/groups%3Fq%3Dtktable%26start%3D40%26hl%3Den%26lr%3D%26ie%3DUTF-8%26scoring%3Dd%26selm%3D3FBD203B.20303%@activestate.com%26rnum%3D47
+
+    + From Satoshi Imai:  "An old style has the same mark of a radiobutton
+      and a checkbutton.  The radiobutton of a menu thinks that the round
+      mark is better based on a Windows style."  If I'm translating
+      correctly, this means: "radiobuttons and checkbuttons 
+      in menus should have different indicators." (Out of scope
+      for Tile at the moment, as we don't have a [tmenu] widget,
+      but should be considered).
+
+
+~ Suggested changes to Tk:
+    + Need TK_OPTION_IMAGE resource type
+    + Named fonts should always have a refcount >= 1,
+      instead of freeing and reallocating them when the go
+      in and out of use.
+    + Expose some of Tk's internals (esp. Windows-specific stuff):
+	++ TkWinGetDrawableDC
+	++ TkGetOptionSpec
+    + Some way to invoke WorldChanged class proc of all widgets.
+

@@ -1,0 +1,409 @@
+
+[10 Sep 2005]
+
+A tour of the Tile internals.
+
+There are roughly four major parts to the tile codebase:
+the theme engine, the widget framework, widget implementations,
+and theme implementations.  What follows is a braindump
+describing the current codebase and a few future directions.
+
+See also http://tktable.sourceforge.net/tile/tile-tcl2004.pdf
+for a high-level overview of the architecture.
+
+
+THEME ENGINE
+
+    tkTheme.h --
+    	Public header file.  Start here.
+
+    tkThemeInt.h --
+    	Private header file.  Don't look at it :-)
+
+    tkstate.c --
+    	Routines for manipulating state specifications, state maps,
+	state tables, and other things state-related.
+
+	Future directions: Looks like this could use some more comments.
+	Very old code; hasn't been revisited (or needed to be) for a
+	long time.
+
+    tkTheme.c --
+    	The core of the theme engine.  This started life as a modified
+	copy of the TIP#48 style support code, but has been revised
+	and expanded since then.  The background and rationale from 
+	TIP#48 still apply, but the details are quite different now.
+
+	The main new features relative to the original implementation
+	are: a style database that's used to compute element option
+	values (previously element implementations were responsible for
+	doing this themselves); a layout engine for computing the size
+	and position of a group of elements (see layout.c);
+	and script-level access to both of the above.
+
+	Future directions: It's been through three or four major
+	refactorings so far, and could probably use one more.
+	The data structures are still more complicated than they
+	need to be.
+
+	Things are currently neither optimized for space nor for 
+	speed, but could be modified to go either way.  To save space, 
+	greater use of the Flyweight pattern is possible.  Alternately,
+	to speed things up, it could cache more internal state.
+	Since the tile widgets don't seem to be too slow on the one hand
+	or too memory-hungry on the other, as long as no performance
+	problems arise this will probably stay as it is.
+
+	I really, really want to nuke the call to TkGetOptionSpec().
+	This one line of code has caused more headaches than anything
+	else (with the possible exception of Aqua support).
+
+    layout.c --
+    	This contains the layout engine.  The basic algorithm
+	is the same as the [pack] geometry manager.
+
+	Future directions: Needs to be split into two pieces,
+	one for the low-level Ttk_Box / Ttk_Padding routines,
+	and the other for the Ttk_Layout implementation proper.
+
+	As above, the data structures could probably use another
+	refactoring and reorganization.
+
+	The TTK_EXPAND flag should probably go away.  The TTK_BORDER
+	flag is probably not needed either.
+
+    cache.c --
+    	A resource cache for fonts, colors and other resources.
+	See comments at the top of the file for full details,
+	but the basic problem is: Tk frees fonts and colors
+	whenever the last reference to them goes away; but
+	the style engine accesses these resources on a just-in-time 
+	basis and releases them immediately afterwards.
+	This is *very* expensive.  The cache holds a semi-permanent 
+	reference to resources accessed by the style engine to 
+	prevent Tk from freeing them prematurely.
+
+	Future directions:  Preferably, change Tk's (de)allocation
+	policies so that this workaround isn't necessary.
+
+	Possibly -- but only under great duress -- add support
+	for non-default visuals and colormaps.  I really don't
+	want to do this, since it adds a ton of complexity for
+	a feature that nobody uses anymore.
+
+    image.c --
+	Implements the 'style element create image' command,
+	an element factory for defining "pixmap" themes.
+
+    tile.c --
+    	Package initialization routine, plus sort of a dumping ground
+	for miscellaneous stuff that didn't fit anywhere else.
+
+
+WIDGET FRAMEWORK
+
+    widget.h
+    widget.c --
+	This module (and the ones below) attempt to encapsulate
+	all of the boilerplate logic involved in a widget
+	implementation.
+
+	The central data structure is 'struct WidgetSpec_', which
+	consists mostly of a number of callback hooks (or "strategy
+	methods") called at various times during the widget lifecycle.
+
+	Future directions: This isn't namespace-clean; public
+	entry points, typedefs, and #defines need a Ttk prefix.
+
+	There are strict rules about when each hook is called
+	and what each hook must, may, and may not do.  I need
+	to write these rules down somewhere.
+
+    scroll.c --
+    	Attempts to encapsulates the control flow logic involved 
+	in scrolling widgets.
+
+	Future directions: This is only half-baked.  Needs more work.
+
+    manager.h
+    manager.c --
+    	Utilities for writing geometry managers; used by the
+	ttk::notebook and ttk::paned widgets.  Handles the
+	geometry propagation dance control flow logic and the
+	nasty details about slave removal.
+
+	Future directions: the Ttk_Manager and Ttk_Slave data
+	structures need to be made opaque.  Some of the function
+	signatures are Not Quite Right.
+
+	The "SlaveConfigured" hook and Ttk_ConfigureSlave() function
+	probably don't belong here; configuration is better left
+	to the caller.  Once these are gone, the SlaveAdded hook
+	can go away too, leaving a cleaner and simpler interface.
+
+	Long-term: write a TIP to push this interface (or one like it)
+	all the way into the core to replace the current Tk_GeomMgr API.
+	This API is a lot easier to use, and has the potential to
+	solve some longstanding problems (e.g., the "pack vs. grid"
+	conflict).
+
+    trace.c --
+    	A thin wrapper/convenience layer around Tcl_TraceVar() and friends;
+	used by widgets that have linked -variable / -textvariable options.
+
+	Future directions: minor cleanups, namespace prefix
+	(may already be done by the time you read this, it's
+	near the top of my pile.)
+
+    track.c --
+    	Routine TrackElementState().  Used by ttk::scrollbars and other
+	widgets where individual elements may be pressed / active instead
+	of the widget as a whole.  See header comments for details.
+
+    blink.c --
+    	Routine BlinkCursor -- registers an event handler / timer
+	callback to blink the cursor on and off when the widget
+	has focus.  See header comments for details.
+
+
+WIDGET IMPLEMENTATIONS
+
+    button.c / button.tcl --
+    	Labels, buttons, checkbuttons, and radiobuttons.
+	Not much to say about these, except that it's worthwhile
+	comparing the Tile implementation with how the core
+	does things.  Seriously.  This is the best demonstration
+	I can think of for why I think the Tile approach is
+	on the right track.
+
+    frame.c --
+    	Frames and labelframes.  Not much to say here either.
+
+	Future directions: frame widget:  None.  This is a
+	simple widget, and shall remain simple.
+
+	Future directions: labelframe widget: Should use the
+	Ttk_Manager API to manage the -labelwidget.
+	
+	There are several alternate display style possibilities that
+	ought to be, but are currently not, implementable with this
+	widget (see recent discussion on tktable-tile-dev for details).
+
+    entry.c --
+    	Entry and combobox widgets.
+
+	The entry widget presented something of a challenge,
+	since the bulk of the display is handled by the widget
+	itself instead of by an element.  The theme engine doesn't
+	support "owner-draw" widgets very well (yet).
+
+	Future directions: Reuse the "scroll.c" API to manage
+	the -xscrollcommand (once the former has been fixed).
+
+	Remove the backwards-compatibility methods 'scan mark',
+	'scan dragto', 'selection to', and 'selection adjust'.
+	These are unused (and actually a bad idea).
+
+	It ought to be possible to build a spinbox widget on top
+	of the [ttk::entry] entirely in Tcl code.  And a
+	searchbox widget, and a URL bar, and a bunch of other
+	customized entry-like widgets.  I don't think that's
+	possible right now, but it ought to be.
+
+	combobox: Add library routines to enable autocompletion
+	(must be flexible, as there are lots of different autocompletion
+	styles; a single -autocomplete true|false option will not
+	suffice.)
+
+	Fix the focus problems on OSX, Windows, and certain X11 WMs.
+	(This might require core patches; I haven't had any luck yet.)
+
+    notebook.c --
+    	ttk::notebook widget.
+
+	Future directions: Right now the widget can't do Firefox-style
+	tabs (with a 'close' gizmo on the tab) or Mozilla-style notebooks
+	(with a 'close' gizmo in the upper corner).  Both of these
+	should be possible, but currently aren't.
+
+	Features that will not be implemented: Multiple rows of tabs,
+	scrolling tabs.  Both of these options were considered and rejected.
+
+    paned.c --
+    	ttk::paned widget.
+	
+	Future directions: Jeff wants to rename this to "ttk::panedwindow".
+	Support for "collapse buttons" and other sash controls.
+
+    progress.c --
+    	ttk::progressbar widget.
+
+	Future directions: I want to rename this back to "ttk::progress".
+
+	There are a couple of alternate display styles (OSX-style chasing
+	arrows, throbbers, etc.) that ought to be supported cross-theme
+	with common custom styles.
+
+    scale.c --
+    	ttk::scale widget.  This one isn't finished yet.
+
+	Future directions: Finish the widget.  (See recent
+	tktable-tile-dev discussions for API considerations).
+
+    scrollbar.c --
+    	ttk::scrollbar widget.
+
+	Future directions: Native appearance on OSX.  This is
+	turning out to be very difficult to do, because of an
+	impedance mismatch with the way Carbon wants to do things.
+
+    separator.c --
+    	A separator.  Use this instead of 0-width frames to get a
+	separator, the latter doesn't look right.
+
+    treeview.c --
+    	A multi-column hierarchical display.  This one isn't finished yet.
+
+	Future directions:
+
+	I want this widget to be something a bit more powerful than
+	the BWidget Tree, but still simpler than TkTreeCtrl.  That's
+	a useful ecological niche that seems to be unoccupied.
+	The trick is to find the right set of primitive features --
+	there are a million things you can do with a Tree,
+	but I don't want to have a million options and subcommands.
+
+	Right now I'm looking at:
+
+	+ Add item tags (similar to text and canvas tags) to give
+	  applications more control over appearance; 
+	+ Add tag event bindings for more control over behavior; and
+	+ Fix custom style support (see #1168548).
+
+	I think that'll do it.
+
+	Then there's the stuff that's just plain misimplemented --
+	it should compute item and heading heights from the layout instead
+        of hardcoding them; need to replace the hairball [$tv identify $x $y]
+	command with something reasonable; horizontal scrolling doesn't
+	work; etc...
+
+
+THEME IMPLEMENTATIONS
+
+    tkElements.c --
+    	Default implementations for most elements, and layout
+	specifications for the "default" / fallback theme.
+
+	Future directions: This sort of evolved over time as
+	new widgets were added and different approaches to
+	building them were tried out; there's little evidence
+	of intelligent design.  This could stand to be reviewed
+	and revised with an eye to consistency and orthogonalization.
+
+	Ought to remove dependencies on 'Tk_3DBorder's and related routines.
+
+    label.c --
+    	Implementation of the "text", "image", and "label" elements.
+	This is complicated enough that it warranted being split
+	out into its own file.
+
+	Future directions: May remove auto-stippling of 'image' elements;
+	this is a lot of effort for a feature that probably shouldn't
+	be implemented in the first place.  (Tile widgets provide
+	a more flexible way to specify state-dependent images.)
+
+    classicTheme.c --
+    	Tk classic look and feel; 1990s-era Motif.
+
+	Future directions: I might eventually get around to fixing
+	the ttk::button default ring.
+
+    altTheme.c --
+    	The "alt" / "revitalized" theme.  Follows the Windows MSUE 
+	guidelines (pre-XP); visually compatible with 1998-era GNOME 
+	and KDE.
+
+	Future directions: Notebook tabs aren't right; there's
+	a performance issue with checkbutton and radiobutton indicators.
+
+    clamTheme.c --
+    	The "clam" theme; inspired by the XFCE family of GTK+ themes.
+
+	Future directions: I was going to get rid of this entirely,
+	but due to popular demand it'll be retained.
+
+	Much of the implementation is rather ad-hoc; it could
+	be refined and streamlined.
+
+    aquaTheme.c --
+    	Platform-specific theme for OSX.
+
+	Future directions:  Lots of stuff still isn't right here.
+	Still uses the old style of notebook tabs (from OSX "Bobcat")
+	instead of the newer segmented control (from OSX "Ocelot").
+	Native scrollbars aren't implemented at all (tough to solve).
+	Only supports one style of window background (nested groupboxes,
+	"brushed metal" style, etc., aren't supported).  Very tough 
+	to solve.
+
+    winTheme.c --
+    	Platform-specific theme for Windows (pre-XP).
+
+	Future directions: Spacing parameters might need a bit
+	of tweaking, other than that it seems to be in good shape.
+
+    xpTheme.c --
+    	Platform-specific theme for Windows (post-XP).
+
+	Future directions: Same as above; spacing might be a little off,
+	other than that it looks OK.
+
+    stepTheme.c --
+    	Modelled after the GNUStep/NextStep look and feel;
+	also an experimental playground for trying out new stuff.
+
+	Future directions: Unless anybody is using this in production,
+	it will probably be shuffled off into the "demos" directory
+	as an example of a dynamically-loadable theme.
+
+MISCELLANEOUS:
+
+    ttkDecls.h
+    ttkStubInit.c
+    ttkStubLib.c --
+    	The stub library; can be used to implement loadable themes
+	written in C.
+
+	* * * IMPORTANT NOTICE * * *
+
+	The tile stub table is generated with a modified version
+	of genstubs.tcl.  There are a number of small but important
+	differences in the way the Ttk stubs table works, that
+	are intended to make future evolution easier.
+
+    compat.h --
+    	A ghastly autogenerated mess of C preprocessor macros
+	used to implement the Tk 8.4 compatibility options.
+	This is so people could say "namespace import -force tile::*"
+	in existing applications without immediately breaking
+	everything.  (Note: if anyone is still doing that, STOP!)
+
+	Future directions: Going away.  May be gone by the time you
+	read this.
+
+    gunk.h --
+    	Miscellaneous portability gunk that I had to add to get
+	stuff to compile on various platforms and against different
+	Tcl/Tk distributions.
+
+	Future directions: Needs to be killed.
+
+    win/monitor.c --
+    	WIN32 voodoo.  Used to detect when the user has switched
+	desktop themes or color schemes.
+
+    win/nmakehlp.c --
+    	To be honest, I don't know what this is for :-)
+	Has something to do with the MSVC-based build system.
+

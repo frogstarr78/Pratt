@@ -1,0 +1,116 @@
+<manpage cat="widget" id="labelframe" title="labelframe" version="0.7">
+<!-- This file was automatically generated.  DO NOT EDIT (yet)! -->
+<!--  Copyright (c) 2005 Joe English
+ -->
+<?TROFF.TH title="labelframe" section="n" date="0.7" source="tile" manual="Tile Widget Set" ?>
+<namesection>
+<name>ttk::labelframe</name>
+<desc>Container widget with optional label</desc>
+</namesection>
+<synopsis>
+<syntax>
+<b>ttk::labelframe</b> <m>pathName</m> ?<m>options</m>?
+</syntax>
+</synopsis>
+<section>
+<title>DESCRIPTION</title>
+<p>A <b cat="AMBIGUOUS widget cmd">labelframe</b> widget is a container used to group other widgets together.
+It has an optional label, which may be a plain text string or another widget. 
+</p>
+</section>
+<section>
+<title>STANDARD OPTIONS</title>
+<sl cat="stdopt" cols="4">
+<li>-class</li>
+<li>-cursor</li>
+<li>-style</li>
+<li>-takefocus</li>
+</sl>
+</section>
+<section>
+<title>OPTIONS</title>
+<optionlist>
+<optiondef>
+<name>-labelanchor</name>
+<dbname>labelAnchor</dbname>
+<dbclass>LabelAnchor</dbclass>
+<desc>Specifies where to place the label.  
+Allowed values are (clockwise from the top upper left corner):
+<b>nw</b>, <b>n</b>, <b>ne</b>, <b>en</b>, <b>e</b>, <b>es</b>,
+<b>se</b>, <b>s</b>,<b>sw</b>, <b>ws</b>, <b>w</b> and <b>wn</b>.
+The default value is theme-dependent.
+</desc>
+</optiondef>
+<optiondef>
+<name>-text</name>
+<dbname>text</dbname>
+<dbclass>Text</dbclass>
+<desc>Specifies the text of the label.
+</desc>
+</optiondef>
+<optiondef>
+<name>-underline</name>
+<dbname>underline</dbname>
+<dbclass>Underline</dbclass>
+<desc>If set, specifies the integer index (0-based) of a character to 
+underline in the text string.
+The underlined character is used for mnemonic activation
+(see <i>keynav(n)</i>).  
+Mnemonic activation for a <b>ttk::labelframe</b> 
+sets the keyboard focus to the first child of the <b>ttk::labelframe</b> widget.
+</desc>
+</optiondef>
+<optiondef>
+<name>-padding</name>
+<dbname>padding</dbname>
+<dbclass>Padding</dbclass>
+<desc>Additional padding to include inside the border.
+</desc>
+</optiondef>
+<optiondef>
+<name>-labelwidget</name>
+<dbname>labelWidget</dbname>
+<dbclass>LabelWidget</dbclass>
+<desc>The name of a widget to use for the label.
+If set, overrides the <b>-text</b> option.
+The <b>-labelwidget</b> must be a child of the <b cat="AMBIGUOUS widget cmd">labelframe</b> widget
+or one of the <b cat="AMBIGUOUS widget cmd">labelframe</b>'s ancestors, and must belong to the
+same top-level widget as the <b cat="AMBIGUOUS widget cmd">labelframe</b>.
+</desc>
+</optiondef>
+<optiondef>
+<name>-width</name>
+<dbname>width</dbname>
+<dbclass>Width</dbclass>
+<desc>If specified, the widget's requested width in pixels.
+</desc>
+</optiondef>
+<optiondef>
+<name>-height</name>
+<dbname>height</dbname>
+<dbclass>Height</dbclass>
+<desc>If specified, the widget's requested height in pixels.
+(See <i>ttk::frame</i> for further notes on <b>-width</b> and <b>-height</b>).
+</desc>
+</optiondef>
+</optionlist>
+</section>
+<section>
+<title>WIDGET COMMAND</title>
+<p>Supports the standard widget commands
+<b>configure</b>, <b>cget</b>, <b>instate</b>, and <b>state</b>;
+see <i>widget(n)</i>.
+</p>
+</section>
+<seealso>
+<ref>widget(n)</ref>
+<ref>frame(n)</ref>
+</seealso>
+<keywords>
+<keyword>widget</keyword>
+<keyword>frame</keyword>
+<keyword>container</keyword>
+<keyword>label</keyword>
+<keyword>groupbox</keyword>
+</keywords>
+</manpage>

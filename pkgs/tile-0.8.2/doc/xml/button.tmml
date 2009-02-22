@@ -1,0 +1,134 @@
+<manpage cat="widget" id="button" title="button" version="0.2">
+<!-- This file was automatically generated.  DO NOT EDIT (yet)! -->
+<!-- 
+     Copyright (c) 2004 Joe English
+ -->
+<?TROFF.TH title="button" section="n" date="0.2" source="tile" manual="Tile Widget Set" ?>
+<namesection>
+<name>ttk::button</name>
+<desc>Widget that issues a command when pressed</desc>
+</namesection>
+<synopsis>
+<syntax>
+<b>ttk::button</b> <m>pathName</m> ?<m>options</m>?
+</syntax>
+</synopsis>
+<section>
+<title>DESCRIPTION</title>
+<p>A <b cat="AMBIGUOUS widget cmd">button</b> widget displays a textual label and/or image,
+and evaluates a command when pressed.
+</p>
+</section>
+<section>
+<title>STANDARD OPTIONS</title>
+<sl cat="stdopt" cols="4">
+<li>-class</li>
+<li>-compound</li>
+<li>-cursor</li>
+<li>-image</li>
+<li>-state</li>
+<li>-style</li>
+<li>-takefocus</li>
+<li>-text</li>
+<li>-textvariable</li>
+<li>-underline</li>
+<li>-width</li>
+</sl>
+</section>
+<section>
+<title>OPTIONS</title>
+<optionlist>
+<optiondef>
+<name>-command</name>
+<dbname>command</dbname>
+<dbclass>Command</dbclass>
+<desc>A script to evaluate when the widget is invoked.
+</desc>
+</optiondef>
+<optiondef>
+<name>-default</name>
+<dbname>default</dbname>
+<dbclass>Default</dbclass>
+<desc>May be set to one of  <b>normal</b>, <b>active</b>, or <b>disabled</b>.
+In a dialog box, one button may be designated the "default" button
+(meaning, roughly, "the one that gets invoked when the user presses &lt;Enter&gt;").
+<b>active</b> indicates that this is currently the default button;
+<b>normal</b> means that it may become the default button, and
+<b>disabled</b> means that it is not defaultable.
+The default is <b>normal</b>.
+<br/>Depending on the theme, the default button may be displayed 
+with an extra highlight ring, or with a different border color.
+See also: <i>keynav(n)</i>.
+</desc>
+</optiondef>
+<optiondef>
+<name>-width</name>
+<dbname>width</dbname>
+<dbclass>Width</dbclass>
+<desc>If greater than zero, specifies how much space, in character widths, 
+to allocate for the text label.  
+If less than zero, specifies a minimum width.
+If zero or unspecified, the natural width of the text label is used.
+Note that some themes may specify a non-zero <b>-width</b>
+in the style.
+
+</desc>
+</optiondef>
+</optionlist>
+</section>
+<section>
+<title>WIDGET COMMAND</title>
+<dl>
+<dle>
+<dt><m>pathName</m> <b>invoke</b></dt>
+<dd>Invokes the command associated with the button.
+</dd>
+</dle>
+<dle>
+<dt><m>pathName</m> <b>cget</b> <m>option</m></dt>
+<dd/>
+</dle>
+<dle>
+<dt><m>pathName</m> <b>configure</b> ?<m>option</m>? ?<m>value option value ...</m>?</dt>
+<dd/>
+</dle>
+<dle>
+<dt><m>pathName</m> <b>instate</b> <m>statespec</m> ?<m>script</m>?</dt>
+<dd/>
+</dle>
+<dle>
+<dt><m>pathName</m> <b>state</b> ?<m>stateSpec</m>?</dt>
+<dd>See <i>widget(n)</i>
+
+</dd>
+</dle>
+</dl>
+</section>
+<section>
+<title>COMPATIBILITY OPTIONS</title>
+<optionlist>
+<optiondef>
+<name>-state</name>
+<dbname>state</dbname>
+<dbclass>State</dbclass>
+<desc>May be set to <b>normal</b> or <b>disabled</b>
+to control the <b>disabled</b> state bit.
+This is a ``write-only'' option: setting it changes the
+widget state, but the <b>state</b> widget command does
+not affect the state option.
+
+</desc>
+</optiondef>
+</optionlist>
+</section>
+<seealso>
+<ref>widget(n)</ref>
+<ref>keynav(n)</ref>
+</seealso>
+<keywords>
+<keyword>widget</keyword>
+<keyword>button</keyword>
+<keyword>default</keyword>
+<keyword>command</keyword>
+</keywords>
+</manpage>
