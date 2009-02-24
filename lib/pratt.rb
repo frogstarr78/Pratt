@@ -6,20 +6,17 @@ class Pratt
   include PrattM
   VERSION = '1.0.0'
 
-  attr_reader :interval
 
-  def initialize intvl = 15
-    @interval = intvl.to_i*60
+  def initialize
   end
 
   def main
     projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
     system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{Whence.last.project.name}'")
-    sleep interval
   end
 
-  def pop option
-    system("ruby lib/pop.rb #{option}")
+  def pop
+    system("ruby lib/pop.rb '#{Whence.last.project.name}'")
   end
 
   def do project, start_or_stop = :start
@@ -27,10 +24,22 @@ class Pratt
   end
 
   class << self
+    def interval
+      @@interval || 15*60
+    end
+
+    def interval= i
+      @@interval = i*60
+    end
+
     def run intvl = 15
-      me = new intvl
+      self.interval = intvl
+      puts interval
+      exit
+      me = new
+      me.main && sleep(interval)
       while(true)
-        me.main
+        me.pop && sleep(interval)
       end
     end
 
