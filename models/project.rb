@@ -11,8 +11,8 @@ class Project < ActiveRecord::Base
   end
 
   def restart!
-    stop!
-    start!
+    self.do false
+    self.do true
   end
 
   class << self

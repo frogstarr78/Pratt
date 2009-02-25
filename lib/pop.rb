@@ -25,7 +25,9 @@ end.pack(:side => 'bottom', :fill => 'y')
 yes_button = TkButton.new(botm_frm) do
   text "Yes"
   command do
-#    Whence.last_started.project.restart!
+    require 'lib/pratt'
+    (p = Whence.last_started.project).restart!
+    puts p.inspect
     exit 
   end
   underline 0
@@ -34,8 +36,11 @@ end.pack('side' => 'left', :fill => 'y')
 no_button = TkButton.new(botm_frm) do
   text "No"
   command do
-#    Whence.last_started.project.stop!
-#    system('ruby', "lib/complex.rb")
+    require 'lib/pratt'
+    (p = Whence.last_started.project).do false
+    puts p.inspect
+    c = fork { system('ruby', "bin/pratt.rb --change '#{project_name}'") }
+    Process.detach(c)
     exit 
   end
   underline 0

@@ -45,13 +45,16 @@ project_combo.pack('side' => 'top', 'fill' => 'y')
 project_combo.bind("<ComboboxSelected>") { puts 'touched combo' }
 
 message = Tk::Tile::Label.new(button_holder_top) do
-#message = TkMessage.new(button_holder_top) do
   text "What have you been/will you be working on?"
 end.pack('side' => 'top', :fill => 'y')
 
 TkButton.new(button_holder_bottom) do 
   text 'Start/Continue'
-  command { system("ruby bin/pratt.rb --start '#{project_combo.get}'") }
+  command do
+    c = fork { system("ruby bin/pratt.rb --begin '#{project_combo.get}'") }
+    Process.detach(c)
+    exit
+  end
 #  command { Whence.last_started.project.restart!; exit }
   underline 0
 end.pack :side => 'left', :fill => 'y'
@@ -59,6 +62,11 @@ end.pack :side => 'left', :fill => 'y'
 
 TkButton.new(button_holder_bottom) do 
   text 'Change'
+  command do
+    c = fork { system("ruby bin/pratt.rb --change '#{project_combo.get}'") }
+    Process.detach(c)
+    exit
+  end
 #  command { Pratt.change(project_combo.get) }
   underline 0
 end.pack :side => 'left', :fill => 'y'
@@ -66,8 +74,16 @@ end.pack :side => 'left', :fill => 'y'
 
 TkButton.new(button_holder_bottom) do 
   text 'Quit'
-  command { system("ruby bin/pratt.rb --stop '#{project_combo.get}' --and_quit") }
-  command { exit }
+  command do
+#    c = fork { system("ruby bin/pratt.rb --end '#{project_combo.get}' --and_quit") }
+    c = fork { 
+      require 'lib/pratt'
+      pratt = Pratt.new
+      pratt.do(:end, project_combo.get) and pratt.quit
+    }
+    Process.detach(c)
+    exit
+  end
   underline 0
 end.pack :side => 'right', :fill => 'y'
 #root.bind("Alt-q") { Whence.last_started.project.restart!; exit }
