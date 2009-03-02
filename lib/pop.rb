@@ -1,9 +1,7 @@
+#!/usr/bin/ruby
 require 'tk'
 require 'tkextlib/tile'
-require 'lib/pratt_module'
 require 'optparse'
-#require 'lib/pratt'
-include PrattM
 
 project_name = ARGV.first
 
@@ -25,9 +23,8 @@ end.pack(:side => 'bottom', :fill => 'y')
 yes_button = TkButton.new(botm_frm) do
   text "Yes"
   command do
-    require 'lib/pratt'
-    (p = Whence.last_started.project).restart!
-    puts p.inspect
+    c = fork { system("ruby bin/pratt.rb --restart '#{project_name}'") }
+    Process.detach(c)
     exit 
   end
   underline 0
@@ -36,10 +33,11 @@ end.pack('side' => 'left', :fill => 'y')
 no_button = TkButton.new(botm_frm) do
   text "No"
   command do
-    require 'lib/pratt'
-    (p = Whence.last_started.project).do false
-    puts p.inspect
-    c = fork { system('ruby', "bin/pratt.rb --change '#{project_name}'") }
+    c = fork { 
+      system("ruby bin/pratt.rb --end '#{project_name}' --and_quit")
+      require 'lib/pratt'
+      Pratt.new.main
+    }
     Process.detach(c)
     exit 
   end

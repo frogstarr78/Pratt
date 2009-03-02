@@ -4,39 +4,56 @@ require 'optparse'
 require 'ostruct'
 
 opts = OpenStruct.new
-opts.interval = 15
-opts.action   = :stop
-opts.project  = ""
-opts.quit     = false
+opts.show         = false
+opts.interval     = 15
+opts.quit         = false
+opts.do_daemonize = false
+opts.prompt       = nil
 
 ARGV.options do |opt|
   opt.on('-i', "--interval INTERVAL", Float, "List of projects to display.") do |intvl|
     opts.interval = intvl
   end
+  opt.on('-r PROJECT_NAME', "--restart PROJECT_NAME", String, "Restart project (stop last log and start a new one).") do |proj|
+    Pratt.new.do :restart!, proj
+  end
   opt.on('-b PROJECT_NAME', "--begin PROJECT_NAME", String, "Begin project tracking.") do |proj|
-    opts.project = proj
-    opts.action = :start
+    Pratt.new.do :start!, proj
   end
   opt.on('-e PROJECT_NAME', "--end PROJECT_NAME", String, "End project tracking.") do |proj|
-    opts.project = proj
-    opts.action = :end
+    Pratt.new.do :stop!, proj
   end
   opt.on('-c PROJECT_NAME', "--change PROJECT_NAME", String, "End project tracking.") do |proj|
-    opts.project = proj
-    opts.action = :restart
+    Pratt.new.change proj
   end
 
-  opt.on("--and_quit", "Stop daemon.") do |projs|
+  opt.on('-s', "--show", String, "Show available projects and current project (if there is one)") do |proj|
+    projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
+    puts "projects: '#{projects*"','"}'"
+    if (current = Whence.last).end_at.nil?
+      puts " current: '#{current.project.name}'" 
+      puts " started: '#{current.start_at}'"
+    else
+      puts " current: No current project" 
+    end
+  end
+  opt.on("-d", "--daemonize", "Start daemon.") do
+    opts.do_daemonize = true
+  end
+  opt.on("--and_quit", "Stop daemon.") do
     opts.quit = false
   end
-
-  opt.on('-q', "--quit", "Stop daemon.") do |projs|
+  opt.on('-q', "--quit", "Stop daemon.") do
     opts.quit = false
   end
-
+  opt.on('-p WHICH_GUI', '--prompt WHICH_GUI', [:main, :pop], "Flag for prompting a gui (currently: main or pop).") do |gui|
+    opts.prompt = gui
+  end
+  
   opt.parse!
 end
 
 opts.interval = opts.interval.to_f
 
-Pratt.run(opts.interval)
+Pratt.run(opts.interval, opts.do_daemonize)
+Pratt.new.send opts.prompt if opts.prompt

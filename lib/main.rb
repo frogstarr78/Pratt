@@ -1,11 +1,8 @@
 #!/usr/bin/ruby
 require 'tk'
 require 'tkextlib/tile'
-require 'lib/pratt_module'
 require 'optparse'
 require 'ostruct'
-#require 'lib/pratt'
-include PrattM
 
 opts = OpenStruct.new
 opts.projects = []
@@ -15,7 +12,6 @@ ARGV.options do |opt|
   opt.on('-p x,y,z', "--projects x,y,z", Array, "List of projects to display.") do |projs|
     opts.projects = projs
   end
-
   opt.on('-c', '--current CURRENT', "Set the current task.") do |cur|
     opts.current = opts.projects.index(cur)
   end
@@ -55,10 +51,9 @@ TkButton.new(button_holder_bottom) do
     Process.detach(c)
     exit
   end
-#  command { Whence.last_started.project.restart!; exit }
   underline 0
 end.pack :side => 'left', :fill => 'y'
-#root.bind("Alt-s") { Whence.last_started.project.restart!; exit }
+#root.bind("Alt-s") { Whence.last.project.restart!; exit }
 
 TkButton.new(button_holder_bottom) do 
   text 'Change'
@@ -67,7 +62,6 @@ TkButton.new(button_holder_bottom) do
     Process.detach(c)
     exit
   end
-#  command { Pratt.change(project_combo.get) }
   underline 0
 end.pack :side => 'left', :fill => 'y'
 #root.bind("Alt-c") {  Pratt.change(project_combo.get); exit }
@@ -75,23 +69,18 @@ end.pack :side => 'left', :fill => 'y'
 TkButton.new(button_holder_bottom) do 
   text 'Quit'
   command do
-#    c = fork { system("ruby bin/pratt.rb --end '#{project_combo.get}' --and_quit") }
-    c = fork { 
-      require 'lib/pratt'
-      pratt = Pratt.new
-      pratt.do(:end, project_combo.get) and pratt.quit
-    }
+    c = fork { system("ruby bin/pratt.rb --end '#{project_combo.get}' --and_quit") }
     Process.detach(c)
     exit
   end
   underline 0
 end.pack :side => 'right', :fill => 'y'
-#root.bind("Alt-q") { Whence.last_started.project.restart!; exit }
-#root.bind("Control-q") { Whence.last_started.project.restart!; exit }
+#root.bind("Alt-q") { Whence.last.project.restart!; exit }
+#root.bind("Control-q") { Whence.last.project.restart!; exit }
 
 button_holder_top.pack(   :side => 'top'   , :fill => 'y')
 button_holder_bottom.pack(:side => 'bottom', :fill => 'y')
-button_holder.pack(       :side => 'top', :fill => 'y')
+button_holder.pack(       :side => 'top',    :fill => 'y')
 root.geometry = "265x80"
 
 Tk.mainloop
