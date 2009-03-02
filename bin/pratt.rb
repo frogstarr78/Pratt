@@ -10,7 +10,7 @@ opts.project  = ""
 opts.quit     = false
 
 ARGV.options do |opt|
-  opt.on('-i INTERVAL', "--interval INTERVAL", Integer, "List of projects to display.") do |intvl|
+  opt.on('-i', "--interval INTERVAL", Float, "List of projects to display.") do |intvl|
     opts.interval = intvl
   end
   opt.on('-b PROJECT_NAME', "--begin PROJECT_NAME", String, "Begin project tracking.") do |proj|
@@ -37,16 +37,6 @@ ARGV.options do |opt|
   opt.parse!
 end
 
-opts.interval = opts.interval.to_i
+opts.interval = opts.interval.to_f
 
-pid_file = "pratt.pid"
-pratt = Pratt.new
-
-if Pratt.pid?
-  pratt.do(opts.action, opts.project) if opts.action
-  pratt.quit                          if opts.quit
-  # expect quit after action
-  # but don't require it then
-else
-  Pratt.run(opts.interval)
-end
+Pratt.run(opts.interval)
