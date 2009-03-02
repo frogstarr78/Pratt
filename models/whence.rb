@@ -2,10 +2,6 @@ class Whence < ActiveRecord::Base
   belongs_to :project
 
   class << self
-    def last_started
-      find :last, :order => "start_at ASC"
-    end
-
     def migrate up = true 
       ActiveRecord::Schema.define do
         if up

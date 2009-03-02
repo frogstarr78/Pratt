@@ -1,18 +1,23 @@
 class Project < ActiveRecord::Base
   has_many :whences
 
-  def do start = true
-    if start
-      whences.create :start_at => DateTime.now
-    else
-      (wen = whences.last).end_at = DateTime.now
+  def start!
+    whences.create :start_at => DateTime.now
+  end
+
+  def stop!
+    # in case there isn't a previous log
+    if wen = whences.last 
+      # only set if not already set
+      # aka don't reset existing entries
+      wen.end_at ||= DateTime.now
       wen.save
     end
   end
 
   def restart!
-    self.do false
-    self.do true
+    self.stop!
+    self.start!
   end
 
   class << self
@@ -22,17 +27,11 @@ class Project < ActiveRecord::Base
     def refactor
       find_cond 'Home Refactor'
     end
-
     def off
       find_cond 'Lunch/Break'
     end
-
     def rest
       all :conditions => ["name not in (?)", %w(Home\ Refactor Lunch/Break)]
-    end
-
-    def last_started
-      whences.find :last, :order => "start_at ASC"
     end
 
     def migrate up = true
