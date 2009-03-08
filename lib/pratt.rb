@@ -1,4 +1,5 @@
 require 'config'
+require 'colored'
 
 class Pratt
 
@@ -14,7 +15,8 @@ class Pratt
     system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{Whence.last.project.name}'")
   end
   def pop
-    system("ruby lib/pop.rb '#{Whence.last.project.name}'")
+    project = Whence.last.project
+    system("ruby lib/pop.rb '#{project.name}' '#{project.time_spent}'")
   end
   def do action, project
     Project.find_by_name(project).send action
@@ -40,6 +42,7 @@ class Pratt
     def run intvl = 15, daemonize = false
       self.interval = intvl
       (me = new).main
+      puts DateTime.now.strftime
       daemonize!
       sleep(interval)
       while(daemonized?)

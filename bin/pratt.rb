@@ -9,6 +9,7 @@ opts.interval     = 15
 opts.quit         = false
 opts.do_daemonize = false
 opts.prompt       = nil
+opts.graph        = false
 
 ARGV.options do |opt|
   opt.on('-i', "--interval INTERVAL", Float, "List of projects to display.") do |intvl|
@@ -25,6 +26,18 @@ ARGV.options do |opt|
   end
   opt.on('-c PROJECT_NAME', "--change PROJECT_NAME", String, "End project tracking.") do |proj|
     Pratt.new.change proj
+  end
+  opt.on('-g', "--graph [PROJECT_NAME]", String, "End project tracking.") do |proj|
+    if proj
+      puts "#{(proj = Project.find_by_name(proj)).name}: #{proj.time_spent}"
+    else
+      projects = Project.all
+      max      = projects.inject(0) do |x,p| 
+        x = p.name.length if p.name.length > x
+        x
+      end
+      puts projects.collect {|proj| "%1$*3$s: %2$s"% [proj.name, proj.time_spent, max] }
+    end
   end
 
   opt.on('-s', "--show", String, "Show available projects and current project (if there is one)") do |proj|
@@ -55,5 +68,5 @@ end
 
 opts.interval = opts.interval.to_f
 
-Pratt.run(opts.interval, opts.do_daemonize)
+Pratt.run(opts.interval) if opts.do_daemonize
 Pratt.new.send opts.prompt if opts.prompt

@@ -20,6 +20,23 @@ class Project < ActiveRecord::Base
     self.start!
   end
 
+  def time_spent
+    min = whences.all( :conditions => "end_at IS NOT NULL").inject(0.0) {|total, whence| 
+      total += ( whence.end_at - whence.start_at )
+    }
+    min /= 60
+    if min > 60
+      hr = (min / 60)
+      if hr > 24
+        return "#{(hr / 24).to_i.to_s.magenta} days #{(hr%24).to_i.to_s.green} hours #{(60*(hr -= hr.to_i)).to_i.to_s.cyan} minutes"
+      else
+        return "#{hr.to_i.to_s.green} hours #{(60*(hr -= hr.to_i)).to_i.to_s.cyan} minutes"
+      end
+    else
+      return "#{min.to_i.to_s.cyan} minutes"
+    end
+  end
+
   class << self
     def named name
       find_cond name
