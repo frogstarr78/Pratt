@@ -37,6 +37,7 @@ ActiveRecord::Base.establish_connection(
 )
 
 unless File.exist?(DBFILE)
+  include Config
   Project.migrate
   Whence.migrate
 end
