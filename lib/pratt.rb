@@ -5,7 +5,7 @@ class Pratt
 
   include Config
   VERSION = '1.0.0'
-  PID_FILE='pratt.pid'
+  PID_FILE='/var/run/pratt.pid'
 
   class << self
     def quit
