@@ -4,7 +4,6 @@ class Project < ActiveRecord::Base
   def start!
     whences.create :start_at => DateTime.now
   end
-
   def stop!
     # in case there isn't a previous log
     if wen = whences.last 
@@ -14,30 +13,25 @@ class Project < ActiveRecord::Base
       wen.save
     end
   end
-
   def restart!
     self.stop!
     self.start!
   end
 
-  def time_spent
-    min = whences.all( :conditions => "end_at IS NOT NULL").inject(0.0) {|total, whence| 
-      total += ( whence.end_at - whence.start_at )
-    }
-    min /= 60
-    if min > 60
-      hr = (min / 60)
-      if hr > 24
-        return "#{(hr / 24).to_i.to_s.magenta} days #{(hr%24).to_i.to_s.green} hours #{(60*(hr -= hr.to_i)).to_i.to_s.cyan} minutes"
-      else
-        return "#{hr.to_i.to_s.green} hours #{(60*(hr -= hr.to_i)).to_i.to_s.cyan} minutes"
-      end
-    else
-      return "#{min.to_i.to_s.cyan} minutes"
-    end
+  def time_spent fmt = false
+    hr = (
+      whences.all( :conditions => "end_at IS NOT NULL").inject(0.0) {|total, whence| 
+        total += ( whence.end_at - whence.start_at )
+      } / 3600
+    )
+    return "#{Project.fmt(hr / 24, 'days', :cyan, fmt)} #{Project.fmt(hr % 24, 'hours', :yellow, fmt)} #{Project.fmt((60*(hr -= hr.to_i)), 'minutes', :green, fmt)}"
   end
 
   class << self
+    def fmt i, m, c, fmt = false
+      "%s #{m}"% [("%02i"% i).send(fmt ? c : :to_s), m]
+    end
+
     def named name
       find_cond name
     end
@@ -55,7 +49,7 @@ class Project < ActiveRecord::Base
       ActiveRecord::Schema.define do
         if up
           create_table :projects do |t|
-            t.column :name, :string
+            t.string  :name
             t.integer :weight, :default => -1
           end
         else
