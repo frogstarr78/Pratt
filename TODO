@@ -4,3 +4,5 @@ Intelligently detect correctly running stored pid.
 Add date range argument to timed report.
 Add validation for start/end at.
 Manual data manipulation date/time.
+Allow only one prompt at a time.
+Add TrayIcon
