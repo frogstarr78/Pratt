@@ -35,3 +35,8 @@ ActiveRecord::Base.establish_connection(
   :adapter => 'sqlite3',
   :dbfile => DBFILE
 )
+
+unless File.exist?(DBFILE)
+  Project.migrate
+  Whence.migrate
+end
