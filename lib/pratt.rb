@@ -14,8 +14,9 @@ class Pratt
 
     def main
       projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
+      current  = Whence.count > 0 ? Whence.last : Whence.new(:project => Project.refactor)
       Process.detach(
-        fork { system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{Whence.last.project.name}'") } 
+        fork { system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{current.project.name}'") } 
       )
     end
 
@@ -30,10 +31,10 @@ class Pratt
       Process.detach(
         fork {
           daemonize!
-          (me = new).main
+          main
           while(daemonized?)
             sleep(interval*60)
-            me.pop
+            pop
           end
         }
       )
