@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
 require "lib/pratt"
 require 'optparse'
+require 'optparse/time'
 require 'ostruct'
 
 opts = OpenStruct.new
@@ -10,6 +11,7 @@ opts.quit         = false
 opts.do_daemonize = false
 opts.prompt       = nil
 opts.graph        = false
+opts.whence       = Time.now
 
 ARGV.options do |opt|
   opt.on('-b', "--begin PROJECT_NAME", String, "Begin project tracking.") do |proj|
@@ -25,6 +27,10 @@ ARGV.options do |opt|
     last_log = Whence.last
     last_log.project = Project.find_or_create_by_name proj
     last_log.save
+  end
+
+  opt.on('-w', '--when TIME', Time, "What time do you log this") do |whence|
+    opts.whence = whence
   end
 
   opt.on('-g', "--graph [PROJECT_NAME]", String, "End project tracking.") do |proj|
