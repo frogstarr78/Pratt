@@ -38,45 +38,54 @@ project_combo  = Tk::Tile::TCombobox.new(button_holder_top)
 project_combo.values = opts.projects
 project_combo.current = opts.current
 project_combo.pack('side' => 'top', 'fill' => 'y')
-project_combo.bind("<ComboboxSelected>") { puts 'touched combo' }
+#project_combo.bind("<ComboboxSelected>") { puts 'touched combo' }
 
-message = Tk::Tile::Label.new(button_holder_top) do
+
+change = proc {
+  Process.detach(   
+    fork { system("ruby bin/pratt.rb --change '#{project_combo.get}' --begin '#{project_combo.get}'") } 
+  )
+  exit
+}
+quit = proc {
+  Process.detach(
+    fork { system("ruby bin/pratt.rb --end '#{project_combo.get}' --quit") }
+  )
+  exit
+}
+start = proc {
+  Process.detach(
+    fork { system("ruby bin/pratt.rb --begin '#{project_combo.get}'") }
+  )
+  exit
+}
+
+Tk::Tile::Label.new(button_holder_top) do
   text "What have you been/will you be working on?"
 end.pack('side' => 'top', :fill => 'y')
 
 TkButton.new(button_holder_bottom) do 
   text 'Start/Continue'
-  command do
-    c = fork { system("ruby bin/pratt.rb --begin '#{project_combo.get}'") }
-    Process.detach(c)
-    exit
-  end
+  command start
   underline 0
 end.pack :side => 'left', :fill => 'y'
-#root.bind("Alt-s") { Whence.last.project.restart!; exit }
+root.bind("Alt-s", start)
+#root.bind("Return", start)
 
 TkButton.new(button_holder_bottom) do 
   text 'Change'
-  command do
-    c = fork { system("ruby bin/pratt.rb --change '#{project_combo.get}'") }
-    Process.detach(c)
-    exit
-  end
+  command change
   underline 0
 end.pack :side => 'left', :fill => 'y'
-#root.bind("Alt-c") {  Pratt.change(project_combo.get); exit }
+root.bind("Alt-c", change)
 
 TkButton.new(button_holder_bottom) do 
   text 'Quit'
-  command do
-    c = fork { system("ruby bin/pratt.rb --end '#{project_combo.get}' --and_quit") }
-    Process.detach(c)
-    exit
-  end
+  command quit
   underline 0
 end.pack :side => 'right', :fill => 'y'
-#root.bind("Alt-q") { Whence.last.project.restart!; exit }
-#root.bind("Control-q") { Whence.last.project.restart!; exit }
+root.bind("Alt-q", quit)
+root.bind("Control-q", quit)
 
 button_holder_top.pack(   :side => 'top'   , :fill => 'y')
 button_holder_bottom.pack(:side => 'bottom', :fill => 'y')

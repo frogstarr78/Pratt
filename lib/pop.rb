@@ -6,6 +6,17 @@ require 'optparse'
 project_name = ARGV.first
 project_time = ARGV.last
 
+yes = proc {
+  c = fork { system("ruby bin/pratt.rb --restart '#{project_name}'") }
+  Process.detach(c)
+  exit 
+}
+no = proc {
+  c = fork { system("ruby bin/pratt.rb --end '#{project_name}' --prompt 'main'") }
+  Process.detach(c)
+  exit 
+}
+
 root = TkRoot.new do
   title "Rebuild Tracker" end
 
@@ -25,39 +36,25 @@ Tk::Tile::Label.new(top_frm) do
   text "for a total of:\n#{project_time}."
 end.pack(:side => 'bottom', :fill => 'y')
 
-#project_duration = Tk::Tile::Label.new(top_frm) do
-#  text "for a total of: #{project_time}."
-#end.pack(:side => 'bottom', :fill => 'y')
-#
-yes_button = TkButton.new(botm_frm) do
+TkButton.new(botm_frm) do
   text "Yes"
-  command do
-    c = fork { system("ruby bin/pratt.rb --restart '#{project_name}'") }
-    Process.detach(c)
-    exit 
-  end
+  command yes
   underline 0
 end.pack('side' => 'left', :fill => 'y')
+root.bind("Alt-y", yes)
+#root.bind("Return", yes)
 
-no_button = TkButton.new(botm_frm) do
+TkButton.new(botm_frm) do
   text "No"
-  command do
-    c = fork { 
-      system("ruby bin/pratt.rb --end '#{project_name}' --and_quit")
-      require 'lib/pratt'
-      Pratt.new.main
-    }
-    Process.detach(c)
-    exit 
-  end
+  command no
   underline 0
 end.pack('side' => 'right', :fill => 'y')
+root.bind("Alt-n", no)
+#root.bind("Escape", no)
 
 top_frm.pack( :side => 'top',    :fill => 'y')
 botm_frm.pack(:side => 'bottom', :fill => 'y')
 frm.pack(     :side => 'top',    :fill => 'y')
-#root.geometry = "200x75"
-#root.bind("Alt-y") { Whence.last_started.project.restart!; exit }
-root.bind("Alt-n") { system('ruby', "lib/complex.rb"); exit }
+root.geometry = "205x95"
 
 Tk.mainloop
