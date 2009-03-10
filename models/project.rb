@@ -5,13 +5,7 @@ class Project < ActiveRecord::Base
     whences.create :start_at => DateTime.now
   end
   def stop!
-    # in case there isn't a previous log
-    if wen = whences.last 
-      # only set if not already set
-      # aka don't reset existing entries
-      wen.end_at ||= DateTime.now
-      wen.save
-    end
+    whences.last_unended.stop!
   end
   def restart!
     self.stop!
