@@ -3,8 +3,7 @@ require 'tk'
 require 'tkextlib/tile'
 require 'optparse'
 
-project_name = ARGV.first
-project_time = ARGV.last
+project_name, start_time, project_time = ARGV
 
 yes = proc {
   c = fork { system("ruby bin/pratt.rb --restart '#{project_name}'") }
@@ -33,7 +32,10 @@ Tk::Tile::Label.new(top_frm) do
 end.pack(:side => 'top', :fill => 'y')
 
 Tk::Tile::Label.new(top_frm) do
-  text "for a total of:\n#{project_time}."
+  text "started:
+  #{start_time}
+total time:
+  #{project_time}."
 end.pack(:side => 'bottom', :fill => 'y')
 
 TkButton.new(botm_frm) do
@@ -50,11 +52,11 @@ TkButton.new(botm_frm) do
   underline 0
 end.pack('side' => 'right', :fill => 'y')
 root.bind("Alt-n", no)
-#root.bind("Escape", no)
+root.bind("Escape") { exit }
 
 top_frm.pack( :side => 'top',    :fill => 'y')
 botm_frm.pack(:side => 'bottom', :fill => 'y')
 frm.pack(     :side => 'top',    :fill => 'y')
-root.geometry = "205x95"
+root.geometry = "210x120"
 
 Tk.mainloop
