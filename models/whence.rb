@@ -16,4 +16,9 @@ class Whence < ActiveRecord::Base
       end
     end
   end
+
+  protected
+    def validate
+        errors.add "time", "end time must be greater than start time" unless end_at > start_at
+    end
 end
