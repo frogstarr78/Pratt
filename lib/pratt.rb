@@ -15,16 +15,16 @@ class Pratt
 
     def main
       projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
-      current  = Whence.count > 0 ? Whence.last : Whence.new(:project => Project.refactor)
+      current  = Whence.count > 0 ? Whence.last_unended : Whence.new(:project => Project.refactor)
       Process.detach(
         fork { system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{current.project.name}'") } 
       )
     end
 
     def pop
-      project = Whence.last.project
+      project = Whence.last_unended.project
       Process.detach(
-        fork { system("ruby lib/pop.rb '#{project.name}' '#{project.time_spent}'") } 
+        fork { system("ruby lib/pop.rb '#{project.name}' '#{project.whences.last_unended.start_at}' '#{project.time_spent}'") } 
       )
     end
 
