@@ -61,11 +61,11 @@ start = proc {
 }
 
 Tk::Tile::Label.new(button_holder_top) do
-  text "What have you been/will you be working on?"
+  text "What will you be working on?"
 end.pack('side' => 'top', :fill => 'y')
 
 TkButton.new(button_holder_bottom) do 
-  text 'Start/Continue'
+  text 'Start'
   command start
   underline 0
 end.pack :side => 'left', :fill => 'y'
