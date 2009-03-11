@@ -14,9 +14,12 @@ class Project < ActiveRecord::Base
     self.start!
   end
 
-  def time_spent fmt = false
+  def time_spent fmt = false, scale = nil, when_to = Time.now
+    cond = ["end_at IS NOT NULL"]
+    cond = [(cond << "start_at BETWEEN ? AND ?").join(' AND ')] | [when_to.send("beginning_of_#{scale}"), when_to.send("end_of_#{scale}")] unless scale.nil?
+
     hr = (
-      whences.all( :conditions => "end_at IS NOT NULL").inject(0.0) {|total, whence| 
+      whences.all( :conditions => cond).inject(0.0) {|total, whence| 
         total += ( whence.end_at - whence.start_at )
       } / 3600
     )
