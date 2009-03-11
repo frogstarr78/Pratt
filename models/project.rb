@@ -1,5 +1,7 @@
 class Project < ActiveRecord::Base
   has_many :whences
+  
+  validates_presence_of :name
 
   def start!
     whences.create :start_at => DateTime.now
