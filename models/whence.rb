@@ -2,8 +2,10 @@ class Whence < ActiveRecord::Base
   belongs_to :project
 
   def stop!
-    end_at ||= DateTime.now
-    save
+    self.end_at ||= DateTime.now #if end_at.nil?
+    self.save
+    self.reload
+    self
   end
 
   def start_at
@@ -18,7 +20,7 @@ class Whence < ActiveRecord::Base
 
   class << self
     def last_unended
-      first :conditions => "end_at IS NULL"
+      first :conditions => "end_at IS NULL", :order => "start_at DESC"
     end
 
     def migrate up = true 
