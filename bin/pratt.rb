@@ -60,7 +60,7 @@ ARGV.options do |opt|
   end
   opt.on('-s', "--show", String, "Show available projects and current project (if there is one)") do |proj|
     projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
-    current = Whence.last_unended
+    current = Whence.last_unended || Whence.last
 
     puts "projects: " << projects.collect {|project| "'#{project.send(current.end_at.nil? && current.project.name == project ? :green : :magenta)}'" }*', '
     puts " started: '#{current.start_at}'" if current.end_at.nil?
