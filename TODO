@@ -1,6 +1,6 @@
 Fix pid directory access.
 Intelligently detect correctly running stored pid.
-Add date range argument to timed report.
 Manual data manipulation date/time.
 Allow only one prompt at a time.
 Add TrayIcon.
+Add directoryless agnostic runner.
