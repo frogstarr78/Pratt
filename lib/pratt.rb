@@ -1,5 +1,7 @@
 require 'config'
 require 'colored'
+require 'optparse'
+require 'optparse/time'
 
 class Pratt
 
@@ -11,11 +13,12 @@ class Pratt
   attr_accessor :interval, :quit, :do_daemonize, :prompt, :show, :week, :day, :when_to, :scale
   attr_reader :graph, :project
   def initialize proj = nil #interval, quit, do_daemonize, prompt, show, graph, week, day, when_to
-    @when_to = Time.now
-    @week    = false
-    @day     = false
-    @do      = []
-    @scale   = nil
+    @when_to  = Time.now
+    @week     = false
+    @day      = false
+    @do       = []
+    @scale    = nil
+    @interval = 15
     self.project = proj
 #    @interval, @quit, @do_daemonize, @prompt, @show, @graph, @week, @day, @when_to = 
   end
@@ -67,7 +70,8 @@ class Pratt
     self.change     if i_should?(:change)
     self.graph      if i_should?(:graph)
     self.show       if i_should?(:show)
-    self.class.run  if i_should?(:do_daemonize)
+
+    self.class.run(self.interval) if i_should?(:do_daemonize)
     self.quit       if i_should?(:quit)
   end
 
@@ -152,7 +156,12 @@ class Pratt
 
     def main
       projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
-      current  = Whence.count > 0 ? Whence.last_unended : Whence.new(:project => Project.refactor)
+      if Whence.count == 0 
+        # first run
+        Whence.new(:project => Project.refactor)
+      else
+        current  = Whence.last_unended || Whence.last
+      end
       Process.detach(
         fork { system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{current.project.name}'") } 
       )
@@ -166,16 +175,20 @@ class Pratt
     end
 
     def run interval = 15.0
-      Process.detach(
-        fork {
-          daemonize!
-          main
-          while(daemonized?)
-            sleep(interval*60)
-            pop
-          end
-        }
-      )
+      if Pratt.daemonized?
+        puts "Pratt appears to be still running at pid (#{File.open(PID_FILE).readline.yellow})."
+      else
+        Process.detach(
+          fork {
+            daemonize!
+            main
+            while(daemonized?)
+              sleep(interval*60)
+              pop
+            end
+          }
+        )
+      end
     end
 
     def daemonized?
