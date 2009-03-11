@@ -7,6 +7,11 @@ class Whence < ActiveRecord::Base
     self.reload
     self
   end
+  def change! to_project
+    self.project = Project.find_or_create_by_name(to_project)
+    self.save
+    self.reload
+  end
 
   def start_at
     sa = read_attribute(:start_at)
