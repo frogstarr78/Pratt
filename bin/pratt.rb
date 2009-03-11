@@ -25,7 +25,7 @@ ARGV.options do |opt|
     Project.find_or_create_by_name( { :name => proj }).stop!
   end
   opt.on('-c', "--change PROJECT_NAME", String, "End project tracking.") do |proj|
-    last_log = Whence.last_unended
+    last_log = Whence.last
     last_log.project = Project.find_or_create_by_name proj
     last_log.save
   end
