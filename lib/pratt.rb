@@ -60,7 +60,7 @@ class Pratt
     project.stop!
   end
   def change
-    Whence.last_unended.change! project.name
+    Whence.last.change! project.name
   end
 
   def run
