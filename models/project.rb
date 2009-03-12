@@ -7,7 +7,7 @@ class Project < ActiveRecord::Base
     whences.create :start_at => DateTime.now
   end
   def stop!
-    whences.last_unended.stop!
+    whences.last_unended.stop! if !whences.last_unended.nil?
   end
   def restart!
     self.stop!
