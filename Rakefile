@@ -11,6 +11,7 @@ Hoe.new('pratt', Pratt::VERSION) do |p|
 end
 
 task :default => [:test] 
+#task :default => [:spec] 
 
 task :console do 
   require 'ruby-debug'
@@ -33,6 +34,18 @@ namespace "migrate" do
   task :down do
     PrattConfig.models do |model|
       model.migrate false
+    end
+  end
+end
+
+namespace :spec do
+  desc "Spec testing"
+  Spec::Rake::SpecTask.new(:rcov) do |t|
+    t.spec_opts  = ["--options", "'./spec/spec.opts'"]
+    t.spec_files = FileList['spec/*_spec.rb']
+    t.rcov       = true
+    t.rcov_opts = lambda do
+      IO.readlines("./spec/rcov.opts").map {|l| l.chomp.split ' ' }.flatten
     end
   end
 end
