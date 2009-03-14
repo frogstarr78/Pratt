@@ -1,11 +1,13 @@
 require 'config'
 require 'colored'
 require 'optparse'
-require 'optparse/time'
+require 'chronic'
+require 'fileutils'
 
 class Pratt
 
   include Config
+  include FileUtils
   VERSION = '1.0.0'
 #  PID_FILE='/var/run/pratt.pid'
   PID_FILE='pratt.pid'
@@ -51,13 +53,13 @@ class Pratt
   end
 
   def begin
-    project.start!
+    project.start! when_to
   end
   def restart
-    project.restart!
+    project.restart! when_to
   end
-  def end
-    project.stop!
+  def stop
+    project.stop! when_to
   end
   def change
     Whence.last.change! project.name
@@ -66,7 +68,7 @@ class Pratt
   def run
     self.begin      if i_should?(:begin)
     self.restart    if i_should?(:restart)
-    self.end        if i_should?(:end)
+    self.stop       if i_should?(:stop)
     self.change     if i_should?(:change)
     self.graph      if i_should?(:graph)
     self.show       if i_should?(:show)
@@ -76,7 +78,7 @@ class Pratt
   end
 
   def quit
-    Whence.last_unended.stop!
+    project.stop!
     Process.kill("KILL", File.open(PID_FILE).readline.to_i) && rm(PID_FILE)
   end
 
@@ -105,12 +107,10 @@ class Pratt
         opt.on('-r', "--restart PROJECT_NAME", String, "Restart project (stop last log and start a new one).") do |proj|
           me.project = proj
           me << :restart
-          Project.find_or_create_by_name( { :name => proj }).restart!
         end
         opt.on('-e', "--end PROJECT_NAME", String, "End project tracking.") do |proj|
           me.project = proj
-          me << :end
-          Project.find_or_create_by_name( { :name => proj }).stop!
+          me << :stop
         end
         opt.on('-c', "--change PROJECT_NAME", String, "End project tracking.") do |proj|
           me.project = proj
@@ -121,14 +121,20 @@ class Pratt
           me << :graph
         end
 
-        opt.on '-w', '--when_to TIME', Time, 'When to do something.' do |when_to|
-          me.when_to = when_to
+        opt.on '-w', '--when_to TIME', String, 'When to do something.' do |when_to|
+          me.when_to = Chronic.parse(when_to)
         end
         opt.on('-l', '--scale SCALE', [:day, :week, :month, :quarter, :year], "Granularity of time argument. (Only for graphing)") do |scale|
           me.scale = scale
         end
         opt.on('-R', '--Raw', "Dump logs raw") do
-          puts Whence.all.collect(&:inspect)
+          Whence.all(:order => "id ASC").each do |whence| 
+            if whence.end_at
+              puts "#{whence.project.name} '#{whence.start_at}' '#{whence.end_at}': #{(whence.end_at-whence.start_at)/60}"
+            else
+              puts "#{whence.project.name} '#{whence.start_at}' '': "
+            end
+          end
         end
 
         opt.on('-s', "--show", "Show available projects and current project (if there is one)") do
