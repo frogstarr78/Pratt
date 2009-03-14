@@ -3,15 +3,17 @@ class Project < ActiveRecord::Base
   
   validates_presence_of :name
 
-  def start!
-    whences.create :start_at => DateTime.now
+  def start! at = DateTime.now
+    whences.create :start_at => at
   end
-  def stop!
-    whences.last_unended.stop! if !whences.last_unended.nil?
+  def stop! at = DateTime.now
+    if whence = whences.last_unended
+      whences.last_unended.stop!(at)
+    end
   end
-  def restart!
-    self.stop!
-    self.start!
+  def restart! at = DateTime.now
+    self.stop! at
+    self.start! at
   end
 
   def time_spent fmt = false, scale = nil, when_to = Time.now
