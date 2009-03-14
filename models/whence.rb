@@ -1,15 +1,15 @@
 class Whence < ActiveRecord::Base
   belongs_to :project
 
-  def stop!
-    self.end_at ||= DateTime.now #if end_at.nil?
-    self.save
+  def stop! at = DateTime.now
+    self.end_at ||= at
+    self.save!
     self.reload
     self
   end
   def change! to_project
     self.project = Project.find_or_create_by_name(to_project)
-    self.save
+    self.save!
     self.reload
   end
 
