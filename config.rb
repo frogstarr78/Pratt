@@ -5,9 +5,11 @@ require 'hoe'
 require 'ruby-debug'
 gem 'activerecord'
 gem 'sqlite3-ruby'
-
 require 'active_record'
 
+include FileUtils
+
+$LOAD_PATH << File.dirname(File.expand_path(__FILE__))
 $LOAD_PATH << '.'
 $LOAD_PATH << './lib'
 $LOAD_PATH << './models'
@@ -15,6 +17,7 @@ $LOAD_PATH.uniq!
 
 
 module Config
+
   class << self
     def models
       Pathname.glob File.join(Dir.pwd, 'models', '*.rb') do |path|
