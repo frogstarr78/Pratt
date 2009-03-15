@@ -10,7 +10,7 @@ yes = proc {
   Process.detach(c)
   exit 
 }
-no = proc {
+adjust = proc {
   c = fork { system("ruby bin/pratt.rb --end '#{project_name}' --prompt 'main'") }
   Process.detach(c)
   exit 
@@ -46,12 +46,19 @@ root.bind("Alt-y", yes)
 #root.bind("Return", yes)
 
 TkButton.new(botm_frm) do
-  text "No"
-  command no
+  text "Ignore"
+  command adjust
   underline 0
 end.pack('side' => 'right', :fill => 'y')
-root.bind("Alt-n", no)
+root.bind("Alt-i") { exit }
 root.bind("Escape") { exit }
+
+TkButton.new(botm_frm) do
+  text "Adjust"
+  command adjust
+  underline 0
+end.pack('side' => 'right', :fill => 'y')
+root.bind("Alt-a", adjust)
 
 top_frm.pack( :side => 'top',    :fill => 'y')
 botm_frm.pack(:side => 'bottom', :fill => 'y')
