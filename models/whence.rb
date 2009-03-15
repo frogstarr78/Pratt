@@ -1,5 +1,6 @@
 class Whence < ActiveRecord::Base
   belongs_to :project
+  validates_associated :project
 
   def stop! at = DateTime.now
     self.end_at ||= at
@@ -22,8 +23,13 @@ class Whence < ActiveRecord::Base
     end
     sa
   end
-
+  
   class << self
+    include Pratt::Models
+    def time_spent scale = nil, when_to = Time.now
+      spent(self.whences).call(scale, when_to)
+    end
+
     def last_unended
       first :conditions => "end_at IS NULL", :order => "start_at DESC"
     end
