@@ -27,7 +27,7 @@ class Whence < ActiveRecord::Base
   class << self
     include Pratt::Models
     def time_spent scale = nil, when_to = Time.now
-      spent(self.whences).call(scale, when_to)
+      spent(self).call(scale, when_to)
     end
 
     def last_unended
