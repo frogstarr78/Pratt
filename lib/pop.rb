@@ -6,12 +6,12 @@ require 'optparse'
 project_name, start_time, project_time = ARGV
 
 yes = proc {
-  c = fork { system("ruby bin/pratt.rb --restart '#{project_name}'") }
+  c = fork { system("ruby bin/pratt.rb --restart '#{project_name}' --unlock 'pop'") }
   Process.detach(c)
   exit 
 }
 adjust = proc {
-  c = fork { system("ruby bin/pratt.rb --end '#{project_name}' --prompt 'main'") }
+  c = fork { system("ruby bin/pratt.rb --end '#{project_name}' --unlock 'pop' --prompt 'main'") }
   Process.detach(c)
   exit 
 }
