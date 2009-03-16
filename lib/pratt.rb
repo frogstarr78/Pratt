@@ -47,10 +47,10 @@ class Pratt
     
     puts "Project detail"
     puts [
-      "by #{scale.to_s.send(color ? :red : :white)} from ", 
-      "#{when_to.send("beginning_of_#{scale}").strftime(FMT).send(color ? :blue : :white)} to #{when_to.send("end_of_#{scale}").strftime(FMT).send(color ? :blue : :white)}"
+      "by #{scale.to_s.send(color ? :red : :to_s)} from ", 
+      "#{when_to.send("beginning_of_#{scale}").strftime(FMT).send(color ? :blue : :to_s)} to #{when_to.send("end_of_#{scale}").strftime(FMT).send(color ? :blue : :to_s)}"
     ] if scale
-    puts ' '*(max+1) << 'dys'.send(color ? :underline : :white) << ' '*5 << 'hrs'.send(color ? :underline : :white) << ' '*5 << 'min'.send(color ? :underline : :white)
+    puts ' '*(max+1) << 'dys'.send(color ? :underline : :to_s) << ' '*5 << 'hrs'.send(color ? :underline : :to_s) << ' '*5 << 'min'.send(color ? :underline : :to_s)
     puts '-'*50 unless color
     projects.each do |proj| 
       refactor_total = proj.time_spent(scale, when_to) if proj.name == Project.refactor.name
@@ -61,7 +61,7 @@ class Pratt
     puts (color ? '·' : '-')*50
     scaled_total = Whence.time_spent(scale, when_to)-off_total
     puts [
-      "%#{max}.#{max}s %s hrs"% ['Total', ("%0.2f"%scaled_total).send(color ? :underline : :white)],
+      "%#{max}.#{max}s %s hrs"% ['Total', ("%0.2f"%scaled_total).send(color ? :underline : :to_s)],
       Pratt.percent(Project.refactor.name, refactor_total.to_f, scaled_total, :green,  color && true),
       Pratt.percent(Project.off.name,      off_total.to_f,      scaled_total, :yellow, color && true),
       Pratt.percent('Other',               rest_total.to_f,     scaled_total, :red,    color && true),
@@ -133,7 +133,7 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
     count     = Project.count
     colors    = %w(red red_on_yellow red_on_white green green_on_blue yellow yellow_on_blue blue magenta magenta_on_blue cyan white white_on_green white_on_blue white_on_magenta black_on_yellow black_on_blue black_on_green black_on_magenta black_on_cyan black_on_red).sort
     Whence.all(:order => "id ASC").each do |whence| 
-      color = color ? :white : colors[whence.project.id%colors.size]
+      color = color ? :to_s : colors[whence.project.id%colors.size]
       str   = "%#{max}.#{max}s ⌈%s"% [("%s"%whence.project.name), whence.start_at.strftime(FMT).send(color)]
       str  += "­%s⌋ %0.2f min"% [whence.end_at.strftime(FMT).send(color), (whence.end_at-whence.start_at)/60] if whence.end_at
       puts str
