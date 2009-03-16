@@ -57,7 +57,7 @@ class Pratt
       puts "%1$*3$s⋮ %2$s"% [proj.name, Pratt.totals(proj.time_spent(scale, when_to), true), max]
     end
     puts '·'*50
-    scaled_total = Whence.time_spent(scale, when_to)
+    scaled_total = Whence.time_spent(scale, when_to)-off_total
     puts [
       "%#{max}.#{max}s %s hrs"% ['Total', ("%0.2f"%scaled_total).underline],
       Pratt.percent(Project.refactor.name, refactor_total.to_f, scaled_total, :green,  true),
