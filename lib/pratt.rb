@@ -205,7 +205,7 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
           me << :raw
         end
         opt.on('-L', '--log FILE', String, "Redirect errors") do |log_file|
-          $stderr.reopen(log_file, 'w')
+          $stderr.reopen(log_file, 'a')
           $stderr.sync = true
         end
 
@@ -229,6 +229,10 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
         end
         opt.on('-p', '--prompt GUI', [:main, :pop], "Force displaying a gui (currently: main or pop. No default.).") do |gui|
           send gui
+          log_gui gui
+        end
+        opt.on('-U', '--unlock GUI', [:main, :pop], "Manually unlock a gui that has died but left it's lock around.") do |gui|
+          rm_gui(gui)
         end
         
         opt.parse!
@@ -238,6 +242,7 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
     end
 
     def main
+      return if gui?('main')
       projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
       if Whence.count == 0 
         # first run
@@ -248,13 +253,16 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
       Process.detach(
         fork { system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{current.project.name}'") } 
       )
+      log_gui('main')
     end
 
     def pop
+      return if gui?('pop')
       project = Whence.last_unended.project
       Process.detach(
         fork { system("ruby lib/pop.rb '#{project.name}' '#{project.whences.last_unended.start_at}' '#{Pratt.totals(project.time_spent)}'") } 
       )
+      log_gui('pop')
     end
 
     def run interval = 15.0
@@ -291,6 +299,21 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
       fmt_f((off/total)*100, label, color, fmt)
     end
     private
+
+      GUI_FILE = '.gui'
+      def log_gui which
+        File.open(GUI_FILE, 'w') {|f| f.write(which) } unless gui?('.*', false)
+      end
+
+      def rm_gui which
+        rm GUI_FILE if gui?(which, false)
+      end
+
+      def gui? which, logerr = true
+        res = (File.exists?(GUI_FILE) && File.open(GUI_FILE).readline.strip =~ Regexp.new(which.to_s))
+        $stderr.write "#{which} already being displayed" if logerr
+        res
+      end
 
       def fmt_f flt, label, color, fmt = false
         "%#{max}.#{max}s %s"% [label, ("%0.2f%%"% flt).send(fmt ? color : :to_s), label]
