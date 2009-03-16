@@ -13,7 +13,7 @@ class Pratt
   PID_FILE='pratt.pid'
   FMT = "%a %X %b %d %Y"
 
-  attr_accessor :interval, :quit, :daemonize, :prompt, :show, :week, :day, :when_to, :scale
+  attr_accessor :interval, :quit, :daemonize, :prompt, :show, :week, :day, :when_to, :scale, :color
   attr_reader :graph, :project
   def initialize proj = nil #interval, quit, daemonize, prompt, show, graph, week, day, when_to
     @when_to  = Time.now
@@ -22,6 +22,7 @@ class Pratt
     @todo     = []
     @scale    = nil
     @interval = 15
+    @color    = true
     self.project = proj
 #    @interval, @quit, @daemonize, @prompt, @show, @graph, @week, @day, @when_to = 
   end
@@ -46,23 +47,24 @@ class Pratt
     
     puts "Project detail"
     puts [
-      "by #{scale.to_s.red} from ", 
-      "#{when_to.send("beginning_of_#{scale}").strftime(FMT).blue} to #{when_to.send("end_of_#{scale}").strftime(FMT).blue}"
+      "by #{scale.to_s.send(color ? :red : :white)} from ", 
+      "#{when_to.send("beginning_of_#{scale}").strftime(FMT).send(color ? :blue : :white)} to #{when_to.send("end_of_#{scale}").strftime(FMT).send(color ? :blue : :white)}"
     ] if scale
-    puts ' '*(max+1) << 'dys'.underline << ' '*5 << 'hrs'.underline << ' '*5 << 'min'.underline
+    puts ' '*(max+1) << 'dys'.send(color ? :underline : :white) << ' '*5 << 'hrs'.send(color ? :underline : :white) << ' '*5 << 'min'.send(color ? :underline : :white)
+    puts '-'*50 unless color
     projects.each do |proj| 
       refactor_total = proj.time_spent(scale, when_to) if proj.name == Project.refactor.name
       off_total      = proj.time_spent(scale, when_to) if proj.name == Project.off.name
       rest_total    += proj.time_spent(scale, when_to) if Project.rest.collect(&:name).include?(proj.name)
-      puts "%1$*3$s⋮ %2$s"% [proj.name, Pratt.totals(proj.time_spent(scale, when_to), true), max]
+      puts "%1$*4$s%2$s %3$s"% [proj.name, (color ? '⋮' : '|'), Pratt.totals(proj.time_spent(scale, when_to), color && true), max]
     end
-    puts '·'*50
+    puts (color ? '·' : '-')*50
     scaled_total = Whence.time_spent(scale, when_to)-off_total
     puts [
-      "%#{max}.#{max}s %s hrs"% ['Total', ("%0.2f"%scaled_total).underline],
-      Pratt.percent(Project.refactor.name, refactor_total.to_f, scaled_total, :green,  true),
-      Pratt.percent(Project.off.name,      off_total.to_f,      scaled_total, :yellow, true),
-      Pratt.percent('Other',               rest_total.to_f,     scaled_total, :red,    true),
+      "%#{max}.#{max}s %s hrs"% ['Total', ("%0.2f"%scaled_total).send(color ? :underline : :white)],
+      Pratt.percent(Project.refactor.name, refactor_total.to_f, scaled_total, :green,  color && true),
+      Pratt.percent(Project.off.name,      off_total.to_f,      scaled_total, :yellow, color && true),
+      Pratt.percent('Other',               rest_total.to_f,     scaled_total, :red,    color && true),
     ]
     puts
   end
@@ -117,7 +119,7 @@ class Pratt
   end
 
   def pid
-    p  = `pgrep -f "pratt -d"`.split.to_s
+    p  = `pgrep -f "pratt -d" | head -1`.split.to_s
     ep = self.class.pid.to_s
     puts "
    pid #{p.cyan} found running
@@ -131,7 +133,7 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
     count     = Project.count
     colors    = %w(red red_on_yellow red_on_white green green_on_blue yellow yellow_on_blue blue magenta magenta_on_blue cyan white white_on_green white_on_blue white_on_magenta black_on_yellow black_on_blue black_on_green black_on_magenta black_on_cyan black_on_red).sort
     Whence.all(:order => "id ASC").each do |whence| 
-      color = colors[whence.project.id%colors.size]
+      color = color ? :white : colors[whence.project.id%colors.size]
       str   = "%#{max}.#{max}s ⌈%s"% [("%s"%whence.project.name), whence.start_at.strftime(FMT).send(color)]
       str  += "­%s⌋ %0.2f min"% [whence.end_at.strftime(FMT).send(color), (whence.end_at-whence.start_at)/60] if whence.end_at
       puts str
@@ -207,6 +209,10 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
         opt.on('-L', '--log FILE', String, "Redirect errors") do |log_file|
           $stderr.reopen(log_file, 'a')
           $stderr.sync = true
+        end
+
+        opt.on('-n', '--no-color', "Redirect errors") do 
+          me.color = false
         end
 
         opt.on('--destroy PROJECT_NAME', String, "Remove a project.") do |proj|
