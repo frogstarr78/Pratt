@@ -15,6 +15,12 @@ adjust = proc {
   Process.detach(c)
   exit 
 }
+ignore = proc {
+  Process.detach(
+    fork { system("ruby bin/pratt.rb --unlock 'pop'") }
+  )
+  exit 
+}
 
 root = TkRoot.new { title "Pratt Reminder" }
 
@@ -50,8 +56,8 @@ TkButton.new(botm_frm) do
   command adjust
   underline 0
 end.pack('side' => 'right', :fill => 'y')
-root.bind("Alt-i") { exit }
-root.bind("Escape") { exit }
+root.bind("Alt-i", ignore)
+root.bind("Escape", ignore)
 
 TkButton.new(botm_frm) do
   text "Adjust"
