@@ -1,31 +1,27 @@
 class Project < ActiveRecord::Base
+  include Pratt::Models
   has_many :whences
+  
+  validates_presence_of :name
 
-  def start!
-    whences.create :start_at => DateTime.now
+  def start! at = DateTime.now
+    whences.create :start_at => at
   end
-  def stop!
-    whences.last_unended.stop!
+  def stop! at = DateTime.now
+    if whence = whences.last_unended
+      whences.last_unended.stop!(at)
+    end
   end
-  def restart!
-    self.stop!
-    self.start!
+  def restart! at = DateTime.now
+    self.stop! at
+    self.start! at
   end
 
-  def time_spent fmt = false
-    hr = (
-      whences.all( :conditions => "end_at IS NOT NULL").inject(0.0) {|total, whence| 
-        total += ( whence.end_at - whence.start_at )
-      } / 3600
-    )
-    return "#{Project.fmt(hr / 24, 'days', :cyan, fmt)} #{Project.fmt(hr % 24, 'hours', :yellow, fmt)} #{Project.fmt((60*(hr -= hr.to_i)), 'minutes', :green, fmt)}"
+  def time_spent scale = nil, when_to = Time.now
+    spent(self.whences).call(scale, when_to)
   end
 
   class << self
-    def fmt i, m, c, fmt = false
-      "%s #{m}"% [("%02i"% i).send(fmt ? c : :to_s), m]
-    end
-
     def named name
       find_cond name
     end

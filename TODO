@@ -1,8 +1,8 @@
 Fix pid directory access.
 Intelligently detect correctly running stored pid.
-Manual data manipulation date/time.
 Allow only one prompt at a time.
 Add TrayIcon.
-Add directoryless agnostic runner.
-Log output.
 Handle stop when there isn't a running project w/out errors
+fix gui so if last_unended is detected app knows which gui to display
+Whence.last_ended
+Add Quiet option

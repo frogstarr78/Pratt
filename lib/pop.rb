@@ -6,22 +6,20 @@ require 'optparse'
 project_name, start_time, project_time = ARGV
 
 yes = proc {
-  c = fork { system("ruby bin/pratt.rb --restart '#{project_name}'") }
+  c = fork { system("ruby bin/pratt.rb --restart '#{project_name}' --unlock 'pop'") }
   Process.detach(c)
   exit 
 }
-no = proc {
-  c = fork { system("ruby bin/pratt.rb --end '#{project_name}' --prompt 'main'") }
+adjust = proc {
+  c = fork { system("ruby bin/pratt.rb --end '#{project_name}' --unlock 'pop' --prompt 'main'") }
   Process.detach(c)
   exit 
 }
 
-root = TkRoot.new do
-  title "Rebuild Tracker" end
+root = TkRoot.new { title "Pratt Reminder" }
 
-frm = Tk::Tile::Frame.new(root)
-top_frm = Tk::Tile::Frame.new(frm)
-botm_frm = Tk::Tile::Frame.new(frm)
+frm = Tk::Tile::Frame.new(root) { padding "5 5 5 5" }
+top_frm = Tk::Tile::Frame.new(frm) { padding "5 5 5 5" }
 
 Tk::Tile::Label.new(top_frm) do
   text "Have you been working on: "
@@ -38,6 +36,7 @@ total time:
   #{project_time}."
 end.pack(:side => 'bottom', :fill => 'y')
 
+botm_frm = Tk::Tile::Frame.new(frm) { padding "5 5 5 5" }
 TkButton.new(botm_frm) do
   text "Yes"
   command yes
@@ -47,16 +46,22 @@ root.bind("Alt-y", yes)
 #root.bind("Return", yes)
 
 TkButton.new(botm_frm) do
-  text "No"
-  command no
+  text "Ignore"
+  command adjust
   underline 0
 end.pack('side' => 'right', :fill => 'y')
-root.bind("Alt-n", no)
+root.bind("Alt-i") { exit }
 root.bind("Escape") { exit }
+
+TkButton.new(botm_frm) do
+  text "Adjust"
+  command adjust
+  underline 0
+end.pack('side' => 'right', :fill => 'y')
+root.bind("Alt-a", adjust)
 
 top_frm.pack( :side => 'top',    :fill => 'y')
 botm_frm.pack(:side => 'bottom', :fill => 'y')
 frm.pack(     :side => 'top',    :fill => 'y')
-root.geometry = "210x120"
 
 Tk.mainloop
