@@ -6,3 +6,4 @@ Handle stop when there isn't a running project w/out errors
 fix gui so if last_unended is detected app knows which gui to display
 Whence.last_ended
 Add Quiet option
+Put everything in the db (logs, app locks, etc)
