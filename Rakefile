@@ -21,23 +21,6 @@ task :console do
   exec "irb #{libs} --simple-prompt"
 end
 
-desc "Database migrations"
-namespace "migrate" do
-  desc "Set up tables"
-  task :up do
-    PrattConfig.models do |model|
-      model.migrate
-    end
-  end
-
-  desc "Tear down tables"
-  task :down do
-    PrattConfig.models do |model|
-      model.migrate false
-    end
-  end
-end
-
 namespace :spec do
   desc "Spec testing"
   Spec::Rake::SpecTask.new(:rcov) do |t|
