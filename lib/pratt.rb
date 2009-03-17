@@ -28,7 +28,11 @@ class Pratt
   end
 
   def project= proj
-    @project = Project.find_or_create_by_name( { :name => proj } )
+    if proj.is_a?(Project)
+      @project = project
+    else
+      @project = Project.find_or_create_by_name( { :name => proj } )
+    end
   end
 
   def << what
@@ -128,6 +132,29 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
 " 
   end
 
+#    def main
+#      return if gui?('main')
+#      projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
+#      if Whence.count == 0 
+#        # first run
+#        Whence.new(:project => Project.refactor)
+#      else
+#        current  = Whence.last_unended || Whence.last
+#      end
+#      Process.detach(
+#        fork { system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{current.project.name}'") } 
+#      )
+#      log_gui('main')
+#    end
+
+#    def pop
+#      return if gui?('pop')
+#      project = Whence.last_unended.project
+#      Process.detach(
+#        fork { system("ruby lib/pop.rb '#{project.name}' '#{project.whences.last_unended.start_at}' '#{Pratt.totals(project.time_spent)}'") } 
+#      )
+#      log_gui('pop')
+#    end
 
   def raw
     count     = Project.count
@@ -233,12 +260,14 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
         opt.on('-q', "--quit", "Stop daemon.") do
           me << :quit
         end
+#        opt.on('-G', '--gui', 'Show "smart" gui.') do
+#          gui
+#        end
         opt.on('-p', '--prompt GUI', [:main, :pop], "Force displaying a gui (currently: main or pop. No default.).") do |gui|
           send gui
-          log_gui gui
         end
-        opt.on('-U', '--unlock GUI', [:main, :pop], "Manually unlock a gui that has died but left it's lock around.") do |gui|
-          rm_gui(gui)
+        opt.on('-U', '--unlock GUI', %w(main, pop), "Manually unlock a gui that has died but left it's lock around.") do |gui|
+          App.rm(gui)
         end
         
         opt.parse!
@@ -247,8 +276,16 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
       me.run
     end
 
+#    def gui
+#      if last_unended = Whence.last_unended 
+#        pop
+#      else
+#        main
+#      end
+#    end
+
     def main
-      return if gui?('main')
+      return if App.gui?('main', true)
       projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
       if Whence.count == 0 
         # first run
@@ -259,16 +296,15 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
       Process.detach(
         fork { system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{current.project.name}'") } 
       )
-      log_gui('main')
+      App.log('main')
     end
-
     def pop
-      return if gui?('pop')
+      return if App.gui?('pop', true)
       project = Whence.last_unended.project
       Process.detach(
         fork { system("ruby lib/pop.rb '#{project.name}' '#{project.whences.last_unended.start_at}' '#{Pratt.totals(project.time_spent)}'") } 
       )
-      log_gui('pop')
+      App.log('pop')
     end
 
     def run interval = 15.0
@@ -306,20 +342,6 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
     end
     private
 
-      GUI_FILE = '.gui'
-      def log_gui which
-        File.open(GUI_FILE, 'w') {|f| f.write(which) } unless gui?('.*', false)
-      end
-
-      def rm_gui which
-        rm GUI_FILE if gui?(which, false)
-      end
-
-      def gui? which, logerr = true
-        res = (File.exists?(GUI_FILE) && File.open(GUI_FILE).readline.strip =~ Regexp.new(which.to_s))
-        $stderr.write "#{which} already being displayed" if logerr
-        res
-      end
 
       def fmt_f flt, label, color, fmt = false
         "%#{max}.#{max}s %s"% [label, ("%0.2f%%"% flt).send(fmt ? color : :to_s), label]
