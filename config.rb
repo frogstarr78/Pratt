@@ -38,15 +38,10 @@ end
 module Config
 
   class << self
-    def models
+    def included base
       Pathname.glob File.join(Dir.pwd, 'models', '*.rb') do |path|
         require path
-        name = path.basename('.rb').to_s.capitalize
-        yield( Object.const_defined?(name) ? Object.const_get(name) : Object.const_missing(name) ) if block_given?
       end
-    end
-    def included base
-      models
     end
   end
 end
@@ -62,4 +57,9 @@ unless File.exist?(DBFILE)
   include Config
   Project.migrate
   Whence.migrate
+end
+
+unless ActiveRecord::Base.connection.select_value("SELECT * FROM INFORMATION_SCHEMA_TABLES WHERE TABLE_NAME = 'apps'")
+  include Config
+  App.migrate :up
 end
