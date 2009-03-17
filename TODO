@@ -1,9 +1,20 @@
-Fix pid directory access.
-Intelligently detect correctly running stored pid.
-Allow only one prompt at a time.
-Add TrayIcon.
-Handle stop when there isn't a running project w/out errors
-fix gui so if last_unended is detected app knows which gui to display
-Whence.last_ended
-Add Quiet option
-Put everything in the db (logs, app locks, etc)
+[ ] Fix pid directory access.
+[ ] Intelligently detect correctly running stored pid.
+[x] Allow only one prompt at a time.
+[ ] Add TrayIcon.
+[x] Handle stop when there isn't a running project w/out errors
+[*] fix gui so if last_unended is detected app knows which gui to display
+[?] Whence.last_ended
+[x] Add Quiet option
+[ ] Put everything in the db (logs, app locks, etc)
+
+Done:
+[x] Whence.last should be last unended.
+[x] Add date range argument to timed report.
+[x] Add validation for start/end at.
+[x] Manual data manipulation date/time.
+[x] Change pop prompt to show helpful time.
+[x] Change Start/Continue interface.
+[x] Add directoryless agnostic runner.
+[x] Log output.
+
