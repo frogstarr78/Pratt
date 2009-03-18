@@ -98,7 +98,7 @@ class Pratt
     Whence.last.change! project.name
   end
   def destroy
-    project.destroy!
+    project.destroy
   end
 
   def run
