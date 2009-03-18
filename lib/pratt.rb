@@ -312,12 +312,13 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
       end
 
       def rm_gui which
+        FileUtils.chdir File.dirname(File.expand_path('..', File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__ ) )
         rm GUI_FILE if gui?(which, false)
       end
 
       def gui? which, logerr = true
         res = (File.exists?(GUI_FILE) && File.open(GUI_FILE).readline.strip =~ Regexp.new(which.to_s))
-        $stderr.write "#{which} already being displayed" if logerr
+#        $stderr.write "#{which} already being displayed" if logerr
         res
       end
 
