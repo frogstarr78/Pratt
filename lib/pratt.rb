@@ -80,7 +80,8 @@ class Pratt
     puts "   projects: " << project_names.collect {|project_name| "'#{project_name.send(current.end_at.nil? && current.project.name == project_name ? :green : :magenta)}'" }*' '
     if current.end_at.nil?
       puts "    started: #{current.start_at.strftime(FMT)}"
-      puts "next prompt: " << Pratt.send( :fmt_i, ( interval - ( Time.now - current.start_at ) ) / 60.0, 'min', :yellow, color), ''
+      time_til = ( interval - ( Time.now - current.start_at ) )
+      puts "next prompt: %s %s"% [Pratt.send( :fmt_i, time_til / 60.0, 'min', :yellow, color), Pratt.send( :fmt_i, time_til % 60, 'sec', :yellow, color), ], ''
     end
   end
 
