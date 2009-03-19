@@ -1,39 +1,32 @@
 class App < ActiveRecord::Base
- 
+  has_many :logs
+
+  def log which, overwrite = false
+    gui = which if (overwrite and gui?(which) ) || gui?('')
+    save!
+  end
+
+  def gui? which = '', log_err = false
+    match = (gui == which)
+#    $stderr.write("#{which} already being displayed\n") if log_err
+    match
+  end
+
+  def rm which
+    gui = '' if gui?(which)
+    save!
+  end
+
   class << self
-    def gui? which = '', log_err = false
-      match = (self.last.gui == which)
-      $stderr.write("#{which} already being displayed\n") if log_err
-      match
-    end
-
-    def log which, overwrite = false
-      me = last
-      me.gui = which if (overwrite and gui?(which) ) || gui?('')
-      me.save!
-    end
-
-    def gui which
-      me = last
-      me.gui = which
-      me.save!
-    end
-
-    def rm which
-      me = last
-      me.gui = '' if gui?(which)
-      me.save!
-    end
-
     def migrate up = :up
       ActiveRecord::Schema.define do
         create_table :apps do |t|
-          t.string  :pid
+          t.integer :pid
           t.string  :gui
         end if up == :up
         drop_table :apps if up == :down
       end
-      App.create! :gui => ''
+      App.create!(:gui => '') if up == :up
     end
   end
 end

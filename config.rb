@@ -33,14 +33,25 @@ class Pratt
       }
     end
   end
-end
 
-module Config
+  module Config
 
-  class << self
-    def included base
-      Pathname.glob File.join(Dir.pwd, 'models', '*.rb') do |path|
-        require path
+    def self.included base
+      model_files {|path| require path }
+    end
+
+    def model_files &block
+      Pathname.glob( File.join(Dir.pwd, 'models', '*.rb') ).each {|f| 
+        yield f
+      }
+    end
+
+    def migrate
+      model_files do |path|
+        klass = File.basename( path, '.rb' ).capitalize.constantize
+        unless ActiveRecord::Base.connection.select_value("SELECT * FROM INFORMATION_SCHEMA_TABLES WHERE TABLE_NAME = '#{klass.table_name}'")
+          klass.migrate :up
+        end
       end
     end
   end
@@ -53,13 +64,5 @@ ActiveRecord::Base.establish_connection(
   :dbfile => DBFILE
 )
 
-unless File.exist?(DBFILE)
-  include Config
-  Project.migrate
-  Whence.migrate
-end
-
-unless ActiveRecord::Base.connection.select_value("SELECT * FROM INFORMATION_SCHEMA_TABLES WHERE TABLE_NAME = 'apps'")
-  include Config
-  App.migrate :up
-end
+include Pratt::Config
+migrate

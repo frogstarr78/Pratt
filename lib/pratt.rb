@@ -9,22 +9,22 @@ class Pratt
   include Config
   include FileUtils
   VERSION = '1.0.0'
-#  PID_FILE='/var/run/pratt.pid'
   PID_FILE='pratt.pid'
   FMT = "%a %X %b %d %Y"
 
-  attr_accessor :interval, :quit, :daemonize, :prompt, :show, :week, :day, :when_to, :scale, :color
+  attr_accessor :interval, :quit, :daemonize, :prompt, :week, :day, :when_to, :scale, :color, :app
   attr_reader :graph, :project
-  def initialize proj = nil #interval, quit, daemonize, prompt, show, graph, week, day, when_to
+  def initialize proj = nil #interval, quit, daemonize, prompt, graph, week, day, when_to
     @when_to  = Time.now
     @week     = false
     @day      = false
     @todo     = []
     @scale    = nil
-    @interval = 15
+    @interval = 15*60
     @color    = true
     self.project = proj
-#    @interval, @quit, @daemonize, @prompt, @show, @graph, @week, @day, @when_to = 
+    @app      = App.last
+#    @interval, @quit, @daemonize, @prompt, @graph, @week, @day, @when_to = 
   end
 
   def project= proj
@@ -73,12 +73,15 @@ class Pratt
     puts
   end
 
-  def show
+  def current
     project_names = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
     current = Whence.last_unended || Whence.last
 
-    puts "projects: " << project_names.collect {|project_name| "'#{project_name.send(current.end_at.nil? && current.project.name == project_name ? :green : :magenta)}'" }*' '
-    puts " started: #{current.start_at.strftime(FMT)}" if current.end_at.nil?
+    puts "   projects: " << project_names.collect {|project_name| "'#{project_name.send(current.end_at.nil? && current.project.name == project_name ? :green : :magenta)}'" }*' '
+    if current.end_at.nil?
+      puts "    started: #{current.start_at.strftime(FMT)}"
+      puts "next prompt: " << Pratt.send( :fmt_i, ( interval - ( Time.now - current.start_at ) ) / 60.0, 'min', :yellow, color), ''
+    end
   end
 
   def begin
@@ -105,56 +108,38 @@ class Pratt
     project.destroy
   end
 
-  def run
-    self.begin      if i_should?(:begin)
-    self.change     if i_should?(:change)
-    self.restart    if i_should?(:restart)
-    self.end        if i_should?(:end)
-
-    self.destroy    if i_should?(:destroy)
-
-    self.pid        if i_should?(:pid)
-    self.raw        if i_should?(:raw)
-    self.show       if i_should?(:show)
-    self.graph      if i_should?(:graph)
-
-    self.class.run(self.interval) if i_should?(:daemonize)
-    self.quit       if i_should?(:quit)
-  end
-
   def pid
-    p  = `pgrep -f "pratt -d" | head -1`.split.to_s
-    ep = self.class.pid.to_s
+    p  = `pgrep -f -o 'pratt -d'`.chomp
     puts "
    pid #{p.cyan} found running
-expect #{ep.magenta} ···················· ⌈#{!p.blank? && !ep.blank? && p == ep ? 'OK'.green : 'Oops'.red}⌋
+expect #{app.pid.to_s.magenta} ···················· ⌈#{daemonized? ? 'OK'.green : 'Oops'.red}⌋
 
 " 
   end
 
-#    def main
-#      return if gui?('main')
-#      projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
-#      if Whence.count == 0 
-#        # first run
-#        Whence.new(:project => Project.refactor)
-#      else
-#        current  = Whence.last_unended || Whence.last
-#      end
-#      Process.detach(
-#        fork { system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{current.project.name}'") } 
-#      )
-#      log_gui('main')
-#    end
+  def main
+    return if app.gui?('main', true)
+    projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
+    if Whence.count == 0 
+      # first run
+      Whence.new(:project => Project.refactor)
+    else
+      current  = Whence.last_unended || Whence.last
+    end
+    Process.detach(
+      fork { system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{current.project.name}'") } 
+    )
+    app.log('main')
+  end
 
-#    def pop
-#      return if gui?('pop')
-#      project = Whence.last_unended.project
-#      Process.detach(
-#        fork { system("ruby lib/pop.rb '#{project.name}' '#{project.whences.last_unended.start_at}' '#{Pratt.totals(project.time_spent)}'") } 
-#      )
-#      log_gui('pop')
-#    end
+  def pop
+    return if app.gui?('pop', true)
+    project = Whence.last_unended.project
+    Process.detach(
+      fork { system("ruby lib/pop.rb '#{project.name}' '#{project.whences.last_unended.start_at}' '#{Pratt.totals(project.time_spent)}'") } 
+    )
+    app.log('pop')
+  end
 
   def raw
     count     = Project.count
@@ -169,11 +154,49 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
 
   def quit
     project.stop!
-    Process.kill("KILL", self.class.pid.to_i) && rm(PID_FILE)
+    Process.kill("KILL", app.pid.to_i)
+    app.pid = ''
+    app.gui = ''
+    app.save!
   end
 
   def max 
     self.class.max
+  end
+
+  def run
+    self.begin      if i_should?(:begin)
+    self.change     if i_should?(:change)
+    self.restart    if i_should?(:restart)
+    self.end        if i_should?(:end)
+
+    self.destroy    if i_should?(:destroy)
+
+    self.pid        if i_should?(:pid)
+    self.raw        if i_should?(:raw)
+    self.current    if i_should?(:current)
+    self.graph      if i_should?(:graph)
+
+    self.quit       if i_should?(:quit)
+    
+    Process.detach( fork { self.daemonize! } ) if i_should?(:daemonize) and !self.daemonized?
+  end
+
+  def daemonized?
+    !app.pid.blank? or ( `pgrep -f -o 'pratt -d'`.chomp.to_i == app.pid )
+  end
+
+  def daemonize!
+    puts "pratt (#{Process.pid.to_s.yellow})"
+    app.pid = Process.pid
+    app.save!
+
+    main
+    while(daemonized?)
+      sleep(interval)
+      pop
+    end
+    quit
   end
 
   private
@@ -184,6 +207,7 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
     def project?
       !@project.nil? and @project.name?
     end
+
   class << self
     def max
       # TODO Fix me
@@ -247,8 +271,8 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
           me << :destroy
         end
 
-        opt.on('-s', "--show", "Show available projects and current project (if there is one)") do
-          me << :show
+        opt.on('-C', "--current", "Show available projects and current project (if there is one)") do
+          me << :current
         end
 
         opt.on('-i', "--interval INTERVAL", Float, "Set the remind interval/min (Only applies to daemonized process).") do |interval|
@@ -264,73 +288,16 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
 #          gui
 #        end
         opt.on('-p', '--prompt GUI', [:main, :pop], "Force displaying a gui (currently: main or pop. No default.).") do |gui|
-          send gui
+          me.send gui
         end
         opt.on('-U', '--unlock GUI', %w(main, pop), "Manually unlock a gui that has died but left it's lock around.") do |gui|
-          App.rm(gui)
+          me.app.rm(gui)
         end
         
         opt.parse!
       end
 
       me.run
-    end
-
-#    def gui
-#      if last_unended = Whence.last_unended 
-#        pop
-#      else
-#        main
-#      end
-#    end
-
-    def main
-      return if App.gui?('main', true)
-      projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
-      if Whence.count == 0 
-        # first run
-        Whence.new(:project => Project.refactor)
-      else
-        current  = Whence.last_unended || Whence.last
-      end
-      Process.detach(
-        fork { system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{current.project.name}'") } 
-      )
-      App.log('main')
-    end
-    def pop
-      return if App.gui?('pop', true)
-      project = Whence.last_unended.project
-      Process.detach(
-        fork { system("ruby lib/pop.rb '#{project.name}' '#{project.whences.last_unended.start_at}' '#{Pratt.totals(project.time_spent)}'") } 
-      )
-      App.log('pop')
-    end
-
-    def run interval = 15.0
-      if Pratt.daemonized?
-        puts "Pratt appears to be still running at pid (#{pid.to_s.yellow})."
-      else
-        Process.detach(
-          fork {
-            daemonize!
-            main
-            while(daemonized?)
-              sleep(interval*60)
-              pop
-            end
-          }
-        )
-      end
-    end
-
-    def daemonized?
-      File.exists?(PID_FILE) and pid.to_i != 0
-    end
-
-    def pid
-      return unless File.exists?(PID_FILE)
-      File.open(PID_FILE).readline.to_i
     end
 
     def totals hr, fmt = false
@@ -342,17 +309,12 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
     end
     private
 
-
       def fmt_f flt, label, color, fmt = false
         "%#{max}.#{max}s %s"% [label, ("%0.2f%%"% flt).send(fmt ? color : :to_s), label]
       end
+
       def fmt_i int, label, color, fmt = false
         "%s #{label}"% [("%02i"% int).send(fmt ? color : :to_s), label]
-      end
-      def daemonize!
-#        return if daemonized?
-        puts "pratt (#{Process.pid.to_s.yellow})"
-        File.open(PID_FILE, 'w') {|f| f.write(Process.pid) }
       end
   end
 end
