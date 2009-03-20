@@ -110,7 +110,7 @@ class Pratt
   end
 
   def pid
-    p  = `pgrep -f -o 'pratt -d'`.chomp
+    p  = `pgrep -f -o 'pratt'`.chomp
     puts "
    pid #{p.cyan} found running
 expect #{app.pid.to_s.magenta} ···················· ⌈#{daemonized? ? 'OK'.green : 'Oops'.red}⌋
@@ -118,17 +118,25 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
 " 
   end
 
+  def gui
+    if Whence.last_unended
+      pop
+    else
+      main
+    end
+  end
+
   def main
     return if app.gui?('main', true)
     projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
     if Whence.count == 0 
       # first run
-      Whence.new(:project => Project.refactor)
+      project = Whence.new(:project => Project.refactor)
     else
-      current  = Whence.last_unended || Whence.last
+      project = Whence.last_unended || Whence.last
     end
     Process.detach(
-      fork { system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{current.project.name}'") } 
+      fork { system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{project.project.name}'") } 
     )
     app.log('main')
   end
@@ -258,8 +266,8 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         opt.on('-R', '--raw', "Dump logs (semi-)raw") do
           me << :raw
         end
-        opt.on('-L', '--log FILE', String, "Redirect errors") do |log_file|
-          $stderr.reopen(log_file, 'a')
+        opt.on('-L', '--log', "Redirect errors") do
+          $stderr.reopen('log/pratt.log', 'a')
           $stderr.sync = true
         end
 
@@ -285,9 +293,9 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         opt.on('-q', "--quit", "Stop daemon.") do
           me << :quit
         end
-#        opt.on('-G', '--gui', 'Show "smart" gui.') do
-#          gui
-#        end
+        opt.on('-G', '--gui', 'Show "smart" gui.') do
+          me << :gui
+        end
         opt.on('-p', '--prompt GUI', [:main, :pop], "Force displaying a gui (currently: main or pop. No default.).") do |gui|
           me.send gui
         end
