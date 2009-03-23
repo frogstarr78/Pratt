@@ -12,9 +12,9 @@ class Pratt
   PID_FILE='pratt.pid'
   FMT = "%a %X %b %d %Y"
 
-  attr_accessor :interval, :quit, :daemonize, :prompt, :week, :day, :when_to, :scale, :color, :app
-  attr_reader :graph, :project
-  def initialize proj = nil #interval, quit, daemonize, prompt, graph, week, day, when_to
+  attr_accessor :interval, :when_to, :scale, :color, :app
+  attr_reader :project
+  def initialize proj = nil #interval, when_to
     @when_to  = Time.now
     @week     = false
     @day      = false
@@ -24,7 +24,7 @@ class Pratt
     @color    = true
     self.project = proj
     @app      = App.last
-#    @interval, @quit, @daemonize, @prompt, @graph, @week, @day, @when_to = 
+#    @interval, @week, @day, @when_to = 
   end
 
   def project= proj
@@ -77,11 +77,19 @@ class Pratt
     project_names = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
     current = Whence.last_unended || Whence.last
 
-    puts "   projects: " << project_names.collect {|project_name| "'#{project_name.send(current.end_at.nil? && current.project.name == project_name ? :green : :magenta)}'" }*' '
+    puts "   projects: " << (
+      project_names.collect do |project_name| 
+        if color
+          "'#{project_name.send(current.end_at.nil? && current.project.name == project_name ? :green : :magenta)}'" 
+        else
+          "'#{project_name}'" 
+        end
+      end
+    ) * ' '
     if current.end_at.nil?
-      puts "    started: #{current.start_at.strftime(FMT)}"
+      puts "    started: #{current.start_at.strftime(FMT).send(color ? :blue : :to_s)}"
       time_til = ( interval - ( Time.now - current.start_at ) )
-      puts "next prompt: %s %s"% [Pratt.send( :fmt_i, time_til / 60.0, 'min', :yellow, color), Pratt.send( :fmt_i, time_til % 60, 'sec', :yellow, color), ], ''
+      puts "next prompt: %s %s"% [Pratt.send( :fmt_i, time_til / 60.0, 'min', :yellow, color ), Pratt.send( :fmt_i, time_til % 60, 'sec', :yellow, color ), ], ''
     end
   end
 
@@ -163,7 +171,10 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
 
   def quit
     project.stop!
-    Process.kill("KILL", app.pid.to_i)
+    begin
+      Process.kill("KILL", app.pid.to_i)
+    rescue Errno::ESRCH
+    end
     app.pid = ''
     app.gui = ''
     app.save!
@@ -192,7 +203,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
   end
 
   def daemonized?
-    !app.pid.blank? or ( `pgrep -f -o 'pratt -d'`.chomp.to_i == app.pid )
+    !app.pid.blank? and ( `pgrep -f -o 'pratt'`.chomp.to_i == app.pid )
   end
 
   def daemonize!
@@ -271,7 +282,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
           $stderr.sync = true
         end
 
-        opt.on('-n', '--no-color', "Redirect errors") do 
+        opt.on('-n', '--no-color', "Display output without color or special characters.") do 
           me.color = false
         end
 
