@@ -21,6 +21,19 @@ task :console do
   exec "irb #{libs} --simple-prompt"
 end
 
+namespace :db do
+  desc "DB Quick access"
+
+  task :app do 
+    puts App.last.inspect
+  end
+
+  task :last do
+    last = Whence.last_unended || Whence.last
+    puts last.inspect
+  end
+end
+
 namespace :spec do
   desc "Spec testing"
   Spec::Rake::SpecTask.new(:rcov) do |t|
