@@ -7,7 +7,6 @@ class Whence < ActiveRecord::Base
     self.end_at ||= when_to
     self.save!
     self.reload
-    self
   end
   def change! to_project
     self.project = Project.find_or_create_by_name(to_project)
