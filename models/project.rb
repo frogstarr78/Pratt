@@ -5,6 +5,7 @@ class Project < ActiveRecord::Base
   validates_presence_of :name
 
   def start! at = DateTime.now
+    at = Chronic.parse(at) if at.is_a?(String)
     whences.create :start_at => at
   end
   def stop! at = DateTime.now
@@ -23,13 +24,13 @@ class Project < ActiveRecord::Base
 
   class << self
     def named name
-      find_cond name
+      first :conditions => ["name = ?", name]
     end
     def refactor
-      find_cond 'Home Refactor'
+      named 'Home Refactor'
     end
     def off
-      find_cond 'Lunch/Break'
+      named 'Lunch/Break'
     end
     def rest
       all :conditions => ["name not in (?)", %w(Home\ Refactor Lunch/Break)]
@@ -65,8 +66,5 @@ class Project < ActiveRecord::Base
     end
 
     private
-      def find_cond name
-        first :conditions => ["name = ?", name]
-      end
   end
 end
