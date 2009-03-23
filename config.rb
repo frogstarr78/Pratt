@@ -6,6 +6,7 @@ require 'ruby-debug'
 gem 'activerecord'
 gem 'sqlite3-ruby'
 require 'active_record'
+require 'chronic'
 
 include FileUtils
 

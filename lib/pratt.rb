@@ -1,7 +1,6 @@
 require 'config'
 require 'colored'
 require 'optparse'
-require 'chronic'
 require 'fileutils'
 
 class Pratt
