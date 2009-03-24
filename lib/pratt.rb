@@ -12,7 +12,7 @@ class Pratt
   PID_FILE='pratt.pid'
   FMT = "%a %X %b %d %Y"
 
-  attr_accessor :interval, :when_to, :scale, :color, :app
+  attr_accessor :interval, :when_to, :scale, :color, :app, :show_all
   attr_reader :project
   def initialize proj = nil #interval, when_to
     @when_to  = Time.now
@@ -22,6 +22,7 @@ class Pratt
     @scale    = nil
     @interval = 15*60
     @color    = true
+    @show_all = false
     self.project = proj
     @app      = App.last
 #    @interval, @week, @day, @when_to = 
@@ -60,9 +61,9 @@ class Pratt
       refactor_total = proj.time_spent(scale, when_to) if proj.name == Project.refactor.name
       off_total      = proj.time_spent(scale, when_to) if proj.name == Project.off.name
       rest_total    += proj.time_spent(scale, when_to) if Project.rest.collect(&:name).include?(proj.name)
-      puts "%1$*4$s%2$s %3$s"% [proj.name, (color ? '⋮' : '|'), Pratt.totals(proj.time_spent(scale, when_to), color && true), max]
+      puts "%1$*4$s%2$s %3$s"% [proj.name, (color ? '⋮' : '|'), Pratt.totals(proj.time_spent(scale, when_to), color && true), max] if show_all or ( !show_all and proj.time_spent(scale, when_to) != 0.0 )
     end
-    puts (color ? '·' : '-')*50
+    puts (color ? '·' : '-')*60
     scaled_total = Whence.time_spent(scale, when_to)-off_total
     puts [
       "%#{max}.#{max}s %s hrs"% ['Total', ("%0.2f"%scaled_total).send(color ? :underline : :to_s)],
@@ -120,8 +121,8 @@ class Pratt
   def pid
     p  = `pgrep -f -o 'pratt'`.chomp
     puts "
-   pid #{p.cyan} found running
-expect #{app.pid.to_s.magenta} ···················· ⌈#{daemonized? ? 'OK'.green : 'Oops'.red}⌋
+   pid #{p.send(color ? :cyan : :to_s)} found running
+expect #{app.pid.to_s.magenta} ···················· ⌈#{daemonized? ? 'OK'.send(color ? :green : :to_s) : 'Oops'.send(color ? :red : :to_s)}⌋
 
 " 
   end
@@ -162,7 +163,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     count     = Project.count
     colors    = %w(red red_on_yellow red_on_white green green_on_blue yellow yellow_on_blue blue magenta magenta_on_blue cyan white white_on_green white_on_blue white_on_magenta black_on_yellow black_on_blue black_on_green black_on_magenta black_on_cyan black_on_red).sort
     Whence.all(:order => "id ASC").each do |whence| 
-      color = color ? :to_s : colors[whence.project.id%colors.size]
+      color = self.color ? colors[whence.project.id%colors.size] : :to_s
       str   = "%#{max}.#{max}s ⌈%s"% [("%s"%whence.project.name), whence.start_at.strftime(FMT).send(color)]
       str  += "­%s⌋ %0.2f min"% [whence.end_at.strftime(FMT).send(color), (whence.end_at-whence.start_at)/60] if whence.end_at
       puts str
@@ -282,8 +283,11 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
           $stderr.sync = true
         end
 
-        opt.on('-n', '--no-color', "Display output without color or special characters.") do 
+        opt.on('-N', '--no-color', "Display output without color or special characters.") do 
           me.color = false
+        end
+        opt.on('-A', '--show-all', "Display all project regardless of other options.") do 
+          me.show_all = true
         end
 
         opt.on('--destroy PROJECT_NAME', String, "Remove a project.") do |proj|
@@ -293,6 +297,9 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
 
         opt.on('-C', "--current", "Show available projects and current project (if there is one)") do
           me << :current
+        end
+
+        opt.on('-E', '--environment', String, "Environment to load") do
         end
 
         opt.on('-i', "--interval INTERVAL", Float, "Set the remind interval/min (Only applies to daemonized process).") do |interval|
@@ -338,3 +345,6 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
       end
   end
 end
+
+#p = Pratt.new 'Home Refactor'
+#puts p.inspect
