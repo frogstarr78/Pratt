@@ -136,7 +136,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
   end
 
   def main
-    return if app.gui?('main', true)
+    return if self.app.gui?('main', true)
     projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
     if Whence.count == 0 
       # first run
@@ -147,16 +147,16 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     Process.detach(
       fork { system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{project.project.name}'") } 
     )
-    app.log('main')
+    self.app.log('main')
   end
 
   def pop
-    return if app.gui?('pop', true)
+    return if self.app.gui?('pop', true)
     project = Whence.last_unended.project
     Process.detach(
       fork { system("ruby lib/pop.rb '#{project.name}' '#{project.whences.last_unended.start_at}' '#{Pratt.totals(project.time_spent)}'") } 
     )
-    app.log('pop')
+    self.app.log('pop')
   end
 
   def raw
