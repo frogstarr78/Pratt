@@ -2,18 +2,18 @@ class App < ActiveRecord::Base
   has_many :logs
 
   def log which, overwrite = false
-    gui = which if (overwrite and gui?(which) ) || gui?('')
+    self.gui = which if (overwrite and gui?(which) ) || gui?('')
     save!
   end
 
   def gui? which = '', log_err = false
-    match = (gui == which)
+    match = (self.gui == which)
 #    $stderr.write("#{which} already being displayed\n") if log_err
     match
   end
 
   def rm which
-    gui = '' if gui?(which)
+    self.gui = '' if gui?(which)
     save!
   end
 
