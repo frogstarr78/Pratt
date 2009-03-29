@@ -4,6 +4,34 @@ require 'optparse'
 require 'chronic'
 require 'fileutils'
 
+module NoColor
+  include Colored
+
+  COLORS.each do |color, value|
+    define_method(color) do 
+      self.to_s
+    end
+
+    define_method("on_#{color}") do
+      self.to_s
+    end
+
+    COLORS.each do |highlight, value|
+      next if color == highlight
+      define_method("#{color}_on_#{highlight}") do
+        self.to_s
+      end
+    end
+  end
+
+  EXTRAS.each do |extra, value|
+    next if extra == 'clear'
+    define_method(extra) do 
+      self.to_s
+    end
+  end
+end
+
 class Pratt
 
   include Config
@@ -52,8 +80,8 @@ class Pratt
     
     puts "Project detail"
     puts [
-      "by #{scale.to_s.send(color ? :red : :to_s)} from ", 
-      "#{when_to.send("beginning_of_#{scale}").strftime(FMT).send(color ? :blue : :to_s)} to #{when_to.send("end_of_#{scale}").strftime(FMT).send(color ? :blue : :to_s)}"
+      "by #{scale.to_s.red} from ", 
+      "#{when_to.send("beginning_of_#{scale}").strftime(FMT).blue} to #{when_to.send("end_of_#{scale}").strftime(FMT).blue}"
     ] if scale
     puts ' '*(max+1) << 'dys'.send(color ? :underline : :to_s) << ' '*5 << 'hrs'.send(color ? :underline : :to_s) << ' '*5 << 'min'.send(color ? :underline : :to_s)
     puts '-'*50 unless color
@@ -76,21 +104,22 @@ class Pratt
 
   def current
     project_names = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
-    current = Whence.last_unended || Whence.last
 
-    puts "   projects: " << (
-      project_names.collect do |project_name| 
-        if color
-          "'#{project_name.send(current.end_at.nil? && current.project.name == project_name ? :green : :magenta)}'" 
-        else
-          "'#{project_name}'" 
-        end
+    if current = Whence.last_unended || Whence.last
+      puts "   projects: " << (
+        project_names.collect {|project_name| "'#{project_name.send(current.end_at.nil? && current.project.name == project_name ? :green : :magenta)}'" }
+      ) * ' '
+      if current.end_at.nil?
+        puts "    started: #{current.start_at.strftime(FMT).send(:blue)}"
+        time_til = ( interval - ( Time.now - current.start_at ) )
+        puts "next prompt: %s %s"% [Pratt.send( :fmt_i, time_til / 60.0, 'min', :yellow, color ), Pratt.send( :fmt_i, time_til % 60, 'sec', :yellow, color ), ], ''
       end
-    ) * ' '
-    if current.end_at.nil?
-      puts "    started: #{current.start_at.strftime(FMT).send(color ? :blue : :to_s)}"
-      time_til = ( interval - ( Time.now - current.start_at ) )
-      puts "next prompt: %s %s"% [Pratt.send( :fmt_i, time_til / 60.0, 'min', :yellow, color ), Pratt.send( :fmt_i, time_til % 60, 'sec', :yellow, color ), ], ''
+    else
+      puts "   projects: " << (
+        project_names.collect do |project_name| 
+          "'#{project_name.send(:magenta)}'" 
+        end
+      ) * ' '
     end
   end
 
@@ -121,8 +150,8 @@ class Pratt
   def pid
     p  = `pgrep -f -o 'pratt'`.chomp
     puts "
-   pid #{p.send(color ? :cyan : :to_s)} found running
-expect #{app.pid.to_s.magenta} ···················· ⌈#{daemonized? ? 'OK'.send(color ? :green : :to_s) : 'Oops'.send(color ? :red : :to_s)}⌋
+   pid #{p.cyan} found running
+expect #{app.pid.to_s.magenta} ···················· ⌈#{daemonized? ? 'OK'.green : 'Oops'.red}⌋
 
 " 
   end
@@ -284,6 +313,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         end
 
         opt.on('-N', '--no-color', "Display output without color or special characters.") do 
+          String.send(:include, NoColor)
           me.color = false
         end
         opt.on('-A', '--show-all', "Display all project regardless of other options.") do 
