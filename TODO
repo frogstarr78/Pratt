@@ -1,10 +1,11 @@
 [t] Allow only one prompt at a time.
 [x] Handle stop when there isn't a running project w/out errors
 [*] fix gui so if last_unended is detected app knows which gui to display
-[t] Intelligently detect correctly running stored pid.
+[x] Intelligently detect correctly running stored pid.
 [ ] Put everything in the db (logs, app locks, etc)
 [ ] Add TrayIcon.
 [ ] Fix pid directory access.
+[ ] Add environment ability
 
 Done:
 [x] Whence.last should be last unended.
