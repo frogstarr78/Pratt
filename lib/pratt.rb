@@ -40,7 +40,7 @@ class Pratt
   PID_FILE='pratt.pid'
   FMT = "%a %X %b %d %Y"
 
-  attr_accessor :interval, :when_to, :scale, :color, :app, :show_all
+  attr_accessor :interval, :when_to, :scale, :color, :app, :show_all, :todo
   attr_reader :project
   def initialize proj = nil #interval, when_to
     @when_to  = Time.now
@@ -124,7 +124,7 @@ class Pratt
   end
 
   def begin
-    project.start! when_to
+    self.project.start! when_to
   end
   def restart
     if project?
@@ -147,10 +147,13 @@ class Pratt
     project.destroy
   end
 
+  def cpid
+    `pgrep -fl 'bin/pratt'`.chomp.split(' ').first
+  end
+
   def pid
-    p  = `pgrep -f -o 'pratt'`.chomp
     puts "
-   pid #{p.cyan} found running
+   pid #{cpid.cyan} found running
 expect #{app.pid.to_s.magenta} ···················· ⌈#{daemonized? ? 'OK'.green : 'Oops'.red}⌋
 
 " 
@@ -165,6 +168,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
   end
 
   def main
+    app.reload
     return if self.app.gui?('main', true)
     projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
     if Whence.count == 0 
@@ -180,6 +184,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
   end
 
   def pop
+    app.reload
     return if self.app.gui?('pop', true)
     project = Whence.last_unended.project
     Process.detach(
@@ -226,6 +231,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     self.raw        if i_should?(:raw)
     self.current    if i_should?(:current)
     self.graph      if i_should?(:graph)
+    self.gui        if i_should?(:gui)
 
     self.quit       if i_should?(:quit)
     
@@ -233,7 +239,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
   end
 
   def daemonized?
-    !app.pid.blank? and ( `pgrep -f -o 'pratt'`.chomp.to_i == app.pid )
+    !app.pid.blank? and ( cpid.to_i == app.pid )
   end
 
   def daemonize!
@@ -241,10 +247,10 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     app.pid = Process.pid
     app.save!
 
-    main
+    gui
     while(daemonized?)
       sleep(interval)
-      pop
+      gui
     end
     quit
   end
@@ -344,10 +350,10 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         opt.on('-G', '--gui', 'Show "smart" gui.') do
           me << :gui
         end
-        opt.on('-p', '--prompt GUI', [:main, :pop], "Force displaying a gui (currently: main or pop. No default.).") do |gui|
-          me.send gui
-        end
-        opt.on('-U', '--unlock GUI', %w(main, pop), "Manually unlock a gui that has died but left it's lock around.") do |gui|
+#        opt.on('-p', '--prompt GUI', [:main, :pop], "Force displaying a gui (currently: main or pop. No default.).") do |gui|
+#          me.send gui
+#        end
+        opt.on('-U', '--unlock GUI', %w(main pop), "Manually unlock a gui that has died but left it's lock around.") do |gui|
           me.app.rm(gui)
         end
         
