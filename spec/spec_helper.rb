@@ -3,6 +3,11 @@
 require 'spec'
 PRATT_ENV = :test
 require 'config'
+require 'ruby-debug'
+
+Spec::Runner.configure do |config|
+  config.mock_with :rspec
+end
 
 shared_examples_for "Time spent on a project" do
   it "should correctly calculate time_spent with time argument" do
@@ -20,11 +25,11 @@ shared_examples_for "Time spent on a project" do
 end
 
 shared_examples_for "needing project instance that knows how to cleanup" do 
-    before :each do
-      @project = Project.refactor
-    end
+  before :each do
+    @project = Project.refactor
+  end
 
-    after :each do
-      Project.all.collect(&:whences).collect(&:destroy_all)
-    end
+  after :each do
+    Project.all.collect(&:whences).collect(&:destroy_all)
+  end
 end
