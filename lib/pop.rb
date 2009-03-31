@@ -11,7 +11,7 @@ yes = proc {
   exit 
 }
 adjust = proc {
-  c = fork { system("ruby bin/pratt.rb --end '#{project_name}' --unlock 'pop' --prompt 'main'") }
+  c = fork { system("ruby bin/pratt.rb --end '#{project_name}' --unlock 'pop' --gui") }
   Process.detach(c)
   exit 
 }
