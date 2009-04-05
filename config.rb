@@ -17,6 +17,25 @@ $LOAD_PATH << './models'
 $LOAD_PATH.uniq!
 
 class Pratt
+  DBFILE = {
+    :production  => 'tracker.sqlite3',
+    :test        => 'test_tracker.sqlite3',
+    :development => 'dev_tracker.sqlite3'
+  } unless Object.const_defined?('DBFILE')
+
+  class << self
+    def connect env = :development
+      ActiveRecord::Base.establish_connection(
+        :adapter => 'sqlite3',
+        :dbfile => DBFILE[env.to_sym]
+      )
+    end
+
+    def connected?
+      ActiveRecord::Base.connected?
+    end
+  end
+
   module Models
     def conditions_for_time_spent scale = nil, when_to = Time.now
       when_to = Chronic.parse(when_to) if when_to.is_a?(String)
@@ -48,32 +67,22 @@ class Pratt
     end
 
     def migrate
-      model_files do |path|
-        klass = File.basename( path, '.rb' ).capitalize.constantize
-        begin
-          ActiveRecord::Base.connection.execute("CREATE VIEW INFORMATION_SCHEMA_TABLES AS SELECT 'main' AS TABLE_CATALOG, 'sqlite' AS TABLE_SCHEMA, tbl_name AS TABLE_NAME, CASE WHEN type = 'table' THEN 'BASE TABLE' WHEN type = 'view' THEN 'VIEW' END AS TABLE_TYPE, sql AS TABLE_SOURCE FROM sqlite_master WHERE type IN ('table', 'view') AND tbl_name NOT LIKE 'INFORMATION_SCHEMA_%' ORDER BY TABLE_TYPE, TABLE_NAME;")
-        rescue ActiveRecord::StatementInvalid
-        end
-        unless ActiveRecord::Base.connection.select_value("SELECT * FROM INFORMATION_SCHEMA_TABLES WHERE TABLE_NAME = '#{klass.table_name}'")
-          klass.migrate :up
+      DBFILE.each do |env,db|
+        Pratt.connect env
+        model_files do |path|
+          klass = File.basename( path, '.rb' ).capitalize.constantize
+          begin
+            ActiveRecord::Base.connection.execute("CREATE VIEW INFORMATION_SCHEMA_TABLES AS SELECT 'main' AS TABLE_CATALOG, 'sqlite' AS TABLE_SCHEMA, tbl_name AS TABLE_NAME, CASE WHEN type = 'table' THEN 'BASE TABLE' WHEN type = 'view' THEN 'VIEW' END AS TABLE_TYPE, sql AS TABLE_SOURCE FROM sqlite_master WHERE type IN ('table', 'view') AND tbl_name NOT LIKE 'INFORMATION_SCHEMA_%' ORDER BY TABLE_TYPE, TABLE_NAME;")
+          rescue ActiveRecord::StatementInvalid
+          end
+          unless ActiveRecord::Base.connection.select_value("SELECT * FROM INFORMATION_SCHEMA_TABLES WHERE TABLE_NAME = '#{klass.table_name}'")
+            klass.migrate :up
+          end
         end
       end
     end
   end
 end
 
-PRATT_ENV = :development unless Object.const_defined?('PRATT_ENV')
-DBFILE = {
-  :development => 'dev_tracker.sqlite3',
-  :test        => 'test_tracker.sqlite3',
-  :production  => 'tracker.sqlite3'
-} unless Object.const_defined?('DBFILE')
-
-
-ActiveRecord::Base.establish_connection(
-  :adapter => 'sqlite3',
-  :dbfile => DBFILE[PRATT_ENV]
-)
-
 include Pratt::Config
-migrate
+#migrate
