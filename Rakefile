@@ -13,6 +13,9 @@ end
 task :default => [:test] 
 #task :default => [:spec] 
 
+ENV['env'] = 'development' unless ENV.has_key?('env')
+Pratt.connect ENV['env']
+
 task :console do 
   require 'ruby-debug'
   libs =  " -r irb/completion"
@@ -21,13 +24,15 @@ task :console do
   exec "irb #{libs} --simple-prompt"
 end
 
+desc "DB Quick access"
 namespace :db do
-  desc "DB Quick access"
 
+  desc "Show App detail."
   task :app do 
     puts App.last.inspect
   end
 
+  desc "Show Last Whence log."
   task :last do
     last = Whence.last_unended || Whence.last
     puts last.inspect
