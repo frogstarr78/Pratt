@@ -40,7 +40,7 @@ class Pratt
   PID_FILE='pratt.pid'
   FMT = "%a %X %b %d %Y"
 
-  attr_accessor :interval, :when_to, :scale, :color, :app, :show_all, :todo
+  attr_accessor :interval, :when_to, :scale, :color, :show_all, :todo
   attr_reader :project
   def initialize proj = nil #interval, when_to
     @when_to  = Time.now
@@ -51,9 +51,7 @@ class Pratt
     @interval = 15*60
     @color    = true
     @show_all = false
-    self.project = proj
-    @app      = App.last
-#    @interval, @week, @day, @when_to = 
+    self.project = proj unless proj.nil?
   end
 
   def project= proj
@@ -66,6 +64,11 @@ class Pratt
 
   def << what
     @todo << what
+  end
+
+  def app
+    self.class.connect unless self.class.connected?
+    App.last
   end
 
   def graph
@@ -167,32 +170,6 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     end
   end
 
-  def main
-    app.reload
-    return if self.app.gui?('main', true)
-    projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
-    if Whence.count == 0 
-      # first run
-      project = Whence.new(:project => Project.refactor)
-    else
-      project = Whence.last_unended || Whence.last
-    end
-    Process.detach(
-      fork { system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{project.project.name}'") } 
-    )
-    self.app.log('main')
-  end
-
-  def pop
-    app.reload
-    return if self.app.gui?('pop', true)
-    project = Whence.last_unended.project
-    Process.detach(
-      fork { system("ruby lib/pop.rb '#{project.name}' '#{project.whences.last_unended.start_at}' '#{Pratt.totals(project.time_spent)}'") } 
-    )
-    self.app.log('pop')
-  end
-
   def raw
     count     = Project.count
     colors    = %w(red red_on_yellow red_on_white green green_on_blue yellow yellow_on_blue blue magenta magenta_on_blue cyan white white_on_green white_on_blue white_on_magenta black_on_yellow black_on_blue black_on_green black_on_magenta black_on_cyan black_on_red).sort
@@ -256,6 +233,32 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
   end
 
   private
+    def main
+      self.app.reload
+      return if self.app.gui?('main', true)
+      self.app.log('main')
+      projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
+      if Whence.count == 0 
+        # first run
+        project = Whence.new(:project => Project.refactor)
+      else
+        project = Whence.last_unended || Whence.last
+      end
+      Process.detach(
+        fork { system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{project.project.name}'") } 
+      )
+    end
+
+    def pop
+      self.app.reload
+      return if self.app.gui?('pop', true)
+      self.app.log('pop')
+      project = Whence.last_unended.project
+      Process.detach(
+        fork { system("ruby lib/pop.rb '#{project.name}' '#{project.whences.last_unended.start_at}' '#{Pratt.totals(project.time_spent)}'") } 
+      )
+    end
+
     def i_should? what
       @todo.include?(what)
     end
@@ -265,12 +268,20 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     end
 
   class << self
+
     def max
       # TODO Fix me
       Project.all.inject(0) {|x,p| x = p.name.length if p.name.length > x; x }
     end
 
     def parse args
+      args.options do |opt|
+        opt.on('-E', '--environment ENV', DBFILE.keys, "Environment to load") do |env|
+          Pratt.connect env.to_sym
+        end
+      end
+
+      Pratt.connect :development unless Pratt.connected?
       me = Pratt.new
 
       args.options do |opt|
@@ -331,11 +342,11 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
           me << :destroy
         end
 
+        opt.on("--app", "Show available projects and current project (if there is one)") do
+          puts me.app.inspect
+        end
         opt.on('-C', "--current", "Show available projects and current project (if there is one)") do
           me << :current
-        end
-
-        opt.on('-E', '--environment', String, "Environment to load") do
         end
 
         opt.on('-i', "--interval INTERVAL", Float, "Set the remind interval/min (Only applies to daemonized process).") do |interval|
@@ -350,11 +361,8 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         opt.on('-G', '--gui', 'Show "smart" gui.') do
           me << :gui
         end
-#        opt.on('-p', '--prompt GUI', [:main, :pop], "Force displaying a gui (currently: main or pop. No default.).") do |gui|
-#          me.send gui
-#        end
-        opt.on('-U', '--unlock GUI', %w(main pop), "Manually unlock a gui that has died but left it's lock around.") do |gui|
-          me.app.rm(gui)
+        opt.on('-U', '--unlock', "Manually unlock a gui that has died but left it's lock around.") do
+          me.app.unlock
         end
         
         opt.parse!
