@@ -12,9 +12,9 @@ class App < ActiveRecord::Base
     match
   end
 
-  def rm which
-    self.gui = '' if gui?(which)
-    save!
+  def unlock
+    self.gui = ''
+    self.save!
   end
 
   class << self
