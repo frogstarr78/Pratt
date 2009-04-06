@@ -17,18 +17,25 @@ $LOAD_PATH << './models'
 $LOAD_PATH.uniq!
 
 class Pratt
-  DBFILE = {
-    :production  => 'tracker.sqlite3',
-    :test        => 'test_tracker.sqlite3',
-    :development => 'dev_tracker.sqlite3'
-  } unless Object.const_defined?('DBFILE')
+  DBFILES = (
+    Dir.glob("*.sqlite3").collect {|file| file.split('.').first }
+  )
 
   class << self
-    def connect env = :development
+    def connect to_env = :development
+      puts "to_env #{to_env}.sqlite3 connected? #{ActiveRecord::Base.connected?}"
       ActiveRecord::Base.establish_connection(
         :adapter => 'sqlite3',
-        :dbfile => DBFILE[env.to_sym]
+        :dbfile  => case to_env
+        when :production, 'production'
+          'production.sqlite3'
+        when :test, 'test'
+          'test.sqlite3'
+        else
+          'development.sqlite3'
+        end
       )
+      puts "to_env #{to_env} connected? #{ActiveRecord::Base.connected?}"
     end
 
     def connected?
@@ -67,8 +74,8 @@ class Pratt
     end
 
     def migrate
-      DBFILE.each do |env,db|
-        Pratt.connect env
+      DBFILES.each do |db|
+        Pratt.connect db
         model_files do |path|
           klass = File.basename( path, '.rb' ).capitalize.constantize
           begin
