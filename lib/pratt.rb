@@ -67,7 +67,7 @@ class Pratt
   end
 
   def app
-    self.class.connect unless self.class.connected?
+#    self.class.connect unless self.class.connected?
     App.last
   end
 
@@ -275,16 +275,15 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     end
 
     def parse args
+
       args.options do |opt|
-        opt.on('-E', '--environment ENV', DBFILE.keys, "Environment to load") do |env|
-          Pratt.connect env.to_sym
+        Pratt.connect :development
+        opt.on('-E', '--environment ENVIRONMENT', DBFILES, "Environment to load") do |to_env|
+          Pratt.connect to_env
         end
-      end
 
-      Pratt.connect :development unless Pratt.connected?
-      me = Pratt.new
+        me = Pratt.new
 
-      args.options do |opt|
         opt.on('-b', "--begin PROJECT_NAME", String, "Begin project tracking.") do |proj|
           me.project = proj
           me << :begin
@@ -366,9 +365,10 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         end
         
         opt.parse!
+
+        me.run
       end
 
-      me.run
     end
 
     def totals hr, fmt = false
