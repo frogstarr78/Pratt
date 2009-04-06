@@ -13,8 +13,7 @@ end
 task :default => [:test] 
 #task :default => [:spec] 
 
-ENV['env'] = 'development' unless ENV.has_key?('env')
-Pratt.connect ENV['env']
+Pratt.connect( ENV['env'] || 'development' )
 
 task :console do 
   require 'ruby-debug'
