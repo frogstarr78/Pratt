@@ -23,7 +23,6 @@ class Pratt
 
   class << self
     def connect to_env = :development
-      puts "to_env #{to_env}.sqlite3 connected? #{ActiveRecord::Base.connected?}"
       ActiveRecord::Base.establish_connection(
         :adapter => 'sqlite3',
         :dbfile  => case to_env
@@ -35,7 +34,6 @@ class Pratt
           'development.sqlite3'
         end
       )
-      puts "to_env #{to_env} connected? #{ActiveRecord::Base.connected?}"
     end
 
     def connected?
@@ -92,4 +90,4 @@ class Pratt
 end
 
 include Pratt::Config
-#migrate
+migrate
