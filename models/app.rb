@@ -17,16 +17,21 @@ class App < ActiveRecord::Base
     self.save!
   end
 
+  def interval= intvl
+    write_attribute(:interval, intvl*60)
+  end
+
   class << self
     def migrate up = :up
       ActiveRecord::Schema.define do
         create_table :apps do |t|
           t.integer :pid
-          t.string  :gui
+          t.string  :gui,      :default => ''
+          t.float   :interval, :default => 15.0*60
         end if up == :up
         drop_table :apps if up == :down
       end
-      App.create!(:gui => '') if up == :up
+      App.create!(:gui => '', :interval => 15.0) if up == :up
     end
   end
 end
