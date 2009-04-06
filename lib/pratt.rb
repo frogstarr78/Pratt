@@ -40,17 +40,17 @@ class Pratt
   PID_FILE='pratt.pid'
   FMT = "%a %X %b %d %Y"
 
-  attr_accessor :interval, :when_to, :scale, :color, :show_all, :todo
+  attr_accessor :when_to, :scale, :color, :show_all, :env
   attr_reader :project
-  def initialize proj = nil #interval, when_to
+  def initialize proj = nil #, when_to
     @when_to  = Time.now
     @week     = false
     @day      = false
     @todo     = []
     @scale    = nil
-    @interval = 15*60
     @color    = true
     @show_all = false
+    @env      = :development
     self.project = proj unless proj.nil?
   end
 
@@ -58,6 +58,7 @@ class Pratt
     if proj.is_a?(Project)
       @project = project
     else
+#      Pratt.connect self.env
       @project = Project.find_or_create_by_name( { :name => proj } )
     end
   end
@@ -67,8 +68,8 @@ class Pratt
   end
 
   def app
-#    self.class.connect unless self.class.connected?
-    App.last
+    @app ||= App.last
+    @app
   end
 
   def graph
@@ -114,7 +115,7 @@ class Pratt
       ) * ' '
       if current.end_at.nil?
         puts "    started: #{current.start_at.strftime(FMT).send(:blue)}"
-        time_til = ( interval - ( Time.now - current.start_at ) )
+        time_til = ( app.interval - ( Time.now - current.start_at ) )
         puts "next prompt: %s %s"% [Pratt.send( :fmt_i, time_til / 60.0, 'min', :yellow, color ), Pratt.send( :fmt_i, time_til % 60, 'sec', :yellow, color ), ], ''
       end
     else
@@ -162,14 +163,6 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
 " 
   end
 
-  def gui
-    if Whence.last_unended
-      pop
-    else
-      main
-    end
-  end
-
   def raw
     count     = Project.count
     colors    = %w(red red_on_yellow red_on_white green green_on_blue yellow yellow_on_blue blue magenta magenta_on_blue cyan white white_on_green white_on_blue white_on_magenta black_on_yellow black_on_blue black_on_green black_on_magenta black_on_cyan black_on_red).sort
@@ -182,7 +175,8 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
   end
 
   def quit
-    project.stop!
+    project.stop! if project? and project.whences.last_unended
+    Whence.last_unended.stop! if Whence.last_unended
     begin
       Process.kill("KILL", app.pid.to_i)
     rescue Errno::ESRCH
@@ -197,6 +191,8 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
   end
 
   def run
+#    Pratt.connect self.env
+
     self.begin      if i_should?(:begin)
     self.change     if i_should?(:change)
     self.restart    if i_should?(:restart)
@@ -209,27 +205,36 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     self.current    if i_should?(:current)
     self.graph      if i_should?(:graph)
     self.gui        if i_should?(:gui)
+    self.app.unlock if i_should?(:unlock)
 
     self.quit       if i_should?(:quit)
     
-    Process.detach( fork { self.daemonize! } ) if i_should?(:daemonize) and !self.daemonized?
+    Process.detach( fork { self.daemonize! } ) if i_should?(:daemonize) and not self.daemonized?
   end
 
   def daemonized?
     !app.pid.blank? and ( cpid.to_i == app.pid )
   end
-
   def daemonize!
+#    self.class.connect :development
     puts "pratt (#{Process.pid.to_s.yellow})"
     app.pid = Process.pid
     app.save!
 
     gui
     while(daemonized?)
-      sleep(interval)
+      sleep(app.interval)
       gui
     end
     quit
+  end
+
+  def gui
+    if Whence.last_unended
+      pop
+    else
+      main
+    end
   end
 
   private
@@ -245,17 +250,16 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         project = Whence.last_unended || Whence.last
       end
       Process.detach(
-        fork { system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{project.project.name}'") } 
+        fork { system("ruby views/main.rb --environment '#{self.env}' --projects '#{projects*"','"}' --current '#{project.project.name}'") } 
       )
     end
-
     def pop
       self.app.reload
       return if self.app.gui?('pop', true)
       self.app.log('pop')
       project = Whence.last_unended.project
       Process.detach(
-        fork { system("ruby lib/pop.rb '#{project.name}' '#{project.whences.last_unended.start_at}' '#{Pratt.totals(project.time_spent)}'") } 
+        fork { system("ruby views/pop.rb --environment '#{self.env}' --project '#{project.name}' --start '#{project.whences.last_unended.start_at}' --project_time '#{Pratt.totals(project.time_spent)}'") } 
       )
     end
 
@@ -275,14 +279,16 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     end
 
     def parse args
+#      Pratt.connect :development
 
+      me = Pratt.new
+
+      begin
       args.options do |opt|
-        Pratt.connect :development
         opt.on('-E', '--environment ENVIRONMENT', DBFILES, "Environment to load") do |to_env|
-          Pratt.connect to_env
+          me.env = to_env
+#          Pratt.connect to_env
         end
-
-        me = Pratt.new
 
         opt.on('-b', "--begin PROJECT_NAME", String, "Begin project tracking.") do |proj|
           me.project = proj
@@ -304,6 +310,10 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         opt.on('-g', "--graph [PROJECT_NAME]", String, "Display time spent on supplied project or all projects without argument value.") do |proj|
           me.project = proj
           me << :graph
+        end
+        opt.on('--destroy PROJECT_NAME', String, "Remove a project.") do |proj|
+          me.project = proj
+          me << :destroy
         end
 
         opt.on '-w', '--when_to TIME', String, 'When to do something. 
@@ -336,20 +346,13 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
           me.show_all = true
         end
 
-        opt.on('--destroy PROJECT_NAME', String, "Remove a project.") do |proj|
-          me.project = proj
-          me << :destroy
-        end
-
-        opt.on("--app", "Show available projects and current project (if there is one)") do
-          puts me.app.inspect
-        end
         opt.on('-C', "--current", "Show available projects and current project (if there is one)") do
           me << :current
         end
 
         opt.on('-i', "--interval INTERVAL", Float, "Set the remind interval/min (Only applies to daemonized process).") do |interval|
-          me.interval = interval
+          me.app.interval = interval
+          me.app.save
         end
         opt.on("-d", "--daemonize", "Start daemon.") do
           me << :daemonize
@@ -361,14 +364,20 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
           me << :gui
         end
         opt.on('-U', '--unlock', "Manually unlock a gui that has died but left it's lock around.") do
-          me.app.unlock
+          me << :unlock
         end
-        
-        opt.parse!
 
-        me.run
+        opt.parse!
+      end
+      rescue => problem
+        puts problem.backtrace*"\n"
       end
 
+      begin
+        me.run
+      rescue => problem
+        puts problem.backtrace*"\n"
+      end
     end
 
     def totals hr, fmt = false
