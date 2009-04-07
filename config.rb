@@ -89,6 +89,7 @@ class Pratt
   end
 end
 
-Pratt.connect :development
+#Pratt.connect :development
+Pratt.connect :production
 include Pratt::Config
 #migrate
