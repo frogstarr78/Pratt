@@ -109,13 +109,13 @@ class Pratt
   def current
     project_names = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
 
-    if current = Whence.last_unended || Whence.last
+    if last_whence = Whence.last_unended || Whence.last
       puts "   projects: " << (
-        project_names.collect {|project_name| "'#{project_name.send(current.end_at.nil? && current.project.name == project_name ? :green : :magenta)}'" }
+        project_names.collect {|project_name| "'#{project_name.send(last_whence.end_at.nil? && last_whence.project.name == project_name ? :green : :magenta)}'" }
       ) * ' '
-      if current.end_at.nil?
-        puts "    started: #{current.start_at.strftime(FMT).send(:blue)}"
-        time_til = ( app.interval - ( Time.now - current.start_at ) )
+      if last_whence.end_at.nil?
+        puts "    started: #{last_whence.start_at.strftime(FMT).send(:blue)}"
+        time_til = ( app.interval - ( Time.now - last_whence.start_at ) )
         puts "next prompt: %s %s"% [Pratt.send( :fmt_i, time_til / 60.0, 'min', :yellow, color ), Pratt.send( :fmt_i, time_til % 60, 'sec', :yellow, color ), ], ''
       end
     else
