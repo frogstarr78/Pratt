@@ -88,7 +88,7 @@ class Pratt
       "#{when_to.send("beginning_of_#{scale}").strftime(FMT).blue} to #{when_to.send("end_of_#{scale}").strftime(FMT).blue}"
     ] if scale
     puts ' '*(max+1) << 'dys'.send(color ? :underline : :to_s) << ' '*5 << 'hrs'.send(color ? :underline : :to_s) << ' '*5 << 'min'.send(color ? :underline : :to_s)
-    puts '-'*50 unless color
+    puts '-'*60 unless color
     projects.each do |proj| 
       refactor_total = proj.time_spent(scale, when_to) if proj.name == Project.refactor.name
       off_total      = proj.time_spent(scale, when_to) if proj.name == Project.off.name
