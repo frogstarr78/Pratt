@@ -250,7 +250,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         project = Whence.last_unended || Whence.last
       end
       Process.detach(
-        fork { system("ruby views/main.rb --environment '#{self.env}' --projects '#{projects*"','"}' --current '#{project.project.name}'") } 
+        fork { system("ruby views/main.rb  --projects '#{projects*"','"}' --current '#{project.project.name}'") } 
       )
     end
     def pop
@@ -259,7 +259,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
       self.app.log('pop')
       project = Whence.last_unended.project
       Process.detach(
-        fork { system("ruby views/pop.rb --environment '#{self.env}' --project '#{project.name}' --start '#{project.whences.last_unended.start_at}' --project_time '#{Pratt.totals(project.time_spent)}'") } 
+        fork { system("ruby views/pop.rb  --project '#{project.name}' --start '#{project.whences.last_unended.start_at}' --project_time '#{Pratt.totals(project.time_spent)}'") } 
       )
     end
 
@@ -364,7 +364,8 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
           me << :gui
         end
         opt.on('-U', '--unlock', "Manually unlock a gui that has died but left it's lock around.") do
-          me << :unlock
+          me.app.unlock
+#          me << :unlock
         end
 
         opt.parse!

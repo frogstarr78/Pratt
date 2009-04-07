@@ -27,18 +27,18 @@ ARGV.options do |opt|
 end
 
 yes = proc {
-  c = fork { system("ruby bin/pratt.rb --environment '#{opts.env}' --restart '#{opts.project_name}' --unlock") }
+  c = fork { system("ruby bin/pratt.rb --restart '#{opts.project_name}' --unlock") }
   Process.detach(c)
   exit 
 }
 adjust = proc {
-  c = fork { system("ruby bin/pratt.rb --environment '#{opts.env}' --end '#{opts.project_name}' --unlock --gui") }
+  c = fork { system("ruby bin/pratt.rb --end '#{opts.project_name}' --unlock --gui") }
   Process.detach(c)
   exit 
 }
 ignore = proc {
   Process.detach(
-    fork { system("ruby bin/pratt.rb --environment '#{opts.env}' --unlock") }
+    fork { system("ruby bin/pratt.rb --unlock") }
   )
   exit 
 }

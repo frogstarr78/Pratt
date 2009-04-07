@@ -41,19 +41,19 @@ project_combo.pack('side' => 'bottom', 'fill' => 'y')
 
 change = proc {
   Process.detach(   
-    fork { system("ruby bin/pratt.rb --environment '#{opts.env}' --change '#{project_combo.get}' --begin '#{project_combo.get}' --unlock") } 
+    fork { system("ruby bin/pratt.rb  --change '#{project_combo.get}' --begin '#{project_combo.get}' --unlock") } 
   )
   exit
 }
 quit = proc {
   Process.detach(
-    fork { system("ruby bin/pratt.rb --environment '#{opts.env}' --end '#{project_combo.get}' --unlock --quit") }
+    fork { system("ruby bin/pratt.rb  --end '#{project_combo.get}' --unlock --quit") }
   )
   exit
 }
 start = proc {
   Process.detach(
-    fork { system("ruby bin/pratt.rb --environment '#{opts.env}' --begin '#{project_combo.get}' --unlock") }
+    fork { system("ruby bin/pratt.rb  --begin '#{project_combo.get}' --unlock") }
   )
   exit
 }
