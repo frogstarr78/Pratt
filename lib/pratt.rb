@@ -4,35 +4,72 @@ require 'optparse'
 require 'chronic'
 require 'fileutils'
 
+module NoColor
+  include Colored
+
+  COLORS.each do |color, value|
+    define_method(color) do 
+      self.to_s
+    end
+
+    define_method("on_#{color}") do
+      self.to_s
+    end
+
+    COLORS.each do |highlight, value|
+      next if color == highlight
+      define_method("#{color}_on_#{highlight}") do
+        self.to_s
+      end
+    end
+  end
+
+  EXTRAS.each do |extra, value|
+    next if extra == 'clear'
+    define_method(extra) do 
+      self.to_s
+    end
+  end
+end
+
 class Pratt
 
   include Config
   include FileUtils
   VERSION = '1.0.0'
-#  PID_FILE='/var/run/pratt.pid'
   PID_FILE='pratt.pid'
   FMT = "%a %X %b %d %Y"
 
-  attr_accessor :interval, :quit, :daemonize, :prompt, :show, :week, :day, :when_to, :scale, :color
-  attr_reader :graph, :project
-  def initialize proj = nil #interval, quit, daemonize, prompt, show, graph, week, day, when_to
+  attr_accessor :when_to, :scale, :color, :show_all, :env
+  attr_reader :project
+  def initialize proj = nil #, when_to
     @when_to  = Time.now
     @week     = false
     @day      = false
     @todo     = []
     @scale    = nil
-    @interval = 15
     @color    = true
-    self.project = proj
-#    @interval, @quit, @daemonize, @prompt, @show, @graph, @week, @day, @when_to = 
+    @show_all = false
+    @env      = :development
+    self.project = proj unless proj.nil?
   end
 
   def project= proj
-    @project = Project.find_or_create_by_name( { :name => proj } )
+    if proj.is_a?(Project)
+      @project = project
+    else
+#      Pratt.connect self.env
+      @project = Project.find_or_create_by_name( { :name => proj } )
+    end
   end
 
   def << what
     @todo << what
+  end
+
+  def app
+    @app ||= App.last
+    @app
   end
 
   def graph
@@ -47,18 +84,18 @@ class Pratt
     
     puts "Project detail"
     puts [
-      "by #{scale.to_s.send(color ? :red : :to_s)} from ", 
-      "#{when_to.send("beginning_of_#{scale}").strftime(FMT).send(color ? :blue : :to_s)} to #{when_to.send("end_of_#{scale}").strftime(FMT).send(color ? :blue : :to_s)}"
+      "by #{scale.to_s.red} from ", 
+      "#{when_to.send("beginning_of_#{scale}").strftime(FMT).blue} to #{when_to.send("end_of_#{scale}").strftime(FMT).blue}"
     ] if scale
     puts ' '*(max+1) << 'dys'.send(color ? :underline : :to_s) << ' '*5 << 'hrs'.send(color ? :underline : :to_s) << ' '*5 << 'min'.send(color ? :underline : :to_s)
-    puts '-'*50 unless color
+    puts '-'*60 unless color
     projects.each do |proj| 
       refactor_total = proj.time_spent(scale, when_to) if proj.name == Project.refactor.name
       off_total      = proj.time_spent(scale, when_to) if proj.name == Project.off.name
       rest_total    += proj.time_spent(scale, when_to) if Project.rest.collect(&:name).include?(proj.name)
-      puts "%1$*4$s%2$s %3$s"% [proj.name, (color ? '⋮' : '|'), Pratt.totals(proj.time_spent(scale, when_to), color && true), max]
+      puts "%1$*4$s%2$s %3$s"% [proj.name, (color ? '⋮' : '|'), Pratt.totals(proj.time_spent(scale, when_to), color && true), max] if show_all or ( !show_all and proj.time_spent(scale, when_to) != 0.0 )
     end
-    puts (color ? '·' : '-')*50
+    puts (color ? '·' : '-')*60
     scaled_total = Whence.time_spent(scale, when_to)-off_total
     puts [
       "%#{max}.#{max}s %s hrs"% ['Total', ("%0.2f"%scaled_total).send(color ? :underline : :to_s)],
@@ -69,16 +106,29 @@ class Pratt
     puts
   end
 
-  def show
+  def current
     project_names = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
-    current = Whence.last_unended || Whence.last
 
-    puts "projects: " << project_names.collect {|project_name| "'#{project_name.send(current.end_at.nil? && current.project.name == project_name ? :green : :magenta)}'" }*' '
-    puts " started: #{current.start_at.strftime(FMT)}" if current.end_at.nil?
+    if current = Whence.last_unended || Whence.last
+      puts "   projects: " << (
+        project_names.collect {|project_name| "'#{project_name.send(current.end_at.nil? && current.project.name == project_name ? :green : :magenta)}'" }
+      ) * ' '
+      if current.end_at.nil?
+        puts "    started: #{current.start_at.strftime(FMT).send(:blue)}"
+        time_til = ( app.interval - ( Time.now - current.start_at ) )
+        puts "next prompt: %s %s"% [Pratt.send( :fmt_i, time_til / 60.0, 'min', :yellow, color ), Pratt.send( :fmt_i, time_til % 60, 'sec', :yellow, color ), ], ''
+      end
+    else
+      puts "   projects: " << (
+        project_names.collect do |project_name| 
+          "'#{project_name.send(:magenta)}'" 
+        end
+      ) * ' '
+    end
   end
 
   def begin
-    project.start! when_to
+    self.project.start! when_to
   end
   def restart
     if project?
@@ -101,7 +151,48 @@ class Pratt
     project.destroy
   end
 
+  def cpid
+    `pgrep -fl 'bin/pratt'`.chomp.split(' ').first
+  end
+
+  def pid
+    puts "
+   pid #{cpid.cyan} found running
+expect #{app.pid.to_s.magenta} ···················· ⌈#{daemonized? ? 'OK'.green : 'Oops'.red}⌋
+
+" 
+  end
+
+  def raw
+    count     = Project.count
+    colors    = %w(red red_on_yellow red_on_white green green_on_blue yellow yellow_on_blue blue magenta magenta_on_blue cyan white white_on_green white_on_blue white_on_magenta black_on_yellow black_on_blue black_on_green black_on_magenta black_on_cyan black_on_red).sort
+    Whence.all(:order => "id ASC").each do |whence| 
+      color = self.color ? colors[whence.project.id%colors.size] : :to_s
+      str   = "%#{max}.#{max}s ⌈%s"% [("%s"%whence.project.name), whence.start_at.strftime(FMT).send(color)]
+      str  += "­%s⌋ %0.2f min"% [whence.end_at.strftime(FMT).send(color), (whence.end_at-whence.start_at)/60] if whence.end_at
+      puts str
+    end
+  end
+
+  def quit
+    project.stop! if project? and project.whences.last_unended
+    Whence.last_unended.stop! if Whence.last_unended
+    begin
+      Process.kill("KILL", app.pid.to_i)
+    rescue Errno::ESRCH
+    end
+    app.pid = ''
+    app.gui = ''
+    app.save!
+  end
+
+  def max 
+    self.class.max
+  end
+
   def run
+#    Pratt.connect self.env
+
     self.begin      if i_should?(:begin)
     self.change     if i_should?(:change)
     self.restart    if i_should?(:restart)
@@ -111,45 +202,67 @@ class Pratt
 
     self.pid        if i_should?(:pid)
     self.raw        if i_should?(:raw)
-    self.show       if i_should?(:show)
+    self.current    if i_should?(:current)
     self.graph      if i_should?(:graph)
+    self.gui        if i_should?(:gui)
+    self.app.unlock if i_should?(:unlock)
 
-    self.class.run(self.interval) if i_should?(:daemonize)
     self.quit       if i_should?(:quit)
+    
+    Process.detach( fork { self.daemonize! } ) if i_should?(:daemonize) and not self.daemonized?
   end
 
-  def pid
-    p  = `pgrep -f "pratt -d" | head -1`.split.to_s
-    ep = self.class.pid.to_s
-    puts "
-   pid #{p.cyan} found running
-expect #{ep.magenta} ···················· ⌈#{!p.blank? && !ep.blank? && p == ep ? 'OK'.green : 'Oops'.red}⌋
+  def daemonized?
+    !app.pid.blank? and ( cpid.to_i == app.pid )
+  end
+  def daemonize!
+#    self.class.connect :development
+    puts "pratt (#{Process.pid.to_s.yellow})"
+    app.pid = Process.pid
+    app.save!
 
-" 
+    gui
+    while(daemonized?)
+      sleep(app.interval)
+      gui
+    end
+    quit
   end
 
-
-  def raw
-    count     = Project.count
-    colors    = %w(red red_on_yellow red_on_white green green_on_blue yellow yellow_on_blue blue magenta magenta_on_blue cyan white white_on_green white_on_blue white_on_magenta black_on_yellow black_on_blue black_on_green black_on_magenta black_on_cyan black_on_red).sort
-    Whence.all(:order => "id ASC").each do |whence| 
-      color = color ? :to_s : colors[whence.project.id%colors.size]
-      str   = "%#{max}.#{max}s ⌈%s"% [("%s"%whence.project.name), whence.start_at.strftime(FMT).send(color)]
-      str  += "­%s⌋ %0.2f min"% [whence.end_at.strftime(FMT).send(color), (whence.end_at-whence.start_at)/60] if whence.end_at
-      puts str
+  def gui
+    if Whence.last_unended
+      pop
+    else
+      main
     end
   end
 
-  def quit
-    project.stop!
-    Process.kill("KILL", self.class.pid.to_i) && rm(PID_FILE)
-  end
-
-  def max 
-    self.class.max
-  end
-
   private
+    def main
+      self.app.reload
+      return if self.app.gui?('main', true)
+      self.app.log('main')
+      projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
+      if Whence.count == 0 
+        # first run
+        project = Whence.new(:project => Project.refactor)
+      else
+        project = Whence.last_unended || Whence.last
+      end
+      Process.detach(
+        fork { system("ruby views/main.rb --environment '#{self.env}' --projects '#{projects*"','"}' --current '#{project.project.name}'") } 
+      )
+    end
+    def pop
+      self.app.reload
+      return if self.app.gui?('pop', true)
+      self.app.log('pop')
+      project = Whence.last_unended.project
+      Process.detach(
+        fork { system("ruby views/pop.rb --environment '#{self.env}' --project '#{project.name}' --start '#{project.whences.last_unended.start_at}' --project_time '#{Pratt.totals(project.time_spent)}'") } 
+      )
+    end
+
     def i_should? what
       @todo.include?(what)
     end
@@ -157,16 +270,26 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
     def project?
       !@project.nil? and @project.name?
     end
+
   class << self
+
     def max
       # TODO Fix me
       Project.all.inject(0) {|x,p| x = p.name.length if p.name.length > x; x }
     end
 
     def parse args
+#      Pratt.connect :development
+
       me = Pratt.new
 
+      begin
       args.options do |opt|
+        opt.on('-E', '--environment ENVIRONMENT', DBFILES, "Environment to load") do |to_env|
+          me.env = to_env
+#          Pratt.connect to_env
+        end
+
         opt.on('-b', "--begin PROJECT_NAME", String, "Begin project tracking.") do |proj|
           me.project = proj
           me << :begin
@@ -188,6 +311,10 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
           me.project = proj
           me << :graph
         end
+        opt.on('--destroy PROJECT_NAME', String, "Remove a project.") do |proj|
+          me.project = proj
+          me << :destroy
+        end
 
         opt.on '-w', '--when_to TIME', String, 'When to do something. 
                                        (e.g. log time start|stop, or what time interval to graph)
@@ -206,26 +333,26 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
         opt.on('-R', '--raw', "Dump logs (semi-)raw") do
           me << :raw
         end
-        opt.on('-L', '--log FILE', String, "Redirect errors") do |log_file|
-          $stderr.reopen(log_file, 'a')
+        opt.on('-L', '--log', "Redirect errors") do
+          $stderr.reopen('log/pratt.log', 'a')
           $stderr.sync = true
         end
 
-        opt.on('-n', '--no-color', "Redirect errors") do 
+        opt.on('-N', '--no-color', "Display output without color or special characters.") do 
+          String.send(:include, NoColor)
           me.color = false
         end
-
-        opt.on('--destroy PROJECT_NAME', String, "Remove a project.") do |proj|
-          me.project = proj
-          me << :destroy
+        opt.on('-A', '--show-all', "Display all project regardless of other options.") do 
+          me.show_all = true
         end
 
-        opt.on('-s', "--show", "Show available projects and current project (if there is one)") do
-          me << :show
+        opt.on('-C', "--current", "Show available projects and current project (if there is one)") do
+          me << :current
         end
 
         opt.on('-i', "--interval INTERVAL", Float, "Set the remind interval/min (Only applies to daemonized process).") do |interval|
-          me.interval = interval
+          me.app.interval = interval
+          me.app.save
         end
         opt.on("-d", "--daemonize", "Start daemon.") do
           me << :daemonize
@@ -233,68 +360,24 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
         opt.on('-q', "--quit", "Stop daemon.") do
           me << :quit
         end
-        opt.on('-p', '--prompt GUI', [:main, :pop], "Force displaying a gui (currently: main or pop. No default.).") do |gui|
-          send gui
-          log_gui gui
+        opt.on('-G', '--gui', 'Show "smart" gui.') do
+          me << :gui
         end
-        opt.on('-U', '--unlock GUI', [:main, :pop], "Manually unlock a gui that has died but left it's lock around.") do |gui|
-          rm_gui(gui)
+        opt.on('-U', '--unlock', "Manually unlock a gui that has died but left it's lock around.") do
+          me << :unlock
         end
-        
+
         opt.parse!
       end
-
-      me.run
-    end
-
-    def main
-      return if gui?('main')
-      projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
-      if Whence.count == 0 
-        # first run
-        Whence.new(:project => Project.refactor)
-      else
-        current  = Whence.last_unended || Whence.last
+      rescue => problem
+        puts problem.backtrace*"\n"
       end
-      Process.detach(
-        fork { system("ruby lib/main.rb --projects '#{projects*"','"}' --current '#{current.project.name}'") } 
-      )
-      log_gui('main')
-    end
 
-    def pop
-      return if gui?('pop')
-      project = Whence.last_unended.project
-      Process.detach(
-        fork { system("ruby lib/pop.rb '#{project.name}' '#{project.whences.last_unended.start_at}' '#{Pratt.totals(project.time_spent)}'") } 
-      )
-      log_gui('pop')
-    end
-
-    def run interval = 15.0
-      if Pratt.daemonized?
-        puts "Pratt appears to be still running at pid (#{pid.to_s.yellow})."
-      else
-        Process.detach(
-          fork {
-            daemonize!
-            main
-            while(daemonized?)
-              sleep(interval*60)
-              pop
-            end
-          }
-        )
+      begin
+        me.run
+      rescue => problem
+        puts problem.backtrace*"\n"
       end
-    end
-
-    def daemonized?
-      File.exists?(PID_FILE) and pid.to_i != 0
-    end
-
-    def pid
-      return unless File.exists?(PID_FILE)
-      File.open(PID_FILE).readline.to_i
     end
 
     def totals hr, fmt = false
@@ -306,32 +389,15 @@ expect #{ep.magenta} ···················· ⌈#{!p.blank? && 
     end
     private
 
-      GUI_FILE = '.gui'
-      def log_gui which
-        File.open(GUI_FILE, 'w') {|f| f.write(which) } unless gui?('.*', false)
-      end
-
-      def rm_gui which
-        FileUtils.chdir File.dirname(File.expand_path('..', File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__ ) )
-        rm GUI_FILE if gui?(which, false)
-      end
-
-      def gui? which, logerr = true
-        res = (File.exists?(GUI_FILE) && File.open(GUI_FILE).readline.strip =~ Regexp.new(which.to_s))
-#        $stderr.write "#{which} already being displayed" if logerr
-        res
-      end
-
       def fmt_f flt, label, color, fmt = false
         "%#{max}.#{max}s %s"% [label, ("%0.2f%%"% flt).send(fmt ? color : :to_s), label]
       end
+
       def fmt_i int, label, color, fmt = false
         "%s #{label}"% [("%02i"% int).send(fmt ? color : :to_s), label]
       end
-      def daemonize!
-#        return if daemonized?
-        puts "pratt (#{Process.pid.to_s.yellow})"
-        File.open(PID_FILE, 'w') {|f| f.write(Process.pid) }
-      end
   end
 end
+
+#p = Pratt.new 'Home Refactor'
+#puts p.inspect

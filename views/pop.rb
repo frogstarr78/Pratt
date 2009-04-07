@@ -2,22 +2,43 @@
 require 'tk'
 require 'tkextlib/tile'
 require 'optparse'
+require 'ostruct'
 
-project_name, start_time, project_time = ARGV
+opts = OpenStruct.new
+opts.env          = :development
+opts.project_name = ''
+opts.start_time   = ''
+opts.project_time = ''
+
+ARGV.options do |opt|
+  opt.on('-e', '--environment ENVIRON', String, "Environment to run under.") do |env|
+    opts.env     = env
+  end
+  opt.on('-p', '--project PROJECT', String, "Set the current task.") do |proj|
+    opts.project_name = proj
+  end
+  opt.on('-s', '--start START_TIME', String, "Set the current task.") do |time|
+    opts.start_time = time
+  end
+  opt.on('-t', '--project_time PROJECT_TIME', String, "Set the current task.") do |time|
+    opts.project_time = time
+  end
+  opt.parse!
+end
 
 yes = proc {
-  c = fork { system("ruby bin/pratt.rb --restart '#{project_name}' --unlock 'pop'") }
+  c = fork { system("ruby bin/pratt.rb --environment '#{opts.env}' --restart '#{opts.project_name}' --unlock") }
   Process.detach(c)
   exit 
 }
 adjust = proc {
-  c = fork { system("ruby bin/pratt.rb --end '#{project_name}' --unlock 'pop' --prompt 'main'") }
+  c = fork { system("ruby bin/pratt.rb --environment '#{opts.env}' --end '#{opts.project_name}' --unlock --gui") }
   Process.detach(c)
   exit 
 }
 ignore = proc {
   Process.detach(
-    fork { system("ruby bin/pratt.rb --unlock 'pop'") }
+    fork { system("ruby bin/pratt.rb --environment '#{opts.env}' --unlock") }
   )
   exit 
 }
@@ -32,14 +53,14 @@ Tk::Tile::Label.new(top_frm) do
 end.pack(:side => 'top', :fill => 'y')
 
 Tk::Tile::Label.new(top_frm) do
-  text project_name
+  text opts.project_name
 end.pack(:side => 'top', :fill => 'y')
 
 Tk::Tile::Label.new(top_frm) do
   text "started:
-  #{start_time}
+  #{opts.start_time}
 total time:
-  #{project_time}."
+  #{opts.project_time}."
 end.pack(:side => 'bottom', :fill => 'y')
 
 botm_frm = Tk::Tile::Frame.new(frm) { padding "5 5 5 5" }

@@ -13,6 +13,8 @@ end
 task :default => [:test] 
 #task :default => [:spec] 
 
+Pratt.connect( ENV['env'] || 'development' )
+
 task :console do 
   require 'ruby-debug'
   libs =  " -r irb/completion"
@@ -21,20 +23,18 @@ task :console do
   exec "irb #{libs} --simple-prompt"
 end
 
-desc "Database migrations"
-namespace "migrate" do
-  desc "Set up tables"
-  task :up do
-    PrattConfig.models do |model|
-      model.migrate
-    end
+desc "DB Quick access"
+namespace :db do
+
+  desc "Show App detail."
+  task :app do 
+    puts App.last.inspect
   end
 
-  desc "Tear down tables"
-  task :down do
-    PrattConfig.models do |model|
-      model.migrate false
-    end
+  desc "Show Last Whence log."
+  task :last do
+    last = Whence.last_unended || Whence.last
+    puts last.inspect
   end
 end
 

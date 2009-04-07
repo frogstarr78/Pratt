@@ -6,6 +6,7 @@ require 'ruby-debug'
 gem 'activerecord'
 gem 'sqlite3-ruby'
 require 'active_record'
+require 'chronic'
 
 include FileUtils
 
@@ -16,6 +17,30 @@ $LOAD_PATH << './models'
 $LOAD_PATH.uniq!
 
 class Pratt
+  DBFILES = (
+    Dir.glob("*.sqlite3").collect {|file| file.split('.').first }
+  )
+
+  class << self
+    def connect to_env = :development
+      ActiveRecord::Base.establish_connection(
+        :adapter => 'sqlite3',
+        :dbfile  => case to_env
+        when :production, 'production'
+          'production.sqlite3'
+        when :test, 'test'
+          'test.sqlite3'
+        else
+          'development.sqlite3'
+        end
+      )
+    end
+
+    def connected?
+      ActiveRecord::Base.connected?
+    end
+  end
+
   module Models
     def conditions_for_time_spent scale = nil, when_to = Time.now
       when_to = Chronic.parse(when_to) if when_to.is_a?(String)
@@ -33,33 +58,38 @@ class Pratt
       }
     end
   end
-end
 
-module Config
+  module Config
 
-  class << self
-    def models
-      Pathname.glob File.join(Dir.pwd, 'models', '*.rb') do |path|
-        require path
-        name = path.basename('.rb').to_s.capitalize
-        yield( Object.const_defined?(name) ? Object.const_get(name) : Object.const_missing(name) ) if block_given?
-      end
+    def self.included base
+      model_files {|path| require path }
     end
-    def included base
-      models
+
+    def model_files &block
+      Pathname.glob( File.join(Dir.pwd, 'models', '*.rb') ).each {|f| 
+        yield f
+      }
+    end
+
+    def migrate
+      DBFILES.each do |db|
+        Pratt.connect db
+        model_files do |path|
+          klass = File.basename( path, '.rb' ).capitalize.constantize
+          begin
+            ActiveRecord::Base.connection.execute("CREATE VIEW INFORMATION_SCHEMA_TABLES AS SELECT 'main' AS TABLE_CATALOG, 'sqlite' AS TABLE_SCHEMA, tbl_name AS TABLE_NAME, CASE WHEN type = 'table' THEN 'BASE TABLE' WHEN type = 'view' THEN 'VIEW' END AS TABLE_TYPE, sql AS TABLE_SOURCE FROM sqlite_master WHERE type IN ('table', 'view') AND tbl_name NOT LIKE 'INFORMATION_SCHEMA_%' ORDER BY TABLE_TYPE, TABLE_NAME;")
+          rescue ActiveRecord::StatementInvalid
+          end
+          unless ActiveRecord::Base.connection.select_value("SELECT * FROM INFORMATION_SCHEMA_TABLES WHERE TABLE_NAME = '#{klass.table_name}'")
+            klass.migrate :up
+          end
+        end
+      end
     end
   end
 end
 
-DBFILE = 'tracker.sqlite3' unless Object.const_defined?('DBFILE')
-
-ActiveRecord::Base.establish_connection(
-  :adapter => 'sqlite3',
-  :dbfile => DBFILE
-)
-
-unless File.exist?(DBFILE)
-  include Config
-  Project.migrate
-  Whence.migrate
-end
+#Pratt.connect :development
+Pratt.connect :production
+include Pratt::Config
+#migrate

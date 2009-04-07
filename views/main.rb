@@ -7,13 +7,17 @@ require 'ostruct'
 opts = OpenStruct.new
 opts.projects = []
 opts.current  = -1
+opts.env      = :development
 
 ARGV.options do |opt|
+  opt.on('-e', '--environment ENVIRON', String, "Environment to run under.") do |env|
+    opts.env      = env
+  end
   opt.on('-p x,y,z', "--projects x,y,z", Array, "List of projects to display.") do |projs|
     opts.projects = projs
   end
-  opt.on('-c', '--current CURRENT', "Set the current task.") do |cur|
-    opts.current = opts.projects.index(cur)
+  opt.on('-c', '--current CURRENT', String, "Set the current task.") do |cur|
+    opts.current  = opts.projects.index(cur)
   end
   opt.parse!
 end
@@ -37,19 +41,19 @@ project_combo.pack('side' => 'bottom', 'fill' => 'y')
 
 change = proc {
   Process.detach(   
-    fork { system("ruby bin/pratt.rb --change '#{project_combo.get}' --begin '#{project_combo.get}' --unlock 'main'") } 
+    fork { system("ruby bin/pratt.rb --environment '#{opts.env}' --change '#{project_combo.get}' --begin '#{project_combo.get}' --unlock") } 
   )
   exit
 }
 quit = proc {
   Process.detach(
-    fork { system("ruby bin/pratt.rb --end '#{project_combo.get}' --unlock 'main' --quit") }
+    fork { system("ruby bin/pratt.rb --environment '#{opts.env}' --end '#{project_combo.get}' --unlock --quit") }
   )
   exit
 }
 start = proc {
   Process.detach(
-    fork { system("ruby bin/pratt.rb --begin '#{project_combo.get}' --unlock 'main'") }
+    fork { system("ruby bin/pratt.rb --environment '#{opts.env}' --begin '#{project_combo.get}' --unlock") }
   )
   exit
 }
