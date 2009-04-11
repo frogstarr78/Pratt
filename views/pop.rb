@@ -74,7 +74,7 @@ root.bind("Alt-y", yes)
 
 TkButton.new(botm_frm) do
   text "Ignore"
-  command adjust
+  command ignore
   underline 0
 end.pack('side' => 'right', :fill => 'y')
 root.bind("Alt-i", ignore)
