@@ -4,6 +4,7 @@ $LOAD_PATH << '.'
 $LOAD_PATH << 'lib'
 require 'config'
 require 'pratt'
+require 'spec'
 
 Hoe.new('pratt', Pratt::VERSION) do |p|
   p.rubyforge_name = 'pratt' # if different than lowercase project name
