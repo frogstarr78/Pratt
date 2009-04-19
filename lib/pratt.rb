@@ -41,17 +41,18 @@ class Pratt
   PID_FILE='pratt.pid'
   FMT = "%a %X %b %d %Y"
 
-  attr_accessor :when_to, :scale, :color, :show_all, :env
+  attr_accessor :when_to, :scale, :color, :show_all, :env, :raw_conditions
   attr_reader :project
   def initialize proj = nil #, when_to
-    @when_to  = Time.now
-    @week     = false
-    @day      = false
-    @todo     = []
-    @scale    = nil
-    @color    = true
-    @show_all = false
-    @env      = :development
+    @when_to        = Time.now
+    @week           = false
+    @day            = false
+    @todo           = []
+    @scale          = nil
+    @color          = true
+    @show_all       = false
+    @env            = :development
+    @raw_conditions = ''
     self.project = proj unless proj.nil?
   end
 
@@ -74,30 +75,36 @@ class Pratt
   end
 
   def graph
-    projects = 
-    if project?
-      [project]
-    else
-      Project.all
-    end
-
     refactor_total = off_total = rest_total = 0.0
-    
+
     puts "Project detail"
     puts [
       "by #{scale.to_s.red} from ", 
       "#{when_to.send("beginning_of_#{scale}").strftime(FMT).blue} to #{when_to.send("end_of_#{scale}").strftime(FMT).blue}"
     ] if scale
     puts ' '*(max+1) << 'dys'.send(color ? :underline : :to_s) << ' '*5 << 'hrs'.send(color ? :underline : :to_s) << ' '*5 << 'min'.send(color ? :underline : :to_s)
-    puts '-'*60 unless color
+    puts (color ? '·' : '-')*60
+
+    if project?
+      projects = [project]
+
+      refactor_total = project.time_spent(scale, when_to)
+      scaled_total = project.whences.time_spent(scale, when_to)
+    else
+      projects = Project.all
+
+      projects.each do |proj| 
+        refactor_total = proj.time_spent(scale, when_to) if proj.name == Project.refactor.name
+        off_total      = proj.time_spent(scale, when_to) if proj.name == Project.off.name
+        rest_total    += proj.time_spent(scale, when_to) if Project.rest.collect(&:name).include?(proj.name)
+      end
+      scaled_total = Whence.time_spent(scale, when_to)-off_total
+    end
+
     projects.each do |proj| 
-      refactor_total = proj.time_spent(scale, when_to) if proj.name == Project.refactor.name
-      off_total      = proj.time_spent(scale, when_to) if proj.name == Project.off.name
-      rest_total    += proj.time_spent(scale, when_to) if Project.rest.collect(&:name).include?(proj.name)
       puts "%1$*4$s%2$s %3$s"% [proj.name, (color ? '⋮' : '|'), Pratt.totals(proj.time_spent(scale, when_to), color && true), max] if show_all or ( !show_all and proj.time_spent(scale, when_to) != 0.0 )
     end
     puts (color ? '·' : '-')*60
-    scaled_total = Whence.time_spent(scale, when_to)-off_total
     puts [
       "%#{max}.#{max}s %s hrs"% ['Total', ("%0.2f"%scaled_total).send(color ? :underline : :to_s)],
       Pratt.percent(Project.refactor.name, refactor_total.to_f, scaled_total, :green,  color && true),
@@ -166,12 +173,58 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
 
   def raw
     count     = Project.count
+    str       = ''
     colors    = %w(red red_on_yellow red_on_white green green_on_blue yellow yellow_on_blue blue magenta magenta_on_blue cyan white white_on_green white_on_blue white_on_magenta black_on_yellow black_on_blue black_on_green black_on_magenta black_on_cyan black_on_red).sort
-    Whence.all(:order => "id ASC").each do |whence| 
-      color = self.color ? colors[whence.project.id%colors.size] : :to_s
-      str   = "%#{max}.#{max}s ⌈%s"% [("%s"%whence.project.name), whence.start_at.strftime(FMT).send(color)]
-      str  += "­%s⌋ %0.2f min"% [whence.end_at.strftime(FMT).send(color), (whence.end_at-whence.start_at)/60] if whence.end_at
+    if project = Project.find_by_name( raw_conditions )
+      project.whences.all(:order => "id ASC").each do |whence| 
+        color = self.color ? colors[whence.project.id%colors.size] : :to_s
+        str   = "%#{max}.#{max}s ⌈%s"% [("%s"%whence.project.name), whence.start_at.strftime(FMT).send(color)]
+        str  += "­%s⌋ %0.2f min"% [whence.end_at.strftime(FMT).send(color), (whence.end_at-whence.start_at)/60] if whence.end_at
+        puts str
+      end
+    else
+      case raw_conditions
+        when /last/
+          if when_to = Chronic.parse(raw_conditions)
+            Whence.all(:conditions => ["start_at > ?", when_to], :order => "id ASC").each do |whence| 
+              color = self.color ? colors[whence.project.id%colors.size] : :to_s
+              str   = "%#{max}.#{max}s ⌈%s"% [("%s"%whence.project.name), whence.start_at.strftime(FMT).send(color)]
+              str  += "­%s⌋ %0.2f min"% [whence.end_at.strftime(FMT).send(color), (whence.end_at-whence.start_at)/60] if whence.end_at
+              puts str
+            end
+          else
+            raw_conditions =~ /^(\d+).+$/
+            Whence.all(:offset => Whence.count-$1.to_i, :limit => $1.to_i, :order => "id ASC").each do |whence| 
+              color = self.color ? colors[whence.project.id%colors.size] : :to_s
+              str   = "%#{max}.#{max}s ⌈%s"% [("%s"%whence.project.name), whence.start_at.strftime(FMT).send(color)]
+              str  += "­%s⌋ %0.2f min"% [whence.end_at.strftime(FMT).send(color), (whence.end_at-whence.start_at)/60] if whence.end_at
+              puts str
+            end
+          end
+        when 'all', /^last$/, 'first'
+          Whence.find(raw_conditions, :order => "id ASC").each do |whence| 
+            color = self.color ? colors[whence.project.id%colors.size] : :to_s
+            str   = "%#{max}.#{max}s ⌈%s"% [("%s"%whence.project.name), whence.start_at.strftime(FMT).send(color)]
+            str  += "­%s⌋ %0.2f min"% [whence.end_at.strftime(FMT).send(color), (whence.end_at-whence.start_at)/60] if whence.end_at
+            puts str
+          end
+        else
+          Whence.all(:conditions => ["start_at > ?", Chronic.parse("today 00:00")], :order => "id ASC").each do |whence| 
+            color = self.color ? colors[whence.project.id%colors.size] : :to_s
+            str   = "%#{max}.#{max}s ⌈%s"% [("%s"%whence.project.name), whence.start_at.strftime(FMT).send(color)]
+            str  += "­%s⌋ %0.2f min"% [whence.end_at.strftime(FMT).send(color), (whence.end_at-whence.start_at)/60] if whence.end_at
+          end
+      end
+
       puts str
+#      elsif raw_conditions =~ /^(?:from)?(.+)(?:\-|\ to\ )(.+)$/
+#        Whence.all(:conditions => ["start_at BETWEEN ? AND ?", Chronic.parse($1), Chronic.parse($2)], :order => "id ASC").each do |whence| 
+#          color = self.color ? colors[whence.project.id%colors.size] : :to_s
+#          str   = "%#{max}.#{max}s ⌈%s"% [("%s"%whence.project.name), whence.start_at.strftime(FMT).send(color)]
+#          str  += "­%s⌋ %0.2f min"% [whence.end_at.strftime(FMT).send(color), (whence.end_at-whence.start_at)/60] if whence.end_at
+#          puts str
+#        end
+#      end
     end
   end
 
@@ -331,8 +384,9 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         opt.on('-P', '--pid', "Process id display. (Is it still running)") do
             me << :pid
         end
-        opt.on('-R', '--raw', "Dump logs (semi-)raw") do
+        opt.on('-R', '--raw [CONDITIONS]', "Dump logs (semi-)raw") do |conditions|
           me << :raw
+          me.raw_conditions = conditions
         end
         opt.on('-L', '--log', "Redirect errors") do
           $stderr.reopen('log/pratt.log', 'a')
@@ -375,11 +429,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         puts problem.backtrace*"\n"
       end
 
-      begin
-        me.run
-      rescue => problem
-        puts problem.backtrace*"\n"
-      end
+      me.run
     end
 
     def totals hr, fmt = false
