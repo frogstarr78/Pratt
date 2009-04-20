@@ -276,6 +276,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     app.pid = Process.pid
     app.save!
 
+    tray_icon
     gui
     while(daemonized?)
       sleep(app.interval)
@@ -290,6 +291,12 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     else
       main
     end
+  end
+
+  def tray_icon
+    Process.detach(
+      fork { system("ruby views/tray_icon.rb") } 
+    )
   end
 
   def tray_menu
@@ -407,7 +414,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
           String.send(:include, NoColor)
           me.color = false
         end
-        opt.on('-A', '--show-all', "Display all project regardless of other options.") do 
+        opt.on('-A', '--all', "Display all project regardless of other options.") do 
           me.show_all = true
         end
 
@@ -430,6 +437,9 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         end
         opt.on('-y', '--tray', 'Show tray') do
           me << :tray_menu
+        end
+        opt.on('--last MODEL', %w(app project whence log), 'Show the last entry for supplied model') do |model|
+          puts send(model.classify, last).inspect
         end
         opt.on('-U', '--unlock', "Manually unlock a gui that has died but left it's lock around.") do
           me.app.unlock
