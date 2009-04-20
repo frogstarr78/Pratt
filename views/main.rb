@@ -29,7 +29,10 @@ end
 
 opts.current = opts.projects.index(opts.current) if opts.current == -1
 
-root = TkRoot.new { title "Pratt Main" }
+root = TkRoot.new do
+  title "Pratt Main" 
+end
+#root.grab_set_global
 
 button_holder        = Tk::Tile::Frame.new(root){ padding "5 5 5 5" }
 button_holder_top    = Tk::Tile::Frame.new(button_holder) { padding "5 5 5 5" }
