@@ -6,7 +6,7 @@ require 'lib/tktray'
 require 'optparse'
 require 'ostruct'
 
-root = TkRoot.new { title "Pratt Reminder" }
+#root = TkRoot.new { title "Pratt Reminder" }
 
 minimize = proc { 
   root.iconify 
@@ -20,21 +20,17 @@ toggle = proc {
 }
 
 img = TkPhotoImage.new(:file => '/var/www/localhost/icons/quill.gif')
-tray = Tk::Tile::TkTrayIcon.new(root) do
+tray = Tk::Tile::TkTrayIcon.new do
   image img
 end
 tray.bind '3', proc {
+#  TkDialog.new do 
+#    text 'Say something'
+#  end
   Process.detach(
-    fork { system("ruby bin/pratt.rb --tray") }
+#    fork { system("ruby bin/pratt.rb --tray") }
+    fork { system("ruby views/tray_menu.rb 'Pratt' 1197 2") } 
   )
 }
-
-TkButton.new root do
-  image img
-  command minimize
-end.pack :side => 'top', :fill => 'y'
-
-
-root.bind("Control-q", proc { exit })
 
 Tk.mainloop
