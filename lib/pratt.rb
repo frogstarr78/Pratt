@@ -259,6 +259,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     self.current    if i_should?(:current)
     self.graph      if i_should?(:graph)
     self.gui        if i_should?(:gui)
+    self.tray_menu  if i_should?(:tray_menu)
     self.app.unlock if i_should?(:unlock)
 
     self.quit       if i_should?(:quit)
@@ -289,6 +290,15 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     else
       main
     end
+  end
+
+  def tray_menu
+    self.app.reload
+    return if self.app.gui?('tray_menu', true)
+    self.app.log('tray_menu')
+    Process.detach(
+      fork { system("ruby views/tray_menu.rb '#{Whence.last_unended.project.name}' 1197 2") } 
+    )
   end
 
   private
@@ -417,6 +427,9 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         end
         opt.on('-G', '--gui', 'Show "smart" gui.') do
           me << :gui
+        end
+        opt.on('-y', '--tray', 'Show tray') do
+          me << :tray_menu
         end
         opt.on('-U', '--unlock', "Manually unlock a gui that has died but left it's lock around.") do
           me.app.unlock
