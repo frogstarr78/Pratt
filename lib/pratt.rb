@@ -240,8 +240,20 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     app.save!
   end
 
-  def max 
-    self.class.max
+  def gui
+    if Whence.last_unended
+      pop
+    else
+      main
+    end
+  end
+
+  def detect
+    if self.daemonized?
+      gui
+    else
+      daemonize!
+    end
   end
 
   def run
@@ -259,36 +271,35 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     self.current    if i_should?(:current)
     self.graph      if i_should?(:graph)
     self.gui        if i_should?(:gui)
+    self.detect     if i_should?(:detect)
     self.app.unlock if i_should?(:unlock)
 
     self.quit       if i_should?(:quit)
-    
-    Process.detach( fork { self.daemonize! } ) if i_should?(:daemonize) and not self.daemonized?
+    self.daemonize! if i_should?(:daemonize) and not self.daemonized?
   end
 
   def daemonized?
     !app.pid.blank? and ( cpid.to_i == app.pid )
   end
   def daemonize!
-#    self.class.connect :development
-    puts "pratt (#{Process.pid.to_s.yellow})"
-    app.pid = Process.pid
-    app.save!
+    Process.detach( 
+      fork { 
+        puts "pratt (#{Process.pid.to_s.yellow})"
+        app.pid = Process.pid
+        app.save!
 
-    gui
-    while(daemonized?)
-      sleep(app.interval)
-      gui
-    end
-    quit
+        gui
+        while(daemonized?)
+          sleep(app.interval)
+          gui
+        end
+        quit
+      }
+    )
   end
 
-  def gui
-    if Whence.last_unended
-      pop
-    else
-      main
-    end
+  def max 
+    self.class.max
   end
 
   private
@@ -409,14 +420,17 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
           me.app.interval = interval
           me.app.save
         end
+        opt.on('-D', '--detect', 'Detect appropriate behavior. (Daemonize or Graphical).') do
+          me << :detect
+        end
+        opt.on('-G', '--gui', 'Show "smart" gui.') do
+          me << :gui
+        end
         opt.on("-d", "--daemonize", "Start daemon.") do
           me << :daemonize
         end
         opt.on('-q', "--quit", "Stop daemon.") do
           me << :quit
-        end
-        opt.on('-G', '--gui', 'Show "smart" gui.') do
-          me << :gui
         end
         opt.on('-U', '--unlock', "Manually unlock a gui that has died but left it's lock around.") do
           me.app.unlock
