@@ -75,7 +75,7 @@ class Pratt
   end
 
   def graph
-    refactor_total = off_total = rest_total = 0.0
+    primary = off_total = rest_total = 0.0
 
     puts "Project detail"
     puts [
@@ -88,13 +88,13 @@ class Pratt
     if project?
       projects = [project]
 
-      refactor_total = project.time_spent(scale, when_to)
+      primary = project.time_spent(scale, when_to)
       scaled_total = project.whences.time_spent(scale, when_to)
     else
       projects = Project.all
 
       projects.each do |proj| 
-        refactor_total = proj.time_spent(scale, when_to) if proj.name == Project.refactor.name
+        primary = proj.time_spent(scale, when_to) if proj.name == Project.primary.name
         off_total      = proj.time_spent(scale, when_to) if proj.name == Project.off.name
         rest_total    += proj.time_spent(scale, when_to) if Project.rest.collect(&:name).include?(proj.name)
       end
@@ -107,7 +107,7 @@ class Pratt
     puts (color ? '·' : '-')*60
     puts [
       "%#{max}.#{max}s %s hrs"% ['Total', ("%0.2f"%scaled_total).send(color ? :underline : :to_s)],
-      Pratt.percent(Project.refactor.name, refactor_total.to_f, scaled_total, :green,  color && true),
+      Pratt.percent(Project.primary.name, primary.to_f, scaled_total, :green,  color && true),
       Pratt.percent(Project.off.name,      off_total.to_f,      scaled_total, :yellow, color && true),
       Pratt.percent('Other',               rest_total.to_f,     scaled_total, :red,    color && true),
     ]
@@ -115,7 +115,7 @@ class Pratt
   end
 
   def current
-    project_names = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
+    project_names = ([Project.primary, Project.off] | Project.rest).collect(&:name)
 
     if last_whence = Whence.last_unended || Whence.last
       puts "   projects: " << (
@@ -307,10 +307,10 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
       self.app.reload
       return if self.app.gui?('main', true)
       self.app.log('main')
-      projects = ([Project.refactor, Project.off] | Project.rest).collect(&:name)
+      projects = ([Project.primary, Project.off] | Project.rest).collect(&:name)
       if Whence.count == 0 
         # first run
-        project = Whence.new(:project => Project.refactor)
+        project = Whence.new(:project => Project.primary)
       else
         project = Whence.last_unended || Whence.last
       end
