@@ -8,8 +8,8 @@ describe Project do
   end
 
   context "scopes" do
-    it "named refactor" do 
-      Project.refactor.name.should == 'Home Refactor'  
+    it "named primary" do 
+      Project.primary.name.should == 'Home Refactor'  
     end
 
     it "named off" do 
@@ -18,7 +18,7 @@ describe Project do
 
     it "named rest" do 
       Project.rest.size > 0
-      Project.rest.collect(&:name).should_not include(Project.refactor.name, Project.off.name)
+      Project.rest.collect(&:name).should_not include(Project.primary.name, Project.off.name)
     end
 
     it "named named" do
@@ -29,7 +29,7 @@ describe Project do
 
   context "instances" do
     before :each do
-      @project = Project.refactor
+      @project = Project.primary
       @log_count = @project.whences.size
     end
 

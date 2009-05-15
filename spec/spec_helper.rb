@@ -26,7 +26,7 @@ end
 
 shared_examples_for "needing project instance that knows how to cleanup" do 
   before :each do
-    @project = Project.refactor
+    @project = Project.primary
   end
 
   after :each do

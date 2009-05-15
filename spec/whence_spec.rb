@@ -15,19 +15,19 @@ describe Whence do
 
     it "last_unended should return nil if there aren't any unended" do
       lambda {
-        Project.refactor.start!
-        Project.refactor.stop! Time.now+2
+        Project.primary.start!
+        Project.primary.stop! Time.now+2
       }.should change(Whence, :count).by(1)
       Whence.last_unended.should be_nil 
     end
 
     it "last_unended should only return the very last one" do
       lambda {
-        Project.refactor.start!
-        Project.refactor.start! Time.now+2
+        Project.primary.start!
+        Project.primary.start! Time.now+2
       }.should change(Whence, :count).by(2)
       Whence.last_unended.should be_kind_of(Whence) 
-      whences = Project.refactor.whences.all(:conditions => "end_at IS NULL", :order => "id ASC")
+      whences = Project.primary.whences.all(:conditions => "end_at IS NULL", :order => "id ASC")
        
       Whence.last_unended.should eql(whences.last)
       Whence.last_unended.should_not eql(whences.first)

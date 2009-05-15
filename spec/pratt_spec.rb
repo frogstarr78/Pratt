@@ -28,27 +28,27 @@ describe Pratt do
 
   it "should allow project to be set by object" do
     @pratt = Pratt.new
-    @pratt.should_receive(:project=).with(Project.refactor).at_least(:once).and_return(Project.refactor)
-    @pratt.project = Project.refactor 
+    @pratt.should_receive(:project=).with(Project.primary).at_least(:once).and_return(Project.primary)
+    @pratt.project = Project.primary 
   end
 
   it "should allow project to be set by a string" do
     @pratt = Pratt.new
 #    @project_class = Project
 #    @project_class.stub!(:find_or_create_by_name)
-    @pratt.should_receive(:project=).with('Home Refactor').at_least(:once).and_return(Project.refactor)
+    @pratt.should_receive(:project=).with('Home Refactor').at_least(:once).and_return(Project.primary)
     @pratt.project = 'Home Refactor' 
-    Project.should_receive(:find_or_create_by_name)#.with( { :name => 'Home Refactor' } ).and_return(Project.refactor)
+    Project.should_receive(:find_or_create_by_name)#.with( { :name => 'Home Refactor' } ).and_return(Project.primary)
   end
 
 #  it "ought to error when not given a name" do
 #    @pratt = Pratt.new('Home Refactor')
 ##    @pratt.stub!(:project)
 #
-#    @pratt.should_receive(:project=).at_least(:once).and_return(Project.refactor)
+#    @pratt.should_receive(:project=).at_least(:once).and_return(Project.primary)
 #    @pratt.project= 'Home Refactor'
 #
-##    project.should_receive(:find_or_create_by_name).with( { :name => 'Home Refactor' } ).and_return(Project.refactor)
+##    project.should_receive(:find_or_create_by_name).with( { :name => 'Home Refactor' } ).and_return(Project.primary)
 ##    proj.should_receive(:start!).with(1, kind_of(DateTime), "at") do |arg|
 ##      puts arg.inspect
 ##      arg.should be_an_instance_of(DateTime)
