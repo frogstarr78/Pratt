@@ -26,14 +26,14 @@ class Project < ActiveRecord::Base
     def named name
       first :conditions => ["name = ?", name]
     end
-    def refactor
-      named 'Home Refactor'
+    def primary
+      first :conditions => ["weight = ?", 1]
     end
     def off
       named 'Lunch/Break'
     end
     def rest
-      all :conditions => ["name not in (?)", %w(Home\ Refactor Lunch/Break)]
+      all - [primary] - [off]
     end
 
     def migrate up = true
