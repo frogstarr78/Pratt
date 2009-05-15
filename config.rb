@@ -31,7 +31,7 @@ class Pratt
         when :test, 'test'
           'test.sqlite3'
         else
-          'development.sqlite3'
+          "#{to_env}.sqlite3"
         end
       )
     end
@@ -77,7 +77,18 @@ class Pratt
         model_files do |path|
           klass = File.basename( path, '.rb' ).capitalize.constantize
           begin
-            ActiveRecord::Base.connection.execute("CREATE VIEW INFORMATION_SCHEMA_TABLES AS SELECT 'main' AS TABLE_CATALOG, 'sqlite' AS TABLE_SCHEMA, tbl_name AS TABLE_NAME, CASE WHEN type = 'table' THEN 'BASE TABLE' WHEN type = 'view' THEN 'VIEW' END AS TABLE_TYPE, sql AS TABLE_SOURCE FROM sqlite_master WHERE type IN ('table', 'view') AND tbl_name NOT LIKE 'INFORMATION_SCHEMA_%' ORDER BY TABLE_TYPE, TABLE_NAME;")
+            ActiveRecord::Base.connection.execute("
+              CREATE VIEW INFORMATION_SCHEMA_TABLES AS 
+                SELECT 'main' AS TABLE_CATALOG,
+                       'sqlite' AS TABLE_SCHEMA,
+                       tbl_name AS TABLE_NAME,
+                       CASE WHEN type = 'table' THEN 'BASE TABLE' WHEN type = 'view' THEN 'VIEW' END AS TABLE_TYPE,
+                       sql AS TABLE_SOURCE
+                  FROM sqlite_master
+                 WHERE type IN ('table', 'view')
+                   AND tbl_name NOT LIKE 'INFORMATION_SCHEMA_%'
+              ORDER BY TABLE_TYPE, TABLE_NAME;
+            ")
           rescue ActiveRecord::StatementInvalid
           end
           unless ActiveRecord::Base.connection.select_value("SELECT * FROM INFORMATION_SCHEMA_TABLES WHERE TABLE_NAME = '#{klass.table_name}'")
@@ -89,7 +100,6 @@ class Pratt
   end
 end
 
-#Pratt.connect :development
 Pratt.connect :production
 include Pratt::Config
-#migrate
+migrate
