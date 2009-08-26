@@ -272,6 +272,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     self.graph      if i_should?(:graph)
     self.gui        if i_should?(:gui)
     self.detect     if i_should?(:detect)
+    self.tray_menu  if i_should?(:tray_menu)
     self.app.unlock if i_should?(:unlock)
 
     self.quit       if i_should?(:quit)
@@ -282,24 +283,41 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     !app.pid.blank? and ( cpid.to_i == app.pid )
   end
   def daemonize!
-    Process.detach( 
-      fork { 
-        puts "pratt (#{Process.pid.to_s.yellow})"
-        app.pid = Process.pid
-        app.save!
+#    self.class.connect :development
+    puts "pratt (#{Process.pid.to_s.yellow})"
+    app.pid = Process.pid
+    app.save!
 
-        gui
-        while(daemonized?)
-          sleep(app.interval)
-          gui
-        end
-        quit
-      }
+    tray_icon
+    gui
+    while(daemonized?)
+      sleep(app.interval)
+      gui
+    end
+    quit
+  end
+
+  def gui
+    if Whence.last_unended
+      pop
+    else
+      main
+    end
+  end
+
+  def tray_icon
+    Process.detach(
+      fork { system("ruby views/tray_icon.rb") } 
     )
   end
 
-  def max 
-    self.class.max
+  def tray_menu
+    self.app.reload
+    return if self.app.gui?('tray_menu', true)
+    self.app.log('tray_menu')
+    Process.detach(
+      fork { system("ruby views/tray_menu.rb '#{Whence.last_unended.project.name}' 1197 2") } 
+    )
   end
 
   private
@@ -408,7 +426,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
           String.send(:include, NoColor)
           me.color = false
         end
-        opt.on('-A', '--show-all', "Display all project regardless of other options.") do 
+        opt.on('-A', '--all', "Display all project regardless of other options.") do 
           me.show_all = true
         end
 
@@ -431,6 +449,15 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         end
         opt.on('-q', "--quit", "Stop daemon.") do
           me << :quit
+        end
+        opt.on('-G', '--gui', 'Show "smart" gui.') do
+          me << :gui
+        end
+        opt.on('-y', '--tray', 'Show tray') do
+          me << :tray_menu
+        end
+        opt.on('--last MODEL', %w(app project whence log), 'Show the last entry for supplied model') do |model|
+          puts send(model.classify, last).inspect
         end
         opt.on('-U', '--unlock', "Manually unlock a gui that has died but left it's lock around.") do
           me.app.unlock
