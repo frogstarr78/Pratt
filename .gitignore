@@ -1,2 +1,2 @@
 pratt.pid
-tracker.sqlite3
+*.sqlite3
