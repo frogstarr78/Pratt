@@ -3,18 +3,17 @@ require 'fileutils'
 require 'rubygems'
 require 'hoe'
 require 'ruby-debug'
-gem 'activerecord'
-gem 'sqlite3-ruby'
 require 'active_record'
 require 'chronic'
+require 'mocha'
 
 include FileUtils
 
-$LOAD_PATH << File.dirname(File.expand_path(__FILE__))
-$LOAD_PATH << '.'
-$LOAD_PATH << './lib'
-$LOAD_PATH << './models'
-$LOAD_PATH.uniq!
+#$LOAD_PATH << File.dirname(File.expand_path(__FILE__))
+#$LOAD_PATH << '.'
+#$LOAD_PATH << './lib'
+#$LOAD_PATH << './models'
+#$LOAD_PATH.uniq!
 
 class Pratt
   DBFILES = (
@@ -25,7 +24,7 @@ class Pratt
     def connect to_env = :development
       ActiveRecord::Base.establish_connection(
         :adapter => 'sqlite3',
-        :dbfile  => case to_env
+        :database  => case to_env
         when :production, 'production'
           'production.sqlite3'
         when :test, 'test'
@@ -99,6 +98,7 @@ class Pratt
     end
   end
 end
+require 'models/project'
 
 Pratt.connect :production
 include Pratt::Config

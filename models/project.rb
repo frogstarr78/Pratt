@@ -27,7 +27,7 @@ class Project < ActiveRecord::Base
       first :conditions => ["name = ?", name]
     end
     def primary
-      first :conditions => ["weight = ?", 1]
+      find :first, :conditions => ["weight = ?", 1]
     end
     def off
       named 'Lunch/Break'

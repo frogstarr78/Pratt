@@ -6,7 +6,7 @@ require 'config'
 require 'pratt'
 require 'spec'
 
-Hoe.new('pratt', Pratt::VERSION) do |p|
+Hoe.spec('pratt') do |p|
   p.rubyforge_name = 'pratt' # if different than lowercase project name
   p.developer('michael goff, scott noel-hemming', 'devs@example.com')
 end
@@ -16,6 +16,7 @@ task :default => [:test]
 
 Pratt.connect( ENV['env'] || 'development' )
 
+desc "connect to database"
 task :console do 
   require 'ruby-debug'
   libs =  " -r irb/completion"

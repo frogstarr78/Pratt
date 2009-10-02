@@ -6,7 +6,8 @@ require 'config'
 require 'ruby-debug'
 
 Spec::Runner.configure do |config|
-  config.mock_with :rspec
+#  config.mock_with :rspec
+  config.mock_with :mocha
 end
 
 shared_examples_for "Time spent on a project" do
@@ -21,6 +22,20 @@ shared_examples_for "Time spent on a project" do
     @project.start! 'last monday 12:00 pm'
     @project.stop!  'last monday 12:00:05 pm'
     @project.time_spent.should == 5.0/3600
+  end
+
+  it "should correctly calculate time_spent with a scale" do
+    whence = Chronic.parse('yesterday 11:53 pm')
+    @project.start! whence
+    @project.stop!  whence+17
+    @project.time_spent('week').should == 17.0/3600
+  end
+
+  it "should correctly calculate time_spent with a scale and specific time" do
+    whence = Chronic.parse('yesterday 11:54 pm')
+    @project.start! whence
+    @project.stop!  whence+18
+    @project.time_spent('day', Chronic.parse('yesterday')).should == 18.0/3600
   end
 end
 

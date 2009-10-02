@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec/spec_helper')
+require 'spec_helper'
 require 'pratt'
 
 describe Pratt do
@@ -9,6 +9,7 @@ describe Pratt do
 
   it "should act like an array" do
     @pratt = Pratt.new
+    @pratt.expects(:todo).returns(@pratt.instance_variable_get("@todo"))
     @pratt.should respond_to(:<<)
     lambda {
       @pratt << :this
@@ -17,28 +18,25 @@ describe Pratt do
 
   it "should start a new project when calling begin" do
     @project = mock('Home Refactor')
-    @project.stub!(:start!)
 
     @pratt   = Pratt.new
     @pratt.project = @project
 
-    @pratt.project.should_receive(:"start!").once
+    @pratt.project.expects(:"start!")
     @pratt.begin
   end
 
   it "should allow project to be set by object" do
     @pratt = Pratt.new
-    @pratt.should_receive(:project=).with(Project.primary).at_least(:once).and_return(Project.primary)
+    Project.expects(:find_or_create_by_name).never
     @pratt.project = Project.primary 
+    @pratt.project.should == Project.primary
   end
 
   it "should allow project to be set by a string" do
     @pratt = Pratt.new
-#    @project_class = Project
-#    @project_class.stub!(:find_or_create_by_name)
-    @pratt.should_receive(:project=).with('Home Refactor').at_least(:once).and_return(Project.primary)
+    Project.expects(:find_or_create_by_name).with( { :name => 'Home Refactor' } )
     @pratt.project = 'Home Refactor' 
-    Project.should_receive(:find_or_create_by_name)#.with( { :name => 'Home Refactor' } ).and_return(Project.primary)
   end
 
 #  it "ought to error when not given a name" do

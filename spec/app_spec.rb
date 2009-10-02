@@ -12,7 +12,7 @@ describe App do
 
     it "should have log" do
       @app = App.last
-      @app.should_receive(:log).with('pop').and_return(@app)
+      @app.expects(:log).with('pop').returns(@app)
       @app.log 'pop'
     end
 

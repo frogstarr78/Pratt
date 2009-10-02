@@ -58,7 +58,7 @@ class Pratt
 
   def project= proj
     if proj.is_a?(Project)
-      @project = project
+      @project = proj
     else
 #      Pratt.connect self.env
       @project = Project.find_or_create_by_name( { :name => proj } )

@@ -32,11 +32,6 @@ describe Whence do
       Whence.last_unended.should eql(whences.last)
       Whence.last_unended.should_not eql(whences.first)
     end
-
-    it "should make more sense" do
-      Whence.should_receive(:count)
-      Whence.count
-    end
   end
 
   context "instances" do
