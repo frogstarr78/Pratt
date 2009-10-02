@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.0  (Linux)">
+	<META NAME="AUTHOR" CONTENT=" ">
+	<META NAME="CREATED" CONTENT="20090930;9550000">
+	<META NAME="CHANGED" CONTENT="20091001;21332000">
+	<META NAME="Info 2" CONTENT="">
+	<META NAME="Info 3" CONTENT="">
+	<META NAME="Info 4" CONTENT="">
+	<META NAME="_TemplateID" CONTENT="TC100726791033">
+	<STYLE TYPE="text/css">
+	<!--
+		@page { margin-left: 0.5in; margin-right: 0.5in; margin-top: 0.5in; margin-bottom: 0.51in }
+		P { margin-bottom: 0.08in; direction: ltr; color: #000000; text-align: left; widows: 2; orphans: 2 }
+		P.western { font-family: "Calibri", sans-serif; font-size: 12pt; so-language: en-US }
+		P.cjk { font-family: "Times New Roman", serif; font-size: 12pt; so-language: zxx }
+		P.ctl { font-family: "Calibri", sans-serif; font-size: 12pt; so-language: ar-SA }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" DIR="LTR">
+<CENTER>
+	<TABLE WIDTH=720 BORDER=0 CELLPADDING=5 CELLSPACING=0 STYLE="page-break-before: always">
+		<COL WIDTH=351>
+		<COL WIDTH=349>
+		<TR VALIGN=TOP>
+			<TD ROWSPAN=2 WIDTH=351 HEIGHT=43>
+				<P STYLE="margin-top: 0.1in; margin-bottom: 0in"><B>QualitySmith LLC</B></P>
+				<P STYLE="margin-bottom: 0in"><FONT SIZE=2 STYLE="font-size: 9pt">106 N 2<SUP>nd</SUP> </FONT> </P>
+				<P STYLE="margin-bottom: 0in"><FONT SIZE=2 STYLE="font-size: 9pt">Walla Walla, WA 99362</FONT></P>
+				<P STYLE="margin-bottom: 0in"><FONT SIZE=2 STYLE="font-size: 9pt">Phone 509-522-0222</FONT></P>
+				<P><FONT SIZE=2 STYLE="font-size: 9pt">Fax </FONT> </P>
+			</TD>
+			<TD WIDTH=349>
+				<P ALIGN=RIGHT><FONT COLOR="#7f7f7f"><FONT SIZE=5 STYLE="font-size: 20pt"><B>INVOICE</B></FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=349 VALIGN=BOTTOM>
+				<P ALIGN=RIGHT><FONT SIZE=1 STYLE="font-size: 8pt">Date: <%= formatted @date %></FONT></P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<P CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<CENTER>
+	<TABLE WIDTH=720 BORDER=0 CELLPADDING=5 CELLSPACING=0>
+		<COL WIDTH=350>
+		<COL WIDTH=350>
+		<TR VALIGN=TOP>
+			<TD WIDTH=350 HEIGHT=86>
+				<P STYLE="margin-bottom: 0in"><FONT SIZE=1 STYLE="font-size: 8pt"><B>To:</B></FONT></P>
+				<P STYLE="margin-bottom: 0in"><FONT SIZE=2 STYLE="font-size: 9pt">Scott Noel-Hemming</FONT></P>
+				<P STYLE="margin-bottom: 0in"><FONT SIZE=2 STYLE="font-size: 9pt">Frogstarr78 Software</FONT></P>
+				<P STYLE="margin-bottom: 0in"><FONT SIZE=2 STYLE="font-size: 9pt">312 NW 7<SUP>th</SUP> </FONT> </P>
+				<P STYLE="margin-bottom: 0in"><FONT SIZE=2 STYLE="font-size: 9pt">Milton-Freewater, OR, 97862</FONT></P>
+				<P><FONT SIZE=2 STYLE="font-size: 9pt">509.200.9190</FONT></P>
+			</TD>
+			<TD WIDTH=350>
+				<P><BR>
+				</P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<P CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<CENTER>
+	<TABLE WIDTH=722 BORDER=1 BORDERCOLOR="#000000" CELLPADDING=3 CELLSPACING=0 RULES=ROWS>
+		<COLGROUP>
+			<COL WIDTH=408>
+			<COL WIDTH=96>
+		</COLGROUP>
+		<COLGROUP>
+			<COL WIDTH=96>
+		</COLGROUP>
+		<COLGROUP>
+			<COL WIDTH=97>
+		</COLGROUP>
+		<TR>
+			<TD WIDTH=408 HEIGHT=12>
+				<P ALIGN=CENTER><FONT SIZE=1 STYLE="font-size: 8pt"><B>DESCRIPTION</B></FONT></P>
+			</TD>
+			<TD WIDTH=96>
+				<P ALIGN=CENTER><FONT SIZE=1 STYLE="font-size: 8pt"><B>HOURS</B></FONT></P>
+			</TD>
+			<TD WIDTH=96>
+				<P ALIGN=CENTER><FONT SIZE=1 STYLE="font-size: 8pt"><B>RATE</B></FONT></P>
+			</TD>
+			<TD WIDTH=97>
+				<P ALIGN=CENTER><FONT SIZE=1 STYLE="font-size: 8pt"><B>AMOUNT</B></FONT></P>
+			</TD>
+		</TR>
+		<% @line_items.each do |line_item| %>
+		<TR>
+			<TD WIDTH=408 HEIGHT=13>
+				<P><%= @project.name %></P>
+			</TD>
+			<TD WIDTH=96>
+				<P ALIGN=RIGHT><%= @hours %></P>
+			</TD>
+			<TD WIDTH=96>
+				<P ALIGN=RIGHT><%= @rate %></P>
+			</TD>
+			<TD WIDTH=97>
+				<P ALIGN=RIGHT><FONT SIZE=2><%= @amount %></FONT></P>
+			</TD>
+		</TR>
+		<% end %>
+		<TR>
+			<TD WIDTH=408 HEIGHT=13 VALIGN=TOP>
+				<P CLASS="western"><BR>
+				</P>
+			</TD>
+			<TD COLSPAN=2 WIDTH=198>
+				<P ALIGN=RIGHT><FONT SIZE=1 STYLE="font-size: 8pt">TOTAL</FONT></P>
+			</TD>
+			<TD WIDTH=97>
+				<P ALIGN=RIGHT><FONT SIZE=2><%= @total %></FONT></P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<P CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<CENTER>
+	<TABLE WIDTH=720 BORDER=0 CELLPADDING=8 CELLSPACING=0>
+		<COL WIDTH=704>
+		<TR>
+			<TD WIDTH=704 HEIGHT=90 VALIGN=TOP>
+				<P><FONT SIZE=2 STYLE="font-size: 9pt">Make all checks payable to Frogstarr78 Software</FONT></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=704 HEIGHT=13>
+				<P ALIGN=CENTER><FONT SIZE=1 STYLE="font-size: 8pt"><B>Thank you for your business!</B></FONT></P>
+			</TD>
+		</TR>
+	</TABLE>
+</CENTER>
+<P CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+</BODY>
+</HTML>
