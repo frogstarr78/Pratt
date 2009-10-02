@@ -1,10 +1,10 @@
-[t] Allow only one prompt at a time.
+[x] Allow only one prompt at a time.
 [x] Handle stop when there isn't a running project w/out errors
-[*] fix gui so if last_unended is detected app knows which gui to display
+[x] fix gui so if last_unended is detected app knows which gui to display
 [x] Intelligently detect correctly running stored pid.
-[ ] Put everything in the db (logs, app locks, etc)
+[?] Put everything in the db? (logs, app locks, etc)
 [ ] Add TrayIcon.
-[ ] Fix pid directory access.
+[x] Fix pid directory access.
 [ ] Add environment ability
 
 Done:
