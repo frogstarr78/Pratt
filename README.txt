@@ -22,6 +22,7 @@ debian: libtcltk-ruby tk-tile libsqlite3-dev ruby-dev (for mkmf for ruby-debug)
 gems: activerecord sqlite3-ruby ruby-debug
 tk: http://sourceforge.net/project/showfiles.php?group_id=11464&package_id=107795&release_id=562098
 rspec: testing
+mocha: testing
 
 == INSTALL:
 
