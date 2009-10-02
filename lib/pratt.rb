@@ -4,6 +4,7 @@ require 'colored'
 require 'optparse'
 require 'chronic'
 require 'fileutils'
+require 'erubis'
 
 module NoColor
   include Colored
@@ -112,6 +113,30 @@ class Pratt
       Pratt.percent('Other',               rest_total.to_f,     scaled_total, :red,    color && true),
     ]
     puts
+  end
+
+  def graph2
+    @primary = @off_total = @rest_total = 0.0
+
+    if project?
+      @projects = [project]
+
+      @primary = project.time_spent(@scale, @when_to)
+      @scaled_total = project.whences.time_spent(@scale, @when_to)
+    else
+      @projects = Project.all
+
+      @projects.each do |proj| 
+        @primary     = proj.time_spent(@scale, @when_to) if proj.name == Project.primary.name
+        @off_total   = proj.time_spent(@scale, @when_to) if proj.name == Project.off.name
+        @rest_total += proj.time_spent(@scale, @when_to) if Project.rest.collect(&:name).include?(proj.name)
+      end
+      @scaled_total = Whence.time_spent(@scale, @when_to)-@off_total
+    end
+
+    input = File.read('graph.eruby')
+    eruby = Erubis::Eruby.new(input)
+    puts eruby.evaluate(self)
   end
 
   def current
@@ -465,5 +490,11 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
   end
 end
 
-#p = Pratt.new 'Home Refactor'
+p = Pratt.new #'Ctr Rebate'
+p.color = false
+p.when_to = Time.parse('10/02/09 15:44:30')
+p.scale = 'week'
+#p = Pratt.new
 #puts p.inspect
+
+p.graph2
