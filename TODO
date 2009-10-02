@@ -1,11 +1,11 @@
-[x] Allow only one prompt at a time.
-[x] Handle stop when there isn't a running project w/out errors
-[x] fix gui so if last_unended is detected app knows which gui to display
-[x] Intelligently detect correctly running stored pid.
 [?] Put everything in the db? (logs, app locks, etc)
 [ ] Add TrayIcon.
-[x] Fix pid directory access.
 [ ] Add environment ability
+[ ] Change to Use DataMapper
+[ ] Change to use raw command line arguments / Remove optparse lib
+[ ] Add console command
+[?]   Add file watching like merb
+[ ] Add Template command
 
 Done:
 [x] Whence.last should be last unended.
@@ -17,3 +17,8 @@ Done:
 [x] Add directoryless agnostic runner.
 [x] Log output.
 [x] Add Quiet option??
+[x] Allow only one prompt at a time.
+[x] Handle stop when there isn't a running project w/out errors
+[x] fix gui so if last_unended is detected app knows which gui to display
+[x] Intelligently detect correctly running stored pid.
+[x] Fix pid directory access.
