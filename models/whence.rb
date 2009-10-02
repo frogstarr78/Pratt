@@ -23,6 +23,11 @@ class Whence < ActiveRecord::Base
     end
     sa
   end
+
+  def inspect
+    format = ""
+    "#<Whence id: '#{id}', project: '#{project.name}', start_at: '#{start_at.strftime(Pratt::FMT)}', end_at: '#{end_at.strftime(Pratt::FMT)}'>"
+  end
   
   class << self
     include Pratt::Models
