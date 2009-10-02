@@ -489,12 +489,3 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
       end
   end
 end
-
-p = Pratt.new #'Ctr Rebate'
-p.color = false
-p.when_to = Time.parse('10/02/09 15:44:30')
-p.scale = 'week'
-#p = Pratt.new
-#puts p.inspect
-
-p.graph2
