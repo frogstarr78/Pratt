@@ -2,7 +2,6 @@
 
 $LOAD_PATH << '.'
 $LOAD_PATH << 'lib'
-require 'config'
 require 'pratt'
 require 'spec'
 
