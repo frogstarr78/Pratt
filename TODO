@@ -11,6 +11,7 @@
 [ ] Update general package setup (It's messy)
 [ ] Add support for Customer's model
 [ ] Add support for variable rates.
+[ ] Add shifty week plugin
 
 Done:
 [x] Whence.last should be last unended.
