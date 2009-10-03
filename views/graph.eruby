@@ -1,6 +1,6 @@
 Project detail
 <% if scale %>
-  by <%= scale.send (color ? :red : :to_s ) %> from
+  by <%= scale.send(color ? :red : :to_s ) %> from
   <%= when_to.send("beginning_of_#{scale}").strftime(Pratt::FMT).send(color ? :blue : :to_s ) %> to <%= when_to.send("end_of_#{scale}").strftime(Pratt::FMT)..send(color ? :blue : :to_s ) %>
 <% end %>
 <%= ' '*(max+1) << 'dys'.send(color ? :underline : :to_s) << ' '*5 << 'hrs'.send(color ? :underline : :to_s) << ' '*5 << 'min'.send(color ? :underline : :to_s) %>
@@ -15,6 +15,6 @@ Project detail
 <%= (color ? '·' : '-')*60 %>
 
 <%= "%#{max}.#{max}s %s hrs"% ['Total', ("%0.2f"%@scaled_total).send(color ? :underline : :to_s)] %>
-<%= Pratt.percent(Project.primary.name,  @primary.to_f, @scaled_total, :green,  color && true) %>
+<%= Pratt.percent(Project.primary.name,  @primary.to_f,        @scaled_total, :green,  color && true) %>
 <%= Pratt.percent(Project.off.name,      @off_total.to_f,      @scaled_total, :yellow, color && true) %>
 <%= Pratt.percent('Other',               @rest_total.to_f,     @scaled_total, :red,    color && true) %>
