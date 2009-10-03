@@ -1,7 +1,7 @@
 Project detail
 <% if scale %>
   by <%= scale.send(color ? :red : :to_s ) %> from
-  <%= when_to.send("beginning_of_#{scale}").strftime(Pratt::FMT).send(color ? :blue : :to_s ) %> to <%= when_to.send("end_of_#{scale}").strftime(Pratt::FMT)..send(color ? :blue : :to_s ) %>
+  <%= when_to.send("beginning_of_#{scale}").strftime(Pratt::FMT).to_s.send(color ? :blue : :to_s ) %> to <%= when_to.send("end_of_#{scale}").strftime(Pratt::FMT).to_s.send(color ? :blue : :to_s ) %>
 <% end %>
 <%= ' '*(max+1) << 'dys'.send(color ? :underline : :to_s) << ' '*5 << 'hrs'.send(color ? :underline : :to_s) << ' '*5 << 'min'.send(color ? :underline : :to_s) %>
 <%= (color ? '·' : '-')*60 %>
