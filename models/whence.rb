@@ -1,3 +1,5 @@
+require 'models/pratt'
+
 class Whence < ActiveRecord::Base
   belongs_to :project
   validates_associated :project

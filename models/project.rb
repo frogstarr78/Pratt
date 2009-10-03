@@ -1,3 +1,5 @@
+require 'models/pratt'
+
 class Project < ActiveRecord::Base
   include Pratt::Models
   has_many :whences

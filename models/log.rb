@@ -1,3 +1,5 @@
+require 'models/pratt'
+
 class Log < ActiveRecord::Base
   belongs_to :app
 
