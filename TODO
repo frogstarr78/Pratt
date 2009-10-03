@@ -6,6 +6,9 @@
 [ ] Add console command
 [?]   Add file watching like merb
 [ ] Add Template command
+[ ] Add Invoice command
+[ ] Fix colorability
+[ ] Update general package setup (It's messy)
 
 Done:
 [x] Whence.last should be last unended.
