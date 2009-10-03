@@ -158,7 +158,7 @@ class Pratt
       @scaled_total = Whence.time_spent(@scale, @when_to)-@off_total
     end
 
-    input = File.read('graph.eruby')
+    input = File.read('views/graph.eruby')
     eruby = Erubis::Eruby.new(input)
     puts eruby.evaluate(self)
   end
