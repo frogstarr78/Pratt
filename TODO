@@ -9,6 +9,8 @@
 [ ] Add Invoice command
 [ ] Fix colorability
 [ ] Update general package setup (It's messy)
+[ ] Add support for Customer's model
+[ ] Add support for variable rates.
 
 Done:
 [x] Whence.last should be last unended.
