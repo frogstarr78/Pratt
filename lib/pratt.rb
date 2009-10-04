@@ -51,7 +51,7 @@ class Pratt
   PID_FILE='pratt.pid'
   FMT = "%a %X %b %d %Y"
 
-  attr_accessor :when_to, :scale, :color, :show_all, :env, :raw_conditions
+  attr_accessor :when_to, :scale, :color, :show_all, :env, :raw_conditions, :template
   attr_reader :project
   def initialize proj = nil #, when_to
     @when_to        = Time.now
@@ -61,6 +61,7 @@ class Pratt
     @scale          = nil
     @color          = true
     @show_all       = false
+    @template       = 'graph'
     @env            = :development
     @raw_conditions = ''
     self.project = proj unless proj.nil?
@@ -70,7 +71,6 @@ class Pratt
     if proj.is_a?(Project)
       @project = proj
     else
-#      Pratt.connect self.env
       @project = Project.find_or_create_by_name( { :name => proj } )
     end
   end
@@ -85,46 +85,6 @@ class Pratt
   end
 
   def graph
-    primary = off_total = rest_total = 0.0
-
-    puts "Project detail"
-    puts [
-      "by #{scale.to_s.red} from ", 
-      "#{when_to.send("beginning_of_#{scale}").strftime(FMT).blue} to #{when_to.send("end_of_#{scale}").strftime(FMT).blue}"
-    ] if scale
-    puts ' '*(max+1) << 'dys'.send(color ? :underline : :to_s) << ' '*5 << 'hrs'.send(color ? :underline : :to_s) << ' '*5 << 'min'.send(color ? :underline : :to_s)
-    puts (color ? '·' : '-')*60
-
-    if project?
-      projects = [project]
-
-      primary = project.time_spent(scale, when_to)
-      scaled_total = project.whences.time_spent(scale, when_to)
-    else
-      projects = Project.all
-
-      projects.each do |proj| 
-        primary = proj.time_spent(scale, when_to) if proj.name == Project.primary.name
-        off_total      = proj.time_spent(scale, when_to) if proj.name == Project.off.name
-        rest_total    += proj.time_spent(scale, when_to) if Project.rest.collect(&:name).include?(proj.name)
-      end
-      scaled_total = Whence.time_spent(scale, when_to)-off_total
-    end
-
-    projects.each do |proj| 
-      puts "%1$*4$s%2$s %3$s"% [proj.name, (color ? '⋮' : '|'), Pratt.totals(proj.time_spent(scale, when_to), color && true), max] if show_all or ( !show_all and proj.time_spent(scale, when_to) != 0.0 )
-    end
-    puts (color ? '·' : '-')*60
-    puts [
-      "%#{max}.#{max}s %s hrs"% ['Total', ("%0.2f"%scaled_total).send(color ? :underline : :to_s)],
-      Pratt.percent(Project.primary.name, primary.to_f, scaled_total, :green,  color && true),
-      Pratt.percent(Project.off.name,      off_total.to_f,      scaled_total, :yellow, color && true),
-      Pratt.percent('Other',               rest_total.to_f,     scaled_total, :red,    color && true),
-    ]
-    puts
-  end
-
-  def graph2
     @primary = @off_total = @rest_total = 0.0
 
     if project?
@@ -143,9 +103,13 @@ class Pratt
       @scaled_total = Whence.time_spent(@scale, @when_to)-@off_total
     end
 
-    input = File.read('views/graph.eruby')
-    eruby = Erubis::Eruby.new(input)
-    puts eruby.evaluate(self)
+    if @primary + @off_total + @rest_total > 0.0
+      input = File.read("views/#{template}.eruby")
+      eruby = Erubis::Eruby.new(input)
+      puts eruby.evaluate(self)
+    else
+      puts "No data to report"
+    end
   end
 
   def current
@@ -291,8 +255,6 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
   end
 
   def run
-#    Pratt.connect self.env
-
     self.begin      if i_should?(:begin)
     self.change     if i_should?(:change)
     self.restart    if i_should?(:restart)
@@ -378,17 +340,10 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     end
 
     def parse args
-#      Pratt.connect :development
-
       me = Pratt.new
 
       begin
       args.options do |opt|
-        opt.on('-E', '--environment ENVIRONMENT', DBFILES, "Environment to load") do |to_env|
-          me.env = to_env
-#          Pratt.connect to_env
-        end
-
         opt.on('-b', "--begin PROJECT_NAME", String, "Begin project tracking.") do |proj|
           me.project = proj
           me << :begin
@@ -410,6 +365,13 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
           me.project = proj
           me << :graph
         end
+
+        templates = [] 
+        Pratt.root("views", "*.eruby") {|view| templates << File.basename(view, '.eruby') }
+        opt.on('-t', "--template [PROJECT_NAME]", templates, "Template to use for displaying work done.
+                                       Available templates are #{templates.to_sentence('or')}.") do |proj|
+          me.template = template
+        end
         opt.on('--destroy PROJECT_NAME', String, "Remove a project.") do |proj|
           me.project = proj
           me << :destroy
@@ -420,8 +382,9 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
                                        If graphing, silently ignored w/out scale argument.' do |when_to|
           me.when_to = Chronic.parse(when_to)
         end
-        opt.on('-l', '--scale SCALE', [:day, :week, :month, :quarter, :year], "Granularity of time argument
-                                       (day, week, month, quarter, year).
+        scales = %w(day week month quarter year)
+        opt.on('-l', '--scale SCALE', scales, "Granularity of time argument
+                                       Available scales are #{scales.to_sentence('or')}.
                                        Only applies to graphing.") do |scale|
           me.scale = scale
         end
@@ -477,6 +440,8 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         puts problem.backtrace*"\n"
       end
 
+      puts "args " << args.inspect
+
       me.run
     end
 
@@ -487,6 +452,22 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     def percent label, off, total, color, fmt = false
       fmt_f((off/total)*100, label, color, fmt)
     end
+
+    def root *globs, &block
+      @root = File.expand_path(Dir.pwd, '..')
+      if globs.empty?
+        subdir = @root
+      else
+        subdir = File.join(@root, *globs)
+      end
+
+      if block_given?
+        Pathname.glob(subdir) {|dir_files| yield dir_files }
+      else
+        Pathname.glob(subdir)
+      end
+    end
+
     private
 
       def fmt_f flt, label, color, fmt = false
@@ -496,24 +477,11 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
       def fmt_i int, label, color, fmt = false
         "%s #{label}"% [("%02i"% int).send(fmt ? color : :to_s), label]
       end
-  end
 
-
-#  def self.included base
-#    model_files {|path| require path }
-#  end
-
-  def model_files &block
-    Pathname.glob( File.join(Dir.pwd, 'models', '*.rb') ).each {|f| 
-      yield f
-    }
-  end
-
-  def migrate
-    DBFILES.each do |db|
-      Pratt.connect db
-      model_files do |path|
-        klass = File.basename( path, '.rb' ).capitalize.constantize
+    def migrate
+      Pratt.connect
+      Pratt.root( 'models', '*.rb' ) do |model_file|
+        klass = File.basename( model_file, '.rb' ).capitalize.constantize
         begin
           ActiveRecord::Base.connection.execute("
             CREATE VIEW INFORMATION_SCHEMA_TABLES AS 
@@ -535,5 +503,16 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
       end
     end
   end
+
+  class Formats
+    module Array
+      def to_sentence conjunction = 'and'
+        self[0..-2].join(", ") << (self.size > 2 ? ',' : '') << " #{conjunction} #{self.last}"
+      end
+    end
+  end
 end
 
+class Array
+  include Pratt::Formats::Array
+end
