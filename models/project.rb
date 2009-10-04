@@ -3,6 +3,7 @@ require 'models/pratt'
 class Project < ActiveRecord::Base
   include Pratt::Models
   has_many :whences
+  belongs_to :customer
   
   validates_presence_of :name
 
