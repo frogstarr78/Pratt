@@ -104,7 +104,7 @@
 				<P ALIGN=RIGHT><%= @hours %></P>
 			</TD>
 			<TD WIDTH=96>
-				<P ALIGN=RIGHT><%= @rate %></P>
+				<P ALIGN=RIGHT><%= project.payment %></P>
 			</TD>
 			<TD WIDTH=97>
 				<P ALIGN=RIGHT><FONT SIZE=2><%= @amount %></FONT></P>
