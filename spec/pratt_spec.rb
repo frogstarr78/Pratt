@@ -39,28 +39,29 @@ describe Pratt do
     @pratt.project = 'Home Refactor' 
   end
 
-#  it "ought to error when not given a name" do
-#    @pratt = Pratt.new('Home Refactor')
-##    @pratt.stub!(:project)
-#
-#    @pratt.should_receive(:project=).at_least(:once).and_return(Project.primary)
-#    @pratt.project= 'Home Refactor'
-#
-##    project.should_receive(:find_or_create_by_name).with( { :name => 'Home Refactor' } ).and_return(Project.primary)
-##    proj.should_receive(:start!).with(1, kind_of(DateTime), "at") do |arg|
-##      puts arg.inspect
-##      arg.should be_an_instance_of(DateTime)
-##      arg.length.should == 1
-##    end
-#
-##    p = Project.new(:name => 'Something').start!
-##    p.should be_invalid
-#  end
+  describe "\b#root" do
+    before :each do
+      @expected_root = "/home/scott/git/pratt"
+    end
 
-#  context "when it's begun" do
-#    it "ought to create a new whence log with a nil end_at time" do
-#      p = Project.new(:name => 'Something').start!
-#      p.should.
-#    end
-#  end
+    it "is correct without arguments" do
+      Pratt.root.should == [Pathname.new(@expected_root)]
+    end
+
+    it "is correct with a block but no argument" do
+      received = []
+      Pratt.root {|model| received << model }
+      received.should == [Pathname.new(@expected_root)]
+    end
+
+    it "is correct with an argument but no block" do
+      Pratt.root('models').should == [Pathname.new(File.join(@expected_root, "models"))]
+    end
+
+    it "is correct with an argument and block" do
+      received = []
+      Pratt.root('models', '*.rb') {|model| received << model }
+      received.to_set.should == ["app.rb", "log.rb", "project.rb", "whence.rb", "pratt.rb"].collect {|model| Pathname.new File.join(@expected_root, "models", model) }.to_set
+    end
+  end
 end
