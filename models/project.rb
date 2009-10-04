@@ -38,7 +38,7 @@ class Project < ActiveRecord::Base
       named 'Lunch/Break'
     end
     def rest
-      all - [primary] - [off]
+      all - [primary, off]
     end
 
     def migrate up = true
