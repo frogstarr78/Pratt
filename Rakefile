@@ -51,4 +51,18 @@ namespace :spec do
   end
 end
 
+namespace :generate do
+	desc "Genarate model"
+	task :model do
+	  raise "Missing required klass parameter" unless ENV.include?('klass')
+    klass = ENV['klass'].downcase.singularize
+		outdir = Pratt.root('models')
+		template = ''
+		Pratt.root('templates', 'model.eruby') {|model_gen| template = File.read(model_gen) }
+
+		eruby = Erubis::Eruby.new(template)
+		File.open(File.join(outdir, "#{klass}.rb"), 'w') {|file| file.write eruby.result(:klass => klass) }
+	end
+end
+
 # vim: syntax=Ruby

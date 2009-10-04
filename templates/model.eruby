@@ -1,0 +1,12 @@
+class <%= klass.capitalize.singularize %> < ActiveRecord::Base
+
+  class << self
+    def migrate up = :up
+      ActiveRecord::Schema.define do
+        create_table <%= klass.downcase.pluralize %> do |t|
+        end if up == :up
+        drop_table <%= klass.downcase.pluralize %> if up == :down
+      end
+    end
+  end
+end
