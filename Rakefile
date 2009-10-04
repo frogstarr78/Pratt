@@ -13,9 +13,15 @@ end
 #task :default => [:test] 
 task :default => [:spec] 
 
+task :establish_connection do
+  Pratt.connect( ENV['PRATT_ENV'] || 'development' )
+  Pratt.root 'models', '*.rb' do |model|
+    require model
+  end
+end
+
 desc "connect to database"
 task :console do 
-  Pratt.connect( ENV['PRATT_ENV'] || 'development' )
   require 'ruby-debug'
   libs =  " -r irb/completion"
   libs << " -r lib/pratt"
@@ -26,17 +32,36 @@ end
 desc "DB Quick access"
 namespace :db do
 
-
   desc "Show App detail."
-  task :app do 
-	  Pratt.connect( ENV['PRATT_ENV'] || 'development' )
+  task :app => :establish_connection do 
     puts App.last.inspect
   end
 
   desc "Show Last Whence log."
-  task :last do
+  task :last => :establish_connection do
     last = Whence.last_unended || Whence.last
     puts last.inspect
+  end
+
+  namespace :schema do
+    desc "Run schema file" 
+    task :run => :establish_connection do
+      raise "Missing required file argument" unless ENV.include? 'file'
+      schema_change = File.open( ENV['file'] ).read
+
+      ActiveRecord::Schema.define do
+        ActiveRecord::Base.transaction do
+          begin
+            eval schema_change
+          rescue Exception => e
+            puts "There was an error:
+            #{e.inspect}.
+            Rolling back!"
+            raise ActiveRecord::Rollback
+          end
+        end
+      end
+    end
   end
 end
 
@@ -55,7 +80,7 @@ end
 namespace :generate do
 	desc "Genarate model"
 	task :model do
-	  raise "Missing required klass parameter" unless ENV.include?('klass')
+	  raise "Missing required klass parameter" unless ENV.include? 'klass'
     klass = ENV['klass'].downcase.singularize
 		outdir = Pratt.root('models')
 		template = ''
