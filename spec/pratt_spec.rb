@@ -61,7 +61,7 @@ describe Pratt do
     it "is correct with an argument and block" do
       received = []
       Pratt.root('models', '*.rb') {|model| received << model }
-      received.to_set.should == ["app.rb", "log.rb", "project.rb", "whence.rb", "pratt.rb"].collect {|model| Pathname.new File.join(@expected_root, "models", model) }.to_set
+      received.to_set.should == %w(app.rb customer.rb log.rb project.rb whence.rb pratt.rb).collect {|model| Pathname.new File.join(@expected_root, "models", model) }.to_set
     end
   end
 end
