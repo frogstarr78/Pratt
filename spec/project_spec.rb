@@ -76,5 +76,8 @@ describe Project do
       @project.whences.last.id.should_not == first_started_id
     end
 
+    it "has a customer association" do
+      @project.should respond_to(:customer) 
+    end
   end
 end
