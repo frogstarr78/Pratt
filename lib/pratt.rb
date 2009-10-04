@@ -255,23 +255,24 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
   end
 
   def run
-    self.begin      if i_should?(:begin)
-    self.change     if i_should?(:change)
-    self.restart    if i_should?(:restart)
-    self.end        if i_should?(:end)
+    self.begin      if i_should? :begin
+    self.change     if i_should? :change
+    self.restart    if i_should? :restart
+    self.end        if i_should? :end
 
-    self.destroy    if i_should?(:destroy)
+    self.destroy    if i_should? :destroy
 
-    self.pid        if i_should?(:pid)
-    self.raw        if i_should?(:raw)
-    self.current    if i_should?(:current)
-    self.graph      if i_should?(:graph)
-    self.gui        if i_should?(:gui)
-    self.detect     if i_should?(:detect)
-    self.app.unlock if i_should?(:unlock)
+    self.pid        if i_should? :pid
+    self.raw        if i_should? :raw
+    self.current    if i_should? :current
+    self.graph      if i_should? :graph
+    self.gui        if i_should? :gui
+    show_env   if i_should? :env
+    self.detect     if i_should? :detect
+    self.app.unlock if i_should? :unlock
 
-    self.quit       if i_should?(:quit)
-    self.daemonize! if i_should?(:daemonize) and not self.daemonized?
+    self.quit       if i_should? :quit
+    self.daemonize! if i_should? :daemonize and not self.daemonized?
   end
 
   def daemonized?
@@ -324,6 +325,13 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
       )
     end
 
+    def show_env
+      Process.detach(
+        fork { system("ruby views/env.rb ") } 
+      )
+    end
+
+
     def i_should? what
       @todo.include?(what)
     end
@@ -344,6 +352,11 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
 
       begin
       args.options do |opt|
+        opt.on('-n', "--env ENVIRONMENT", %w(test production development), "Runtime environment") do |env|
+          ENV['PRATT_ENV'] = env
+        end
+        ENV['PRATT_ENV'] ||= 'development'
+
         opt.on('-b', "--begin PROJECT_NAME", String, "Begin project tracking.") do |proj|
           me.project = proj
           me << :begin
@@ -441,6 +454,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
       end
 
       puts "args " << args.inspect
+      me << :env if args.include? 'env'
 
       me.run
     end
