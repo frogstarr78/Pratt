@@ -40,7 +40,7 @@
 		</TR>
 		<TR>
 			<TD WIDTH=349 VALIGN=BOTTOM>
-				<P ALIGN=RIGHT><FONT SIZE=1 STYLE="font-size: 8pt">Date: <%= when_to.send("beginning_of_#{scale}").strftime(Pratt::FMT).send(color ? :blue : :to_s ) %> to <%= when_to.send("end_of_#{scale}").strftime(Pratt::FMT)..send(color ? :blue : :to_s ) %></FONT></P>
+				<P ALIGN=RIGHT><FONT SIZE=1 STYLE="font-size: 8pt">Date: <%= when_to.send("beginning_of_#{scale}").strftime(Pratt::INVOICE_FMT) %> to <%= when_to.send("end_of_#{scale}").strftime(Pratt::INVOICE_FMT) %></FONT></P>
 			</TD>
 		</TR>
 	</TABLE>
@@ -104,7 +104,7 @@
 				<P ALIGN=RIGHT><%= @hours %></P>
 			</TD>
 			<TD WIDTH=96>
-				<P ALIGN=RIGHT><%= project.payment %></P>
+				<P ALIGN=RIGHT><%= project.payment.pretty_print %></P>
 			</TD>
 			<TD WIDTH=97>
 				<P ALIGN=RIGHT><FONT SIZE=2><%= @amount %></FONT></P>

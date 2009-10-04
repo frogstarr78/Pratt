@@ -1,6 +1,10 @@
 class Payment < ActiveRecord::Base
   belongs_to :billable, :polymorphic => true
 
+  def pretty_print
+    "$%0.2f"% (rate/100)
+  end
+
   class << self
     def migrate up = :up
       ActiveRecord::Schema.define do
