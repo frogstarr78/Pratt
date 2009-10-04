@@ -52,6 +52,7 @@ class Pratt
   VERSION = '1.0.0'
   PID_FILE='pratt.pid'
   FMT = "%a %X %b %d %Y"
+  INVOICE_FMT = "%x"
 
   attr_accessor :when_to, :scale, :color, :show_all, :env, :raw_conditions, :template
   attr_reader :project
@@ -106,7 +107,7 @@ class Pratt
     end
 
     if @primary + @off_total + @rest_total > 0.0
-      input = File.read("views/#{template}.eruby")
+      input = File.open("views/#{template}.eruby").read
       eruby = Erubis::Eruby.new(input)
       puts eruby.evaluate(self)
     else
@@ -333,7 +334,6 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
       )
     end
 
-
     def i_should? what
       @todo.include?(what)
     end
@@ -357,7 +357,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         opt.on('-n', "--env ENVIRONMENT", %w(test production development), "Runtime environment") do |env|
           ENV['PRATT_ENV'] = env
         end
-        ENV['PRATT_ENV'] ||= 'development'
+        Pratt.connect ENV['RAILS_ENV'] || 'development'
 
         opt.on('-b', "--begin PROJECT_NAME", String, "Begin project tracking.") do |proj|
           me.project = proj
@@ -383,8 +383,8 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
 
         templates = [] 
         Pratt.root("views", "*.eruby") {|view| templates << File.basename(view, '.eruby') }
-        opt.on('-t', "--template [PROJECT_NAME]", templates, "Template to use for displaying work done.
-                                       Available templates are #{templates.to_sentence('or')}.") do |proj|
+        opt.on('-t', "--template TEMPLATE", templates, "Template to use for displaying work done.
+                                       Available templates are #{templates.to_sentence('or')}.") do |template|
           me.template = template
         end
         opt.on('--destroy PROJECT_NAME', String, "Remove a project.") do |proj|
