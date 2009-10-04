@@ -40,7 +40,7 @@
 		</TR>
 		<TR>
 			<TD WIDTH=349 VALIGN=BOTTOM>
-				<P ALIGN=RIGHT><FONT SIZE=1 STYLE="font-size: 8pt">Date: <%= formatted @date %></FONT></P>
+				<P ALIGN=RIGHT><FONT SIZE=1 STYLE="font-size: 8pt">Date: <%= when_to.send("beginning_of_#{scale}").strftime(Pratt::FMT).send(color ? :blue : :to_s ) %> to <%= when_to.send("end_of_#{scale}").strftime(Pratt::FMT)..send(color ? :blue : :to_s ) %></FONT></P>
 			</TD>
 		</TR>
 	</TABLE>
@@ -95,10 +95,10 @@
 				<P ALIGN=CENTER><FONT SIZE=1 STYLE="font-size: 8pt"><B>AMOUNT</B></FONT></P>
 			</TD>
 		</TR>
-		<% @line_items.each do |line_item| %>
+		<% @projects.each do |project| %>
 		<TR>
 			<TD WIDTH=408 HEIGHT=13>
-				<P><%= @project.name %></P>
+				<P><%= project.name %></P>
 			</TD>
 			<TD WIDTH=96>
 				<P ALIGN=RIGHT><%= @hours %></P>
