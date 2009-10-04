@@ -13,8 +13,11 @@ require 'mocha'
 require 'config'
 
 require 'models/app'
+require 'models/customer'
 require 'models/whence'
 require 'models/project'
+require 'models/payment'
+
 module NoColor
   include Colored
 
@@ -45,7 +48,6 @@ end
 
 class Pratt
 
-  include Config
   include FileUtils
   VERSION = '1.0.0'
   PID_FILE='pratt.pid'
