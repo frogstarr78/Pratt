@@ -1,4 +1,5 @@
 require 'active_record'
+PRATT_ENV = ENV["PRATT_ENV"] || 'development' unless Object.const_defined? :PRATT_ENV
 
 class Pratt
   include FileUtils
@@ -18,5 +19,5 @@ end
 
 #include Pratt::Config
 #Pratt.connect :production
-Pratt.connect :development
+Pratt.connect PRATT_ENV
 #migrate
