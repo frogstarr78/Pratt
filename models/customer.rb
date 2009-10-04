@@ -1,5 +1,6 @@
 class Customer < ActiveRecord::Base
   has_many :projects
+  has_one :payment, :as => :billable
 
   class << self
     def migrate up = :up
