@@ -2,11 +2,6 @@ require 'spec_helper'
 require 'pratt'
 
 describe Pratt do
-
-  before :all do
-    Pratt.connect :test
-  end
-
   it "should act like an array" do
     @pratt = Pratt.new
     @pratt.expects(:todo).returns(@pratt.instance_variable_get("@todo"))

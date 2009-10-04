@@ -1,11 +1,8 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec/spec_helper')
+require 'spec_helper'
 
 describe Project do
   it_should_behave_like "needing project instance that knows how to cleanup"
   it_should_behave_like "Time spent on a project"
-  before :all do
-    Pratt.connect :test
-  end
 
   context "scopes" do
     it "named primary" do 

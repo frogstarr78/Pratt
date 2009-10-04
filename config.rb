@@ -16,8 +16,3 @@ class Pratt
   end
 
 end
-
-#include Pratt::Config
-#Pratt.connect :production
-Pratt.connect PRATT_ENV
-#migrate

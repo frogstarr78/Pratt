@@ -493,7 +493,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
       end
 
     def migrate
-      Pratt.connect
+      Pratt.connect ENV['PRATT_ENV']
       Pratt.root( 'models', '*.rb' ) do |model_file|
         klass = File.basename( model_file, '.rb' ).capitalize.constantize
         begin

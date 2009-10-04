@@ -10,13 +10,12 @@ Hoe.spec('pratt') do |p|
   p.developer('michael goff, scott noel-hemming', 'devs@example.com')
 end
 
-task :default => [:test] 
-#task :default => [:spec] 
-
-Pratt.connect( ENV['env'] || 'development' )
+#task :default => [:test] 
+task :default => [:spec] 
 
 desc "connect to database"
 task :console do 
+  Pratt.connect( ENV['PRATT_ENV'] || 'development' )
   require 'ruby-debug'
   libs =  " -r irb/completion"
   libs << " -r lib/pratt"
@@ -27,8 +26,10 @@ end
 desc "DB Quick access"
 namespace :db do
 
+
   desc "Show App detail."
   task :app do 
+	  Pratt.connect( ENV['PRATT_ENV'] || 'development' )
     puts App.last.inspect
   end
 

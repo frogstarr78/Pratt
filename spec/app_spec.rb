@@ -1,10 +1,6 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec/spec_helper')
+require 'spec_helper'
 
 describe App do
-  before :all do
-    Pratt.connect :test
-  end
-
   context "instances" do
     it "should only have one" do
       App.last.should_not be_nil
