@@ -68,7 +68,7 @@ end
 namespace :spec do
   desc "Spec testing"
   Spec::Rake::SpecTask.new(:rcov) do |t|
-    t.spec_opts  = ["--options", "'./spec/spec.opts'"]
+    t.spec_opts  = ["--options", "--colour", "'./spec/spec.opts'"]
     t.spec_files = FileList['spec/*_spec.rb']
     t.rcov       = true
     t.rcov_opts = lambda do
@@ -82,13 +82,39 @@ namespace :generate do
 	task :model do
 	  raise "Missing required klass parameter" unless ENV.include? 'klass'
     klass = ENV['klass'].downcase.singularize
-		outdir = Pratt.root('models')
+		outfile = File.join(Pratt.root('models'), "#{klass}.rb")
 		template = ''
 		Pratt.root('templates', 'model.eruby') {|model_gen| template = File.read(model_gen) }
 
 		eruby = Erubis::Eruby.new(template)
-		File.open(File.join(outdir, "#{klass}.rb"), 'w') {|file| file.write eruby.result(:klass => klass) }
+    unless File.exists? outfile
+      File.open(outfile, 'w') {|file| file.write eruby.result(:klass => klass) }
+    else
+      puts "Model '#{klass}' already exists"
+    end
+
+    Rake::Task["generate:spec"].execute
 	end
+
+  desc "Generate spec test"
+  task :spec do
+    klass = ENV['klass'].downcase.singularize
+	  raise "Missing required klass parameter" unless ENV.include? 'klass'
+
+    outpath = File.join(Pratt.root('spec'),      "#{klass}_spec.rb")
+    inpath  = File.join(Pratt.root('templates'), "spec.eruby")
+
+    if File.exists? outpath
+      puts "Spec '#{klass}' already exists"
+    else
+      File.open outpath, 'w' do |outfile|
+        File.open inpath do |infile|
+          eruby = Erubis::Eruby.new( infile.read )
+          outfile.write eruby.result( :klass => klass )
+        end
+      end
+    end
+  end
 end
 
 # vim: syntax=Ruby
