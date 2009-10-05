@@ -1,27 +1,43 @@
 require 'spec_helper'
 
+# enable laziness
+class Mocha::Mock
+  def name
+    @name.instance_variable_get("@name")
+  end
+end
+
 describe Project do
-  it_should_behave_like "needing project instance that knows how to cleanup"
-  it_should_behave_like "Time spent on a project"
   it_should_behave_like "being a billable item"
 
   context "scopes" do
     it "named primary" do 
-      Project.primary.name.should == 'Home Refactor'  
+      Project.expects(:first).with(:conditions => { :weight => 1 }).returns(mock('Refactor'))
+      Project.primary.name.should == 'Refactor'  
     end
 
     it "named off" do 
+      Project.expects(:first).with(:conditions => { :name => 'Lunch/Break' }).returns(mock('Lunch/Break'))
       Project.off.name.should == 'Lunch/Break'  
     end
 
     it "named rest" do 
-      Project.rest.size > 0
-      Project.rest.collect(&:name).should_not include(Project.primary.name, Project.off.name)
+      prim = mock('Refactor')
+      off  = mock('Lunch/Break')
+      other = mock('Other')
+
+      Project.expects(:primary).returns prim
+      Project.expects(:off).returns off
+      Project.expects(:all).returns([prim, off, other])
+      Project.rest.should == [other]
     end
 
     it "named named" do
-      Project.named('Home Refactor').name.should == 'Home Refactor'  
-      Project.named('Lunch/Break').name.should   == 'Lunch/Break'  
+      Project.expects(:first).with(:conditions => { :name => 'Refactor' }).returns(mock('Refactor'))
+      Project.named('Refactor').name.should == 'Refactor'  
+      
+      Project.expects(:named).with(nil).returns nil
+      Project.named(nil).should be_nil  
     end
   end
 
@@ -107,6 +123,36 @@ describe Project do
       it "is correct with a scale and time" do
         @project.amount(:week, @now).should == 3*3.15
       end
+    end
+  end
+
+  context "time_spent" do
+    it "correctly calculates with time argument" do
+      whence = mock('whence', :start_at => '2009-10-05 00:08:32', :end_at => '2009-10-05 3:08:32')
+      Whence.expects(:find).with(:all).returns whence
+      project = Project.new
+#      project.expects(:whences).returns(whence)
+      project.time_spent.should == 3.0/3600
+    end
+
+    it "correctly calculates with string time argument" do
+      @project.start! 'last monday 12:00 pm'
+      @project.stop!  'last monday 12:00:05 pm'
+      @project.time_spent.should == 5.0/3600
+    end
+
+    it "correctly calculates with a scale" do
+      whence = Chronic.parse('yesterday 11:53 pm')
+      @project.start! whence
+      @project.stop!  whence+17
+      @project.time_spent('week').should == 17.0/3600
+    end
+
+    it "correctly calculates with a scale and specific time" do
+      whence = Chronic.parse('yesterday 11:54 pm')
+      @project.start! whence
+      @project.stop!  whence+18
+      @project.time_spent('day', Chronic.parse('yesterday')).should == 18.0/3600
     end
   end
 end
