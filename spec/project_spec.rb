@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Project do
   it_should_behave_like "needing project instance that knows how to cleanup"
   it_should_behave_like "Time spent on a project"
+  it_should_behave_like "being a billable item"
 
   context "scopes" do
     it "named primary" do 
