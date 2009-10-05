@@ -2,6 +2,10 @@ class Customer < ActiveRecord::Base
   has_many :projects
   has_one :payment, :as => :billable
 
+  def amount
+    payment.rate / 100.0
+  end
+ 
   class << self
     def migrate up = :up
       ActiveRecord::Schema.define do
