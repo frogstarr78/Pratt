@@ -59,7 +59,7 @@ class Project < ActiveRecord::Base
       Project.create(
         [
           {
-            :name => 'Home Refactor',
+            :name => 'Refactor',
             :weight => 1
           },
           {
