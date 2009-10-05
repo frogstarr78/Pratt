@@ -68,7 +68,7 @@ end
 namespace :spec do
   desc "Spec testing"
   Spec::Rake::SpecTask.new(:rcov) do |t|
-    t.spec_opts  = ["--options", "--colour", "'./spec/spec.opts'"]
+    t.spec_opts  = ["--options", "'./spec/spec.opts'", "-c"]
     t.spec_files = FileList['spec/*_spec.rb']
     t.rcov       = true
     t.rcov_opts = lambda do
