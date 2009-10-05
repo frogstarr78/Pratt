@@ -76,5 +76,36 @@ describe Project do
     it "has a customer association" do
       @project.should respond_to(:customer) 
     end
+
+    context "amount calculation" do
+      before :each do
+        Payment.create :rate => '315', :billable => @project
+
+        @now = Time.parse("2009-10-04 17:53:58")
+        Time.stubs(:now).returns(@now.beginning_of_week)
+
+        whence = Time.now-1.day
+        @project.start! whence
+        @project.stop!  whence+3.hours
+
+        whence = Time.now
+        @project.start! whence
+        @project.stop!  whence+3.hours
+
+        @project.reload
+      end
+
+      it "is correct with no arguments" do
+        @project.amount.should == 6*3.15
+      end
+
+      it "is correct with a scale" do
+        @project.amount(:month).should == 6*3.15
+      end
+
+      it "is correct with a scale and time" do
+        @project.amount(:week, @now).should == 3*3.15
+      end
+    end
   end
 end
