@@ -54,7 +54,7 @@ class Pratt
   FMT = "%a %X %b %d %Y"
   INVOICE_FMT = "%x"
 
-  attr_accessor :when_to, :scale, :color, :show_all, :env, :raw_conditions
+  attr_accessor :when_to, :scale, :color, :show_all, :env, :raw_conditions, :template
   attr_reader :project
   def initialize proj = nil #, when_to
     @when_to        = Time.now
@@ -76,15 +76,6 @@ class Pratt
     else
       @project = Project.find_or_create_by_name( { :name => proj } )
     end
-  end
-
-  def template
-    @template.evaluate(self)
-  end
-
-  def template= template
-    input = File.open("views/#{template}.eruby").read
-    @template = Erubis::Eruby.new(input)
   end
 
   def << what
@@ -117,7 +108,7 @@ class Pratt
     end
 
     if @primary + @off_total + @rest_total > 0.0
-      puts self.template
+      puts process_template!
     else
       puts "No data to report"
     end
@@ -131,7 +122,7 @@ class Pratt
 
       @total = project.time_spent(scale, when_to)
     else
-      @projects = Project.all - [Project.primary, Project.off]
+      @projects = (Project.all - [Project.primary, Project.off])
 
       @total = @projects.inject 0.0 do |total, proj| 
         total += proj.time_spent(scale, when_to)
@@ -139,8 +130,11 @@ class Pratt
       end
     end
 
+    @projects.each do |project| 
+      puts "#{project.name} #{project.payment.inspect}"
+    end
     if @total > 0.0
-      puts self.template
+      puts process_template!
     else
       puts "No data to report"
     end
@@ -300,6 +294,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     self.raw        if i_should? :raw
     self.current    if i_should? :current
     self.graph      if i_should? :graph
+    self.invoice    if i_should? :invoice
     self.gui        if i_should? :gui
     show_env   if i_should? :env
     self.detect     if i_should? :detect
@@ -373,6 +368,12 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
       !@project.nil? and @project.name?
     end
 
+  def process_template!
+    input = File.open(Pratt.root("views", "#{template}.eruby").first).read
+    erubis = Erubis::Eruby.new(input)
+    erubis.evaluate(self)
+  end
+
   class << self
 
     def max
@@ -407,9 +408,14 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
           me.project = proj
           me << :change
         end
+
         opt.on('-g', "--graph [PROJECT_NAME]", String, "Display time spent on supplied project or all projects without argument value.") do |proj|
           me.project = proj
           me << :graph
+        end
+
+        opt.on('-I', "--invoice", "Create an invoice.") do
+          me << :invoice
         end
 
         templates = [] 
