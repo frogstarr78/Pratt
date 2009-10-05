@@ -1,2 +1,3 @@
 pratt.pid
 *.sqlite3
+migrations
