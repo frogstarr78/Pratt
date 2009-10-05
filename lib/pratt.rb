@@ -390,7 +390,8 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         opt.on('-n', "--env ENVIRONMENT", %w(test production development), "Runtime environment") do |env|
           ENV['PRATT_ENV'] = env
         end
-        Pratt.connect ENV['RAILS_ENV'] || 'development'
+        puts ENV["PRATT_ENV"]
+        Pratt.connect ENV['PRATT_ENV'] || 'development'
 
         opt.on('-b', "--begin PROJECT_NAME", String, "Begin project tracking.") do |proj|
           me.project = proj
