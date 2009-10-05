@@ -96,20 +96,20 @@
 			</TD>
 		</TR>
 		<% @projects.each do |project| %>
-		<TR>
-			<TD WIDTH=408 HEIGHT=13>
-				<P><%= project.name %></P>
-			</TD>
-			<TD WIDTH=96>
-				<P ALIGN=RIGHT><%= project.time_spent(scale, when_to) %></P>
-			</TD>
-			<TD WIDTH=96>
-				<P ALIGN=RIGHT><%= project.payment.pretty_print %></P>
-			</TD>
-			<TD WIDTH=97>
-				<P ALIGN=RIGHT><FONT SIZE=2><%= project.amount(scale, when_to) %></FONT></P>
-			</TD>
-		</TR>
+      <TR>
+        <TD WIDTH=408 HEIGHT=13>
+          <P><%= project.name %></P>
+        </TD>
+        <TD WIDTH=96>
+          <P ALIGN=RIGHT><%= project.time_spent(scale, when_to) %></P>
+        </TD>
+        <TD WIDTH=96>
+          <P ALIGN=RIGHT><%= project.payment.pretty_print %></P>
+        </TD>
+        <TD WIDTH=97>
+          <P ALIGN=RIGHT><FONT SIZE=2><%= project.amount(scale, when_to) %></FONT></P>
+        </TD>
+      </TR>
 		<% end %>
 		<TR>
 			<TD WIDTH=408 HEIGHT=13 VALIGN=TOP>
