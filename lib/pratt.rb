@@ -54,7 +54,7 @@ class Pratt
   FMT = "%a %X %b %d %Y"
   INVOICE_FMT = "%x"
 
-  attr_accessor :when_to, :scale, :color, :show_all, :env, :raw_conditions, :template
+  attr_accessor :when_to, :scale, :color, :show_all, :env, :raw_conditions
   attr_reader :project
   def initialize proj = nil #, when_to
     @when_to        = Time.now
@@ -64,7 +64,7 @@ class Pratt
     @scale          = nil
     @color          = true
     @show_all       = false
-    @template       = 'graph'
+    @template       = nil
     @env            = :development
     @raw_conditions = ''
     self.project = proj unless proj.nil?
@@ -78,6 +78,15 @@ class Pratt
     end
   end
 
+  def template
+    @template.evaluate(self)
+  end
+
+  def template= template
+    input = File.open("views/#{template}.eruby").read
+    @template = Erubis::Eruby.new(input)
+  end
+
   def << what
     @todo << what
   end
@@ -89,27 +98,49 @@ class Pratt
 
   def graph
     @primary = @off_total = @rest_total = 0.0
+    self.template = 'graph'
 
     if project?
       @projects = [project]
 
-      @primary = project.time_spent(@scale, @when_to)
-      @scaled_total = project.whences.time_spent(@scale, @when_to)
+      @primary = project.time_spent(scale, when_to)
+      @scaled_total = project.whences.time_spent(scale, when_to)
     else
       @projects = Project.all
 
       @projects.each do |proj| 
-        @primary     = proj.time_spent(@scale, @when_to) if proj.name == Project.primary.name
-        @off_total   = proj.time_spent(@scale, @when_to) if proj.name == Project.off.name
-        @rest_total += proj.time_spent(@scale, @when_to) if Project.rest.collect(&:name).include?(proj.name)
+        @primary     = proj.time_spent(scale, when_to) if proj.name == Project.primary.name
+        @off_total   = proj.time_spent(scale, when_to) if proj.name == Project.off.name
+        @rest_total += proj.time_spent(scale, when_to) if Project.rest.collect(&:name).include?(proj.name)
       end
-      @scaled_total = Whence.time_spent(@scale, @when_to)-@off_total
+      @scaled_total = Whence.time_spent(scale, when_to)-@off_total
     end
 
     if @primary + @off_total + @rest_total > 0.0
-      input = File.open("views/#{template}.eruby").read
-      eruby = Erubis::Eruby.new(input)
-      puts eruby.evaluate(self)
+      puts self.template
+    else
+      puts "No data to report"
+    end
+  end
+
+  def invoice
+    self.template = 'invoice'
+
+    if project?
+      @projects = [project]
+
+      @total = project.time_spent(scale, when_to)
+    else
+      @projects = Project.all - [Project.primary, Project.off]
+
+      @total = @projects.inject 0.0 do |total, proj| 
+        total += proj.time_spent(scale, when_to)
+        total
+      end
+    end
+
+    if @total > 0.0
+      puts self.template
     else
       puts "No data to report"
     end
