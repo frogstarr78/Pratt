@@ -27,12 +27,16 @@ class Project < ActiveRecord::Base
     spent(self.whences).call(scale, when_to)
   end
 
+  def amount scale = nil, when_to = Time.now
+    spent(self.whences).call(scale, when_to) * (payment.rate / 100.0)
+  end
+
   class << self
     def named name
-      first :conditions => ["name = ?", name]
+      first :conditions => { :name => name }
     end
     def primary
-      find :first, :conditions => ["weight = ?", 1]
+      first :conditions => { :weight => 1 }
     end
     def off
       named 'Lunch/Break'
