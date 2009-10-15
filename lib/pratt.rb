@@ -18,34 +18,6 @@ require 'models/whence'
 require 'models/project'
 require 'models/payment'
 
-#module NoColor
-#  include Colored
-#
-#  COLORS.each do |color, value|
-#    define_method(color) do 
-#      self.to_s
-#    end
-#
-#    define_method("on_#{color}") do
-#      self.to_s
-#    end
-#
-#    COLORS.each do |highlight, value|
-#      next if color == highlight
-#      define_method("#{color}_on_#{highlight}") do
-#        self.to_s
-#      end
-#    end
-#  end
-#
-#  EXTRAS.each do |extra, value|
-#    next if extra == 'clear'
-#    define_method(extra) do 
-#      self.to_s
-#    end
-#  end
-#end
-
 class Pratt
 
   include FileUtils
@@ -281,8 +253,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
   end
 
   def show_env
-    eval File.open('views/env.rb').read
-#    defork { system("ruby views/env.rb ") } 
+    defork { system("ruby views/env.rb ") } 
   end
 
   def detect
@@ -361,7 +332,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
       return if self.app.gui?('pop', true)
       self.app.log('pop')
       self.project = Whence.last_unended.project
-      view "pop2.rb"
+      defork { system("ruby views/pop.rb  --project '#{project.name}' --start '#{project.whences.last_unended.start_at}' --project_time '#{Pratt.totals(project.time_spent)}'") }
     end
 
     def i_should? what
@@ -383,14 +354,9 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     end
 
     def defork &block
-#      eval File.open('views/env.rb').read
       Process.detach(
         fork &block 
       )
-    end
-
-    def view view_file
-      Pratt.root("views", view_file) {|view| eval view.read }
     end
 
   class << self
@@ -403,16 +369,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     def parse args
       me = Pratt.new
 
-#      begin
       opt = OptionParser.new do |opt|
-#      args.options do |opt|
-#        opt.on '-z', "--env PRATT_ENV", String, "Runtime environment" do |env|
-##        opt.on('-n', "--env ENVIRONMENT", %w(test production development staging), "Runtime environment") do |env|
-#          me.env = env
-##          ENV['PRATT_ENV'] = env
-#        end
-#        puts "me.env '#{me.env}'"
-        Pratt.config = :test
         Pratt.connect ENV['PRATT_ENV'] || 'development' unless Pratt.connected?
 
         opt.on('-b', "--begin PROJECT_NAME", String, "Begin project tracking.") do |proj|
@@ -478,7 +435,6 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         end
 
         opt.on('-N', '--no-color', "Display output without color or special characters.") do 
-#          String.send(:include, NoColor)
           me.color = false
         end
         opt.on('-A', '--show-all', "Display all project regardless of other options.") do 
@@ -511,11 +467,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
 
         opt.parse!
       end
-#      rescue => problem
-#        puts problem.backtrace*"\n"
-#      end
 
-#      puts "args " << args.inspect
       me << :env if args.include? 'env'
       me << :console if args.include? 'console'
 
@@ -531,7 +483,6 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
     end
 
     def root *globs, &block
-#      root = File.expand_path(Dir.pwd, '..')
       root = Dir.pwd
       if globs.empty?
         subdir = root
