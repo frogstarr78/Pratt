@@ -1,59 +1,54 @@
 require 'spec_helper'
 
 describe Whence do
-  it_should_behave_like "needing project instance that knows how to cleanup"
-  it_should_behave_like "Time spent on a project"
 
   context "scopes" do
-
-    after :each do
-      Project.all.collect(&:whences).collect(&:destroy_all)
-    end
-
     it "last_unended should return nil if there aren't any unended" do
-      lambda {
-        Project.primary.start!
-        Project.primary.stop! Time.now+2
-      }.should change(Whence, :count).by(1)
-      Whence.last_unended.should be_nil 
-    end
-
-    it "last_unended should only return the very last one" do
-      lambda {
-        Project.primary.start!
-        Project.primary.start! Time.now+2
-      }.should change(Whence, :count).by(2)
-      Whence.last_unended.should be_kind_of(Whence) 
-      whences = Project.primary.whences.all(:conditions => "end_at IS NULL", :order => "id ASC")
-       
-      Whence.last_unended.should eql(whences.last)
-      Whence.last_unended.should_not eql(whences.first)
+      Whence.expects(:first).with(:conditions => "end_at IS NULL", :order => "start_at DESC")
+      Whence.last_unended
     end
   end
 
   context "instances" do
+    before :each do
+      @whence = Whence.new
+    end
 
-    it "should correctly log entries using stop!" do 
-      @project.start! Time.now
-    
-      when_to = Time.now+2
-      lambda {
-        @project.stop! when_to
-      }.should_not change(@project.whences.last, :end_at).to(when_to)
-      @project.should be_valid
+    it "parse a string argument to stop!" do
+      when_to = 'yesterday'
+      when_to = '2009-10-06 13:48:58'
+      expectation = Chronic.parse when_to
+
+      @whence.expects(:save!)
+      @whence.expects(:reload)
+      # don't work I'm not sure why
+      # @whence.expects(:end_at).with expectation
+      # Chronic.expects(:parse).with when_to
+
+      @whence.stop! when_to
+      @whence.end_at.should == expectation
+    end
+
+    it "doesn't parse a non-string thing on stop!" do
+      when_to = Chronic.parse 'last week'
+      Chronic.expects(:parse).never
+      @whence.expects(:save!)
+      @whence.expects(:reload)
+      @whence.stop! when_to
+      @whence.end_at.should == when_to
     end
 
     it "should change! to project correctly" do
-      @project.start!
-      @project.stop! Time.now+2
-      Whence.last.change!('Lunch/Break')
-      Whence.last.project.name.should == 'Lunch/Break'
+      project_name = 'proj'
+      @whence.expects(:save!)
+      @whence.expects(:reload)
+      @whence.change! project_name
+      @whence.project.name.should == project_name
     end
 
     it "should have a special output for start_at.to_s" do
-      when_to = Time.now+12
-      @project.start! when_to
-      Whence.last_unended.start_at.to_s.should eql(when_to.strftime("%a %d %b %Y %X"))
+      @whence.start_at = Time.parse('Wed Oct 7 10:57:21 PDT 2009')
+      @whence.start_at.to_s.should eql('Wed 07 Oct 2009 10:57:21') 
     end
   end
 end

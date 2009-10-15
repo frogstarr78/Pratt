@@ -127,32 +127,37 @@ describe Project do
   end
 
   context "time_spent" do
+    before :each do
+      @project = Project.new
+    end
+
+    it "correctly calculates with no data" do
+      Whence.expects(:find).with(:all, :conditions => ["end_at IS NOT NULL"]).returns []
+      @project.time_spent.should == 0.0
+    end
+
     it "correctly calculates with time argument" do
-      whence = mock('whence', :start_at => '2009-10-05 00:08:32', :end_at => '2009-10-05 3:08:32')
-      Whence.expects(:find).with(:all).returns whence
-      project = Project.new
-#      project.expects(:whences).returns(whence)
-      project.time_spent.should == 3.0/3600
+      now = Time.now.beginning_of_day
+      Whence.expects(:find).returns [mock('whence1', :start_at => now, :end_at => now+=1.hour), mock('whence2', :start_at => now+=2.hours, :end_at => now+=2.hour+30.minutes)]
+      @project.time_spent.should == 3.5
     end
 
     it "correctly calculates with string time argument" do
-      @project.start! 'last monday 12:00 pm'
-      @project.stop!  'last monday 12:00:05 pm'
+      whence = mock('whence', :start_at => Chronic.parse('last monday 12:00 pm'), :end_at => Chronic.parse('last monday 12:00:05 pm'))
+      Whence.expects(:find).returns [whence]
       @project.time_spent.should == 5.0/3600
     end
 
     it "correctly calculates with a scale" do
-      whence = Chronic.parse('yesterday 11:53 pm')
-      @project.start! whence
-      @project.stop!  whence+17
-      @project.time_spent('week').should == 17.0/3600
+      whence = mock('whence', :start_at => Time.parse('2009-10-04 23:53:32'), :end_at => Time.parse('2009-10-05 00:10:32'))
+      Whence.expects(:find).returns [whence]
+      @project.time_spent('month').should == 17.0/60
     end
 
     it "correctly calculates with a scale and specific time" do
-      whence = Chronic.parse('yesterday 11:54 pm')
-      @project.start! whence
-      @project.stop!  whence+18
-      @project.time_spent('day', Chronic.parse('yesterday')).should == 18.0/3600
+      whence = mock('whence', :start_at => Time.parse('2009-10-05 23:54:32'), :end_at => Time.parse('2009-10-06 00:12:32'))
+      Whence.expects(:find).returns [whence]
+      @project.time_spent('day', Chronic.parse('yesterday')).should == 18.0/60
     end
   end
 end
