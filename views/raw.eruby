@@ -1,0 +1,11 @@
+<% colors    = %w(red red_on_yellow red_on_white green green_on_blue yellow yellow_on_blue blue magenta magenta_on_blue cyan white white_on_green white_on_blue white_on_magenta black_on_yellow black_on_blue black_on_green black_on_magenta black_on_cyan black_on_red).sort 
+  @whences.each do |whence| 
+  color = colors[whence.project.id%colors.size]
+%>
+<%= "%#{max}.#{max}s"% whence.project.name %> <%= '|'.or '⌈' %><%= whence.start_at.strftime(Pratt::FMT).send(color) -%>
+<% if whence.end_at -%>
+ <%= '-'.or '­' %> <%= whence.end_at.strftime(Pratt::FMT).send(color) %><%= '|'.or '⌋' %> <%= "%6.2f"% [(whence.end_at-whence.start_at)/60] %> min
+<% else %>
+   ...
+<% end %>
+<% end %>

@@ -1,0 +1,3 @@
+   pid <%= cpid.cyan %> found running
+expect <%= app.pid.to_s.magenta %> <%= ('-'.or '·')*20 %> <%= '|'.or '⌈' %><%= daemonized? ? 'OK'.green : 'Oops'.red %><%= '|'.or '⌋' %>
+
