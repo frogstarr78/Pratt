@@ -7,10 +7,15 @@ require 'ostruct'
 root = TkRoot.new { title "Pratt Reminder" }
 
 max = ENV.inject(0) {|x,(h,v)| x = h.to_s.length if h.to_s.length > x; x }
-
 ENV.sort.each do |globl, val| 
   Tk::Tile::Label.new(root) do
     text "%#{max}.#{max}s: %0.20s"% [globl, val]
+  end.pack(:side => 'top', :fill => 'y')
+end
+
+Pratt.constants.each do |cnst|
+  Tk::Tile::Label.new(root) do
+    text cnst
   end.pack(:side => 'top', :fill => 'y')
 end
 
