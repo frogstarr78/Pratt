@@ -3,18 +3,18 @@ Project detail
   by <%= scale.red %> from
   <%= when_to.send("beginning_of_#{scale}").strftime(Pratt::FMT).blue %> to <%= when_to.send("end_of_#{scale}").strftime(Pratt::FMT).blue %>
 <% end %>
-<%= ' '*(max+1) << 'dys'.underline << ' '*5 << 'hrs'.underline << ' '*5 << 'min'.underline %>
+     <%= padded_to_max('  ') << 'dys'.underline << ' '*5 << 'hrs'.underline << ' '*5 << 'min'.underline %>
 <%= ( '-'.or '·')*60 %>
 
 <% @projects.each do |proj| %>
   <% if show_all or ( !show_all and proj.time_spent(scale, when_to) != 0.0 ) %>
-    <%= "%1$*4$s%2$s %3$s"% [proj.name, ('|'.or '⋮'), Pratt.totals(proj.time_spent(scale, when_to)), max] %>
+    <%= padded_to_max(proj.name) %><%= ('|'.or '⋮') %> <%= Pratt.totals(proj.time_spent(scale, when_to)) %>
   <% end %>
 <% end %>
 
 <%= ( '-'.or '·' )*60 %>
 
-<%= "%#{max}.#{max}s %s hrs"% ['Total', ("%0.2f"%@scaled_total).underline] %>
-<%= Pratt.percent(Project.primary.name,  @primary.to_f,        @scaled_total, :green) %>
-<%= Pratt.percent(Project.off.name,      @off_total.to_f,      @scaled_total, :yellow) %>
-<%= Pratt.percent('Other',               @rest_total.to_f,     @scaled_total, :red) %>
+    <%= padded_to_max('Total') %> <%= ("%0.2f"%@scaled_total).underline %> hrs
+    <%= Pratt.percent(Project.primary.name,  @primary.to_f,        @scaled_total, :green) %>
+    <%= Pratt.percent(Project.off.name,      @off_total.to_f,      @scaled_total, :yellow) %>
+    <%= Pratt.percent('Other',               @rest_total.to_f,     @scaled_total, :red) %>

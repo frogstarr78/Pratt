@@ -314,13 +314,16 @@ class Pratt
     erubis = Erubis::Eruby.new(input)
     erubis.evaluate(self)
   end
+  def padded_to_max string
+    self.class.padded_to_max string
+  end
 
   class << self
 
 
     def max
       # TODO Fix me
-      Project.all.inject(0) {|x,p| x = p.name.length if p.name.length > x; x }
+      @max ||= Project.all.inject(0) {|x,p| x = p.name.length if p.name.length > x; x }
     end
 
     def color
@@ -476,10 +479,15 @@ class Pratt
       end
     end
 
+
+    def padded_to_max string
+      "%#{max}.#{max}s"% string
+    end
+
     private
 
       def fmt_f flt, label, color
-        "%#{max}.#{max}s %s"% [label, ("%0.2f%%"% flt).send(color), label]
+        padded_to_max(label) << " " << (("%0.2f"% flt) << '%').send(color)
       end
 
       def fmt_i int, label, color
