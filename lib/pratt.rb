@@ -12,39 +12,42 @@ require 'hoe'
 require 'mocha'
 require 'config'
 
+require 'lib/pratt/array'
+require 'lib/pratt/string'
+
 require 'models/app'
 require 'models/customer'
 require 'models/whence'
 require 'models/project'
 require 'models/payment'
 
-module NoColor
-  include Colored
-
-  COLORS.each do |color, value|
-    define_method(color) do 
-      self.to_s
-    end
-
-    define_method("on_#{color}") do
-      self.to_s
-    end
-
-    COLORS.each do |highlight, value|
-      next if color == highlight
-      define_method("#{color}_on_#{highlight}") do
-        self.to_s
-      end
-    end
-  end
-
-  EXTRAS.each do |extra, value|
-    next if extra == 'clear'
-    define_method(extra) do 
-      self.to_s
-    end
-  end
-end
+#module NoColor
+#  include Colored
+#
+#  COLORS.each do |color, value|
+#    define_method(color) do 
+#      self.to_s
+#    end
+#
+#    define_method("on_#{color}") do
+#      self.to_s
+#    end
+#
+#    COLORS.each do |highlight, value|
+#      next if color == highlight
+#      define_method("#{color}_on_#{highlight}") do
+#        self.to_s
+#      end
+#    end
+#  end
+#
+#  EXTRAS.each do |extra, value|
+#    next if extra == 'clear'
+#    define_method(extra) do 
+#      self.to_s
+#    end
+#  end
+#end
 
 class Pratt
 
@@ -53,6 +56,7 @@ class Pratt
   PID_FILE='pratt.pid'
   FMT = "%a %X %b %d %Y"
   INVOICE_FMT = "%x"
+  @@color = true
 
   attr_accessor :when_to, :scale, :color, :show_all, :env, :raw_conditions, :template
   attr_reader :project
@@ -377,10 +381,24 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
 
   class << self
 
+
     def max
       # TODO Fix me
       Project.all.inject(0) {|x,p| x = p.name.length if p.name.length > x; x }
     end
+
+    def color
+      @@color
+    end
+
+    def color= c
+      @@color = c
+    end
+
+    def color?
+      @@color == true
+    end
+
 
     def parse args
       me = Pratt.new
@@ -456,8 +474,7 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
         end
 
         opt.on('-N', '--no-color', "Display output without color or special characters.") do 
-          String.send(:include, NoColor)
-          me.color = false
+          Pratt.color = false
         end
         opt.on('-A', '--show-all', "Display all project regardless of other options.") do 
           me.show_all = true
@@ -558,16 +575,4 @@ expect #{app.pid.to_s.magenta} ···················· ⌈#{dae
       end
     end
   end
-
-  class Formats
-    module Array
-      def to_sentence conjunction = 'and'
-        self[0..-2].join(", ") << (self.size > 2 ? ',' : '') << " #{conjunction} #{self.last}"
-      end
-    end
-  end
-end
-
-class Array
-  include Pratt::Formats::Array
 end
