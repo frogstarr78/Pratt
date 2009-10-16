@@ -60,7 +60,7 @@ Tk::Tile::Label.new(top_frm) do
   text "started:
   #{opts.start_time}
 total time:
-  #{opts.project_time}."
+  #{opts.project_time.gsub(/\e\[[0-9]+m/, '')}."
 end.pack(:side => 'bottom', :fill => 'y')
 
 botm_frm = Tk::Tile::Frame.new(frm) { padding "5 5 5 5" }
