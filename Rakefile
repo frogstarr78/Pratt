@@ -6,7 +6,7 @@ require './lib/pratt.rb'
 
 Hoe.spec('pratt') do |p|
   p.rubyforge_name = 'pratt' # if different than lowercase project name
-  p.developer('michael goff, scott noel-hemming', 'devs@example.com')
+  p.developer('michael goff, scott noel-hemming', 'frogstarr78@gmail.com')
 end
 
 #task :default => [:test] 
@@ -102,6 +102,22 @@ namespace :generate do
       end
     end
   end
+end
+
+begin
+  require 'jeweler'
+
+  Jeweler::Tasks.new do |gemspec| 
+    gemspec.name = "pratt" 
+    gemspec.summary = "Summarize your gem" 
+    gemspec.description = "Describe your gem" 
+    gemspec.email = "frogstarr78@gmail.com"
+    gemspec.homepage = "http://github.com/frogstarr78/pratt"
+    gemspec.description = "TODO"
+    gemspec.authors = ["Scott Noel-Hemming", "Michael Goff"]
+  end
+rescue LoadError
+  puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
 end
 
 # vim: syntax=Ruby
