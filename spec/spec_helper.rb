@@ -14,16 +14,6 @@ end
 shared_examples_for "Time spent on a project" do
 end
 
-shared_examples_for "needing project instance that knows how to cleanup" do 
-  before :each do
-    @project = Project.primary
-  end
-
-  after :each do
-    Project.all.collect(&:whences).collect(&:destroy_all)
-  end
-end
-
 shared_examples_for "being a billable item" do
   it "responds to amount" do
     subject.class.new.should respond_to(:amount) 

@@ -4,12 +4,16 @@ class Whence < ActiveRecord::Base
   belongs_to :project
   validates_associated :project
 
-  def stop! when_to = DateTime.now
-    when_to = Chronic.parse(when_to) if when_to.is_a?(String)
-    self.end_at ||= when_to
+  def stop! when_to
+    if when_to.kind_of?(String)
+      self.end_at = Chronic.parse(when_to)
+    else
+      self.end_at = when_to || DateTime.now
+    end
     self.save!
     self.reload
   end
+
   def change! to_project
     self.project = Project.find_or_create_by_name(to_project)
     self.save!
@@ -27,7 +31,7 @@ class Whence < ActiveRecord::Base
   end
 
   def inspect
-    "#<Whence id: '#{id}', project: '#{project.name}', start_at: '#{start_at? ? start_at.strftime(Pratt::FMT) : ''}', end_at: '#{end_at? ? end_at.strftime(Pratt::FMT) : ''}'>"
+    "#<Whence id: '#{id || ''}', project: '#{project ? project.name : ''}', start_at: '#{start_at? ? start_at.strftime(Pratt::FMT) : ''}', end_at: '#{end_at? ? end_at.strftime(Pratt::FMT) : ''}'>"
   end
   
   class << self

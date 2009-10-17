@@ -2,6 +2,9 @@ require 'active_record'
 PRATT_ENV = ENV["PRATT_ENV"] || 'development' unless Object.const_defined? :PRATT_ENV
 
 class Pratt
+  module Test
+  end
+
   include FileUtils
 
   class << self
@@ -12,6 +15,10 @@ class Pratt
 
     def connected?
       ActiveRecord::Base.connected?
+    end
+    
+    def config= env
+      include Pratt::Test
     end
   end
 

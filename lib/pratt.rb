@@ -30,8 +30,8 @@ class Pratt
   INVOICE_FMT = "%x"
   @@color = true
 
-  attr_accessor :when_to, :scale, :show_all, :env, :raw_conditions, :template
-  attr_reader :project
+  attr_accessor :when_to, :scale, :color, :show_all, :env, :raw_conditions, :template
+  attr_reader :project, :todo
   def initialize proj = nil #, when_to
     @when_to        = Time.now
     @week           = false
@@ -83,9 +83,9 @@ class Pratt
     end
 
     if @primary + @off_total + @rest_total > 0.0
-      puts process_template!
+      process_template!
     else
-      puts "No data to report"
+      "No data to report"
     end
   end
 
@@ -114,6 +114,11 @@ class Pratt
     else
       puts "No data to report"
     end
+  end
+
+  def console options = []
+    options << %w(-r\ irb/completion -r\ lib/pratt --simple-prompt)
+    exec "irb #{options.join ' '}"
   end
 
   def current
@@ -215,12 +220,20 @@ class Pratt
     end
   end
 
+  def show_env
+    defork { system("ruby views/env.rb ") } 
+  end
+
   def detect
     if self.daemonized?
       gui
     else
       daemonize!
     end
+  end
+
+  def unlock
+    self.app.unlock
   end
 
   def run
@@ -234,12 +247,13 @@ class Pratt
     self.pid        if i_should? :pid
     self.raw        if i_should? :raw
     self.current    if i_should? :current
-    self.graph      if i_should? :graph
+    puts self.graph      if i_should? :graph
     self.invoice    if i_should? :invoice
+    self.console    if i_should? :console
     self.gui        if i_should? :gui
-    show_env   if i_should? :env
+    self.show_env   if i_should? :env
     self.detect     if i_should? :detect
-    self.app.unlock if i_should? :unlock
+    self.unlock     if i_should? :unlock
 
     self.quit       if i_should? :quit
     self.daemonize! if i_should? :daemonize and not self.daemonized?
@@ -249,20 +263,18 @@ class Pratt
     !app.pid.blank? and ( cpid.to_i == app.pid )
   end
   def daemonize!
-    Process.detach( 
-      fork { 
-        puts "pratt (#{Process.pid.to_s.yellow})"
-        app.pid = Process.pid
-        app.save!
+    defork { 
+      puts "pratt (#{Process.pid.to_s.yellow})"
+      app.pid = Process.pid
+      app.save!
 
+      gui
+      while(daemonized?)
+        sleep(app.interval)
         gui
-        while(daemonized?)
-          sleep(app.interval)
-          gui
-        end
-        quit
-      }
-    )
+      end
+      quit
+    }
   end
 
   def max 
@@ -281,24 +293,14 @@ class Pratt
       else
         project = Whence.last_unended || Whence.last
       end
-      Process.detach(
-        fork { system("ruby views/main.rb  --projects '#{projects*"','"}' --current '#{project.project.name}'") } 
-      )
+      defork { system("ruby views/main.rb  --projects '#{projects*"','"}' --current '#{project.project.name}'") } 
     end
     def pop
       self.app.reload
       return if self.app.gui?('pop', true)
       self.app.log('pop')
-      project = Whence.last_unended.project
-      Process.detach(
-        fork { system("ruby views/pop.rb  --project '#{project.name}' --start '#{project.whences.last_unended.start_at}' --project_time '#{Pratt.totals(project.time_spent)}'") } 
-      )
-    end
-
-    def show_env
-      Process.detach(
-        fork { system("ruby views/env.rb ") } 
-      )
+      self.project = Whence.last_unended.project
+      defork { system("ruby views/pop.rb  --project '#{project.name}' --start '#{project.whences.last_unended.start_at}' --project_time '#{Pratt.totals(project.time_spent)}'") }
     end
 
     def i_should? what
@@ -309,14 +311,21 @@ class Pratt
       !@project.nil? and @project.name?
     end
 
-  def process_template!
-    input = File.open(Pratt.root("views", "#{template}.eruby").first).read
-    erubis = Erubis::Eruby.new(input)
-    erubis.evaluate(self)
-  end
-  def padded_to_max string
-    self.class.padded_to_max string
-  end
+    def process_template!
+      input = File.open(Pratt.root("views", "#{template}.eruby").first).read
+      erubis = Erubis::Eruby.new(input)
+      erubis.evaluate(self)
+    end
+
+    def padded_to_max string
+      self.class.padded_to_max string
+    end
+
+    def defork &block
+      Process.detach(
+        fork &block 
+      )
+    end
 
   class << self
 
@@ -342,13 +351,8 @@ class Pratt
     def parse args
       me = Pratt.new
 
-      begin
-      args.options do |opt|
-        opt.on('-n', "--env ENVIRONMENT", %w(test production development), "Runtime environment") do |env|
-          ENV['PRATT_ENV'] = env
-        end
-        puts ENV["PRATT_ENV"]
-        Pratt.connect ENV['PRATT_ENV'] || 'development'
+      opt = OptionParser.new do |opt|
+        Pratt.connect ENV['PRATT_ENV'] || 'development' unless Pratt.connected?
 
         opt.on('-b', "--begin PROJECT_NAME", String, "Begin project tracking.") do |proj|
           me.project = proj
@@ -440,18 +444,14 @@ class Pratt
           me << :quit
         end
         opt.on('-U', '--unlock', "Manually unlock a gui that has died but left it's lock around.") do
-          me.app.unlock
-#          me << :unlock
+          me << :unlock
         end
 
         opt.parse!
       end
-      rescue => problem
-        puts problem.backtrace*"\n"
-      end
 
-      puts "args " << args.inspect
       me << :env if args.include? 'env'
+      me << :console if args.include? 'console'
 
       me.run
     end
@@ -465,11 +465,11 @@ class Pratt
     end
 
     def root *globs, &block
-      @root = File.expand_path(Dir.pwd, '..')
+      root = Dir.pwd
       if globs.empty?
-        subdir = @root
+        subdir = root
       else
-        subdir = File.join(@root, *globs)
+        subdir = File.join(root, *globs)
       end
 
       if block_given?
@@ -518,5 +518,6 @@ class Pratt
         end
       end
     end
+     
   end
 end

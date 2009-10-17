@@ -1,9 +1,8 @@
 # -*- ruby -*-
 
-$LOAD_PATH << '.'
-$LOAD_PATH << 'lib'
-require 'pratt'
-require 'spec'
+require 'rubygems'
+require 'hoe'
+require './lib/pratt.rb'
 
 Hoe.spec('pratt') do |p|
   p.rubyforge_name = 'pratt' # if different than lowercase project name
@@ -11,7 +10,7 @@ Hoe.spec('pratt') do |p|
 end
 
 #task :default => [:test] 
-task :default => [:spec] 
+task :default => :spec
 
 task :establish_connection do
   Pratt.connect( ENV['PRATT_ENV'] || 'development' )
@@ -61,18 +60,6 @@ namespace :db do
           end
         end
       end
-    end
-  end
-end
-
-namespace :spec do
-  desc "Spec testing"
-  Spec::Rake::SpecTask.new(:rcov) do |t|
-    t.spec_opts  = ["--options", "'./spec/spec.opts'", "-c"]
-    t.spec_files = FileList['spec/*_spec.rb']
-    t.rcov       = true
-    t.rcov_opts = lambda do
-      IO.readlines("./spec/rcov.opts").map {|l| l.chomp.split ' ' }.flatten
     end
   end
 end
