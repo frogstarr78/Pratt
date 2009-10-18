@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{pratt}
-  s.version = "1.5.0"
+  s.version = "1.5.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Scott Noel-Hemming", "Michael Goff"]
@@ -279,6 +279,7 @@ Gem::Specification.new do |s|
      "pkgs/tile-0.8.2/win/tile.rc",
      "pkgs/tile-0.8.2/win/winTheme.c",
      "pkgs/tile-0.8.2/win/xpTheme.c",
+     "pratt.gemspec",
      "spec/app_spec.rb",
      "spec/customer_spec.rb",
      "spec/fixtures/graph.expectation",
