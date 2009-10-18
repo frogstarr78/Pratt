@@ -179,24 +179,20 @@ class Pratt
     self.template = 'raw'
 
     if project = Project.find_by_name( raw_conditions )
-      @whences = project.whences.all(:order => "id ASC") 
+      @whences = project.whences.all
     else
       case raw_conditions
-        when /last.+/
-          if when_to = Chronic.parse(raw_conditions)
-            @whences = Whence.all(:conditions => ["start_at > ?", when_to], :order => "id ASC")
-          else
-            raw_conditions =~ /^(\d+).+$/
-            @whences = Whence.all(:offset => Whence.count-$1.to_i, :limit => $1.to_i, :order => "id ASC")
-          end
         when 'all'
-          @whences = Whence.find(raw_conditions.to_sym, :order => "id ASC")
+          @whences = Whence.find raw_conditions.to_sym
         when /^last$/, 'first'
-          @whences = [Whence.find(raw_conditions.to_sym, :order => "id ASC")]
+          @whences = [Whence.find raw_conditions.to_sym]
+        when /last[\(\s]?(\d+)[\)\s]?/
+          @whences = Whence.all.last($1.to_i)
         else
-          @whences = Whence.all(:conditions => ["start_at > ?", Chronic.parse("today 00:00")], :order => "id ASC")
+          @whences = Whence.all :conditions => ["start_at > ?", Chronic.parse("today 00:00")]
       end
     end
+    @whences.sort_by(&:id)
     puts process_template!
   end
 

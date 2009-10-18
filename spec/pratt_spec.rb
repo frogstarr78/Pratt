@@ -126,13 +126,14 @@ describe Pratt do
 #  end
 
   describe "parse" do
-    it "sets PRATT_ENV if given -n" do
-#      Pratt.expects(:connect).with('staging')
-#      lambda {
-        Pratt.parse %w(--env staging)
-#      }.should change(ENV['PRATT_ENV']).from('test').to('staging')
-      ENV['PRATT_ENV'].should == 'staging'
-    end
+    it "handles cli arg -n setting appropriate environment config"
+#    do
+##      Pratt.expects(:connect).with('staging')
+##      lambda {
+#        Pratt.parse %w(--env staging)
+##      }.should change(ENV['PRATT_ENV']).from('test').to('staging')
+#      ENV['PRATT_ENV'].should == 'staging'
+#    end
 
 #    it "inits an irb console when given console argument" do
 #      Pratt.any_instance.stubs(:i_should?).returns false
