@@ -45,36 +45,38 @@ class Project < ActiveRecord::Base
       all - [primary, off]
     end
 
-    def migrate up = true
+    def migrate which = :up
       ActiveRecord::Schema.define do
-        if up
+        if which == :up
           create_table :projects do |t|
             t.string  :name
             t.integer :weight, :default => -1
             t.references :customer, :null => false
           end
-        else
+
+          Project.create(
+            [
+              {
+                :name => 'Refactor',
+                :weight => 1,
+                :customer_id => 0
+              },
+              {
+                :name => 'Lunch/Break',
+                :weight => 0,
+                :customer_id => 0
+              },
+              {
+                :name => 'Other',
+                :weight => -1,
+                :customer_id => 0
+              }
+            ]
+          )
+        elsif which == :down
           drop_table :projects
         end
       end
-      Project.create(
-        [
-          {
-            :name => 'Refactor',
-            :weight => 1
-          },
-          {
-            :name => 'Lunch/Break',
-            :weight => 0
-          },
-          {
-            :name => 'Other',
-            :weight => -1
-          }
-        ]
-      ) if up
     end
-
-    private
   end
 end
