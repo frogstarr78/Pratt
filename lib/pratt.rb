@@ -25,8 +25,20 @@ class Pratt
 
   NAME         = 'Pratt'
   URL          = 'http://www.frogstarr78.com/projects/pratt'
-  AUTHORS      = ['Scott Noel-Hemming', 'Michael Goff']
+  AUTHORS      = ['Scott Noel-Hemming']
   SUMMARY      = "Pro/Re-Active Time Tracker.  Track time based on what you expect to be working on, with frequent prompts to ensure accuracy."
+  DESCRIPTION  = %q|
+	  Need a way to keep track of your time, but get caught up in work? Or constant interruptions?
+	  Yeah you know who I'm talking about. Those people from the [abc] department always "NEEDING xyz FEATURE NOW!!!".
+	  Seriously though. I'm usually just loose track of time. I wanted an app that I could start with a task I think 
+	  I'll be working on, but that get's in my face constantly to ensure I'm still working on it. And if I'm not any longer,
+	  provides an easy way of changing to another task, or if I have changed tasks and not already updated the app, would 
+	  provide an easy way of changing the task of the previously recorded interval. That's what this is intended to do.
+
+	  Time Tracking.
+	  Proactively set what you expect to work on.
+	  Reactively modify what you are no longer working on.
+  |
   DEPENDENCIES = ["activerecord >=2.1.1", "sqlite3-ruby >=1.2.4", "rspec >=1.2.6", "mocha >=0.9.5"]
   VERSION      = File.open( File.join(Dir.pwd, 'VERSION') ).read.strip
 

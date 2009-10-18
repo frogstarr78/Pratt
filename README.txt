@@ -30,6 +30,13 @@ tk: http://sourceforge.net/project/showfiles.php?group_id=11464&package_id=10779
 
 * sudo gem install
 
+Credits
+
+Michael Goff
+	Thanks for helping me with some of the workflow details
+Michael and Kent Krenrich
+	Thanks for the UI input, suggestions, and testing.
+
 == LICENSE:
 
 (The MIT License)
