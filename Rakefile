@@ -2,11 +2,20 @@
 
 require 'rubygems'
 #require 'hoe'
+#require 'echoe'
 require './lib/pratt.rb'
 
 #Hoe.spec('pratt') do |p|
 #  p.rubyforge_name = 'pratt' # if different than lowercase project name
 #  p.developer('michael goff, scott noel-hemming', 'frogstarr78@gmail.com')
+#end
+
+#Echoe.new 'pratt', Pratt::VERSION do |p|
+#  p.author     = Pratt::AUTHORS.join(" and ")
+#  p.summary    = Pratt::SUMMARY
+#  p.url        = Pratt::URL
+##  p.docs_host = "uncapitalizer.com:~/www/files/doc/"
+#  p.runtime_dependencies = Pratt::DEPENDENCIES
 #end
 
 #task :default => [:test] 
@@ -25,12 +34,6 @@ namespace :db do
   desc "Show App detail."
   task :app => :establish_connection do 
     puts App.last.inspect
-  end
-
-  desc "Show Last Whence log."
-  task :last => :establish_connection do
-    last = Whence.last_unended || Whence.last
-    puts last.inspect
   end
 
   namespace :schema do
@@ -100,7 +103,7 @@ begin
 
   Jeweler::Tasks.new do |gemspec| 
     gemspec.name = "pratt" 
-    gemspec.summary = "Pro/Re-Active Time Tracker.  Track time based on what you expect to be working on, with frequent prompts to ensure accuracy." 
+    gemspec.summary = Pratt::SUMMARY
     gemspec.email = "frogstarr78@gmail.com"
     gemspec.homepage = "http://github.com/frogstarr78/pratt"
     gemspec.description = "Describe your gem" 

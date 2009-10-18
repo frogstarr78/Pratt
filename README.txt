@@ -13,20 +13,22 @@ Pratt (describe your package)
 
 == SYNOPSIS:
 
-  pratt (code sample of usage)
+* pratt (code sample of usage)
+
+** PRATT_ENV=production pratt -D # daemonize (or if already daemonized init the
+gui)
+** pratt -h (as you'd expect lists available commands)
 
 == REQUIREMENTS:
 
-* pratt (list of requirements)
-debian: libtcltk-ruby tk-tile libsqlite3-dev ruby-dev (for mkmf for ruby-debug)
-gems: activerecord sqlite3-ruby ruby-debug
+* pratt 
+debian: libtcltk-ruby tk-tile libsqlite3-dev
+gems: activerecord sqlite3-ruby rspec mocha
 tk: http://sourceforge.net/project/showfiles.php?group_id=11464&package_id=107795&release_id=562098
-rspec: testing
-mocha: testing
 
 == INSTALL:
 
-*  (sudo gem install, anything else)
+* sudo gem install
 
 == LICENSE:
 

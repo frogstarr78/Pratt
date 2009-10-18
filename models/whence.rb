@@ -52,6 +52,7 @@ class Whence < ActiveRecord::Base
             t.references :project
             t.datetime :start_at
             t.datetime :end_at
+            t.boolean :invoiced, :default => false
           end
         else
           drop_table :whences
