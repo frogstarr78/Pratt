@@ -10,9 +10,9 @@ Pratt (describe your package)
 == FEATURES/PROBLEMS:
 
 * (list of features or problems)
-Currently you'll need to manually create some project data since I haven't
+Currently you'll need to manually fix the project data since I haven't
 fully integrated the support for Projects to have customer's and my current
-implementation is broke.
+implementation is shoddy.
 
 == SYNOPSIS:
 
