@@ -22,16 +22,19 @@ class App < ActiveRecord::Base
   end
 
   class << self
-    def migrate up = :up
+    def migrate which = :up
       ActiveRecord::Schema.define do
-        create_table :apps do |t|
-          t.integer :pid
-          t.string  :gui,      :default => ''
-          t.float   :interval, :default => 15.0*60
-        end if up == :up
-        drop_table :apps if up == :down
+        if which == :up
+          create_table :apps do |t|
+            t.integer :pid
+            t.string  :gui,      :default => ''
+            t.float   :interval, :default => 15.0*60
+          end
+          App.create!(:gui => '', :interval => 15.0)
+        elsif which == :down
+          drop_table :apps
+        end
       end
-      App.create!(:gui => '', :interval => 15.0) if up == :up
     end
   end
 end
