@@ -23,6 +23,7 @@ require 'models/payment'
 
 class Pratt
 
+  NAME         = 'Pratt'
   URL          = 'http://www.frogstarr78.com/projects/pratt'
   AUTHORS      = ['Scott Noel-Hemming', 'Michael Goff']
   SUMMARY      = "Pro/Re-Active Time Tracker.  Track time based on what you expect to be working on, with frequent prompts to ensure accuracy."
@@ -446,6 +447,10 @@ class Pratt
         end
         opt.on('-U', '--unlock', "Manually unlock a gui that has died but left it's lock around.") do
           me << :unlock
+        end
+        
+        opt.on '-V', '--version' do
+          puts "Pro-Reactive Time Tracker [Pratt] (#{VERSION})"
         end
 
         opt.parse!
