@@ -51,6 +51,7 @@ class Project < ActiveRecord::Base
           create_table :projects do |t|
             t.string  :name
             t.integer :weight, :default => -1
+            t.references :customer, :null => false
           end
         else
           drop_table :projects
