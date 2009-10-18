@@ -2,7 +2,7 @@
 
 require 'rubygems'
 #require 'hoe'
-require 'echoe'
+#require 'echoe'
 require './lib/pratt.rb'
 
 #Hoe.spec('pratt') do |p|
@@ -10,13 +10,13 @@ require './lib/pratt.rb'
 #  p.developer('michael goff, scott noel-hemming', 'frogstarr78@gmail.com')
 #end
 
-Echoe.new 'pratt' do |p|
-  p.author     = Pratt::AUTHORS.join(" and ")
-  p.summary    = Pratt::SUMMARY
-  p.url        = Pratt::URL
-#  p.docs_host = "uncapitalizer.com:~/www/files/doc/"
-  p.runtime_dependencies = Pratt::DEPENDENCIES
-end
+#Echoe.new 'pratt', Pratt::VERSION do |p|
+#  p.author     = Pratt::AUTHORS.join(" and ")
+#  p.summary    = Pratt::SUMMARY
+#  p.url        = Pratt::URL
+##  p.docs_host = "uncapitalizer.com:~/www/files/doc/"
+#  p.runtime_dependencies = Pratt::DEPENDENCIES
+#end
 
 #task :default => [:test] 
 task :default => :spec
