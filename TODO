@@ -1,17 +1,35 @@
-[?] Put everything in the db? (logs, app locks, etc)
-[ ] Add TrayIcon.
+General:
 [ ] Add environment ability
-[ ] Change to Use DataMapper
 [ ] Change to use raw command line arguments / Remove optparse lib
-[ ] Add console command
-[?]   Add file watching like merb
-[ ] Add Template command
-[ ] Add Invoice command
-[ ] Fix colorability
 [ ] Update general package setup (It's messy)
-[ ] Add support for Customer's model
-[ ] Add support for variable rates.
+[?]   Add file watching like merb
+[?] Move to Observer Pattern for reporting functionality
+
+Invoicing:
 [ ] Add shifty week plugin
+[ ] Add support for variable rates.
+
+	Templating:
+[ ] Invoices
+[ ] Move other output to template based
+
+Data:
+[ ] Change to Use DataMapper
+[?] Put everything in the db? (logs, app locks, etc)
+
+GUI:
+[ ] Add TrayIcon.
+[ ] Customer CRUD
+[ ] Payment CRUD
+[ ] Re-design prompts
+[ ] Remove fork in favor of ( eval OR (!?!) GUI classes )
+
+Test:
+[ ] Add more I'm not testing everything
+[ ] Flog
+[ ] Flay
+
+
 
 Done:
 [x] Whence.last should be last unended.
@@ -28,3 +46,9 @@ Done:
 [x] fix gui so if last_unended is detected app knows which gui to display
 [x] Intelligently detect correctly running stored pid.
 [x] Fix pid directory access.
+
+[x] Add support for Customer's model
+[x] Add Template command
+[x] Add Invoice command
+[x] Fix colorability
+[x] Add console command
