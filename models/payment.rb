@@ -6,13 +6,16 @@ class Payment < ActiveRecord::Base
   end
 
   class << self
-    def migrate up = :up
+    def migrate which = :up
       ActiveRecord::Schema.define do
-        create_table :payments do |t|
-          t.references :billable, :polymorphic => true, :default => false
-          t.integer :rate, :default => false
-        end if up == :up
-        drop_table :payments if up == :down
+        if which == :up
+          create_table :payments do |t|
+            t.references :billable, :polymorphic => true, :default => false
+            t.integer :rate, :default => false
+          end
+        elsif which == :down
+          drop_table :payments
+        end
       end
     end
   end

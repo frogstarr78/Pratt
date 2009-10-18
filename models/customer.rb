@@ -7,14 +7,17 @@ class Customer < ActiveRecord::Base
   end
  
   class << self
-    def migrate up = :up
+    def migrate which = :up
       ActiveRecord::Schema.define do
-        create_table :customers do |t|
-          t.string :name, :null => false
-          t.string :address
-          t.string :zip, :limit => 5
-        end if up == :up
-        drop_table :customers if up == :down
+        if which == :up
+          create_table :customers do |t|
+            t.string :name, :null => false
+            t.string :address
+            t.string :zip, :limit => 5
+          end
+        elsif which == :down
+          drop_table :customers
+        end
       end
     end
   end
