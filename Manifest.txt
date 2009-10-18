@@ -21,9 +21,7 @@ models/project.rb
 models/whence.rb
 pratt.gemspec
 production.sqlite3
-reports/Invoice.odt
-reports/Invoice_8.9-9.4.odt
-reports/Invoice_9.5-9.11.odt
+reports/
 spec/app_spec.rb
 spec/customer_spec.rb
 spec/fixtures/graph.expectation
