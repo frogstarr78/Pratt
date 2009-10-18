@@ -1,117 +1,81 @@
 # -*- ruby -*-
 
 require 'rubygems'
-#require 'hoe'
-#require 'echoe'
-require './lib/pratt.rb'
+require 'rake'
+require 'tasks/pratt'
 
-#Hoe.spec('pratt') do |p|
-#  p.rubyforge_name = 'pratt' # if different than lowercase project name
-#  p.developer('michael goff, scott noel-hemming', 'frogstarr78@gmail.com')
-#end
-
-#Echoe.new 'pratt', Pratt::VERSION do |p|
-#  p.author     = Pratt::AUTHORS.join(" and ")
-#  p.summary    = Pratt::SUMMARY
-#  p.url        = Pratt::URL
-##  p.docs_host = "uncapitalizer.com:~/www/files/doc/"
-#  p.runtime_dependencies = Pratt::DEPENDENCIES
-#end
-
-#task :default => [:test] 
 task :default => :spec
 
-task :establish_connection do
-  Pratt.connect( ENV['PRATT_ENV'] || 'development' )
-  Pratt.root 'models', '*.rb' do |model|
-    require model
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gem|
+    gem.name = "bob"
+    gem.summary = %Q{TODO: one-line summary of your gem}
+    gem.description = %Q{TODO: longer description of your gem}
+    gem.email = "frogstarr78@gmail.com"
+    gem.homepage = "http://github.com/frogstarr78/bob"
+    gem.authors = ["Scott Noel-Hemming"]
+    gem.add_development_dependency "rspec"
+    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
+  Jeweler::GemcutterTasks.new
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
 
-desc "DB Quick access"
-namespace :db do
-
-  desc "Show App detail."
-  task :app => :establish_connection do 
-    puts App.last.inspect
-  end
-
-  namespace :schema do
-    desc "Run schema file" 
-    task :run => :establish_connection do
-      raise "Missing required file argument" unless ENV.include? 'file'
-      schema_change = File.open( ENV['file'] ).read
-
-      ActiveRecord::Schema.define do
-        ActiveRecord::Base.transaction do
-          begin
-            eval schema_change
-          rescue Exception => e
-            puts "There was an error:
-            #{e.inspect}.
-            Rolling back!"
-            raise ActiveRecord::Rollback
-          end
-        end
-      end
-    end
-  end
+require 'spec/rake/spectask'
+Spec::Rake::SpecTask.new(:spec) do |spec|
+  spec.libs << 'lib' << 'spec'
+  spec.spec_files = FileList['spec/**/*_spec.rb']
 end
 
-namespace :generate do
-	desc "Genarate model"
-	task :model do
-	  raise "Missing required klass parameter" unless ENV.include? 'klass'
-    klass = ENV['klass'].downcase.singularize
-		outfile = File.join(Pratt.root('models'), "#{klass}.rb")
-		template = ''
-		Pratt.root('templates', 'model.eruby') {|model_gen| template = File.read(model_gen) }
+Spec::Rake::SpecTask.new(:rcov) do |spec|
+  spec.libs << 'lib' << 'spec'
+  spec.pattern = 'spec/**/*_spec.rb'
+  spec.rcov = true
+end
 
-		eruby = Erubis::Eruby.new(template)
-    unless File.exists? outfile
-      File.open(outfile, 'w') {|file| file.write eruby.result(:klass => klass) }
-    else
-      puts "Model '#{klass}' already exists"
-    end
+task :spec => :check_dependencies
 
-    Rake::Task["generate:spec"].execute
-	end
-
-  desc "Generate spec test"
-  task :spec do
-    klass = ENV['klass'].downcase.singularize
-	  raise "Missing required klass parameter" unless ENV.include? 'klass'
-
-    outpath = File.join(Pratt.root('spec'),      "#{klass}_spec.rb")
-    inpath  = File.join(Pratt.root('templates'), "spec.eruby")
-
-    if File.exists? outpath
-      puts "Spec '#{klass}' already exists"
-    else
-      File.open outpath, 'w' do |outfile|
-        File.open inpath do |infile|
-          eruby = Erubis::Eruby.new( infile.read )
-          outfile.write eruby.result( :klass => klass )
-        end
-      end
-    end
+begin
+  require 'reek/rake_task'
+  Reek::RakeTask.new do |t|
+    t.fail_on_error = true
+    t.verbose = false
+    t.source_files = 'lib/**/*.rb'
+  end
+rescue LoadError
+  task :reek do
+    abort "Reek is not available. In order to run reek, you must: sudo gem install reek"
   end
 end
 
 begin
-  require 'jeweler'
-
-  Jeweler::Tasks.new do |gemspec| 
-    gemspec.name = "pratt" 
-    gemspec.summary = Pratt::SUMMARY
-    gemspec.email = "frogstarr78@gmail.com"
-    gemspec.homepage = "http://github.com/frogstarr78/pratt"
-    gemspec.description = "Describe your gem" 
-    gemspec.authors = ["Scott Noel-Hemming", "Michael Goff"]
+  require 'roodi'
+  require 'roodi_task'
+  RoodiTask.new do |t|
+    t.verbose = false
   end
-  Jeweler::GemcutterTasks.new
 rescue LoadError
-  puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
+  task :roodi do
+    abort "Roodi is not available. In order to run roodi, you must: sudo gem install roodi"
+  end
+end
+
+task :default => :spec
+
+require 'rake/rdoctask'
+Rake::RDocTask.new do |rdoc|
+  if File.exist?('VERSION')
+    version = File.read('VERSION')
+  else
+    version = ""
+  end
+
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title = "bob #{version}"
+  rdoc.rdoc_files.include('README*')
+  rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
 # vim: syntax=Ruby
