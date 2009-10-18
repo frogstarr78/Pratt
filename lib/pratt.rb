@@ -23,8 +23,12 @@ require 'models/payment'
 
 class Pratt
 
-  include FileUtils
-  VERSION = '1.5.0'
+  URL          = 'http://www.frogstarr78.com/projects/pratt'
+  AUTHORS      = ['Scott Noel-Hemming', 'Michael Goff']
+  SUMMARY      = "Pro/Re-Active Time Tracker.  Track time based on what you expect to be working on, with frequent prompts to ensure accuracy."
+  DEPENDENCIES = ["activerecord >=2.1.1", "sqlite3-ruby >=1.2.4", "rspec >=1.2.6", "mocha >=0.9.5"]
+  VERSION      = File.open( File.join(Dir.pwd, 'VERSION') ).read.strip
+
   PID_FILE='pratt.pid'
   FMT = "%a %X %b %d %Y"
   INVOICE_FMT = "%x"
@@ -348,7 +352,7 @@ class Pratt
       me = Pratt.new
 
       opt = OptionParser.new do |opt|
-        Pratt.connect ENV['PRATT_ENV'] || 'development' unless Pratt.connected?
+        Pratt.connect! ENV['PRATT_ENV'] || 'development' unless Pratt.connected?
 
         opt.on('-b', "--begin PROJECT_NAME", String, "Begin project tracking.") do |proj|
           me.project = proj
@@ -408,6 +412,7 @@ class Pratt
           me.raw_conditions = conditions
         end
         opt.on('-L', '--log', "Redirect errors") do
+          FileUtils.mkdir 'log' unless File.exists? 'log'
           $stderr.reopen('log/pratt.log', 'a')
           $stderr.sync = true
         end
@@ -480,6 +485,17 @@ class Pratt
       "%#{max}.#{max}s"% string
     end
 
+    def migrate
+      Pratt.root( 'models', '*.rb' ) do |model_file|
+        klass = File.basename( model_file, '.rb' ).capitalize.constantize
+        begin
+          ActiveRecord::Base.connection.table_structure(model_file)
+        rescue ActiveRecord::StatementInvalid
+          klass.migrate :up if klass.superclass == ActiveRecord::Base
+        end
+      end
+    end
+     
     private
 
       def fmt_f flt, label, color
@@ -490,30 +506,5 @@ class Pratt
         "%s #{label}"% [("%02i"% int).send(color), label]
       end
 
-    def migrate
-      Pratt.connect ENV['PRATT_ENV']
-      Pratt.root( 'models', '*.rb' ) do |model_file|
-        klass = File.basename( model_file, '.rb' ).capitalize.constantize
-        begin
-          ActiveRecord::Base.connection.execute("
-            CREATE VIEW INFORMATION_SCHEMA_TABLES AS 
-              SELECT 'main' AS TABLE_CATALOG,
-                     'sqlite' AS TABLE_SCHEMA,
-                     tbl_name AS TABLE_NAME,
-                     CASE WHEN type = 'table' THEN 'BASE TABLE' WHEN type = 'view' THEN 'VIEW' END AS TABLE_TYPE,
-                     sql AS TABLE_SOURCE
-                FROM sqlite_master
-               WHERE type IN ('table', 'view')
-                 AND tbl_name NOT LIKE 'INFORMATION_SCHEMA_%'
-            ORDER BY TABLE_TYPE, TABLE_NAME;
-          ")
-        rescue ActiveRecord::StatementInvalid
-        end
-        unless ActiveRecord::Base.connection.select_value("SELECT * FROM INFORMATION_SCHEMA_TABLES WHERE TABLE_NAME = '#{klass.table_name}'")
-          klass.migrate :up
-        end
-      end
-    end
-     
   end
 end
