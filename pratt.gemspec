@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Scott Noel-Hemming", "Michael Goff"]
-  s.date = %q{2009-10-17}
+  s.date = %q{2009-10-18}
   s.default_executable = %q{pratt.rb}
   s.description = %q{Describe your gem}
   s.email = %q{frogstarr78@gmail.com}
@@ -33,7 +33,6 @@ Gem::Specification.new do |s|
      "lib/pratt/string.rb",
      "models/app.rb",
      "models/customer.rb",
-     "models/log.rb",
      "models/payment.rb",
      "models/pratt.rb",
      "models/project.rb",
