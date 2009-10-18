@@ -109,13 +109,13 @@ begin
 
   Jeweler::Tasks.new do |gemspec| 
     gemspec.name = "pratt" 
-    gemspec.summary = "Summarize your gem" 
-    gemspec.description = "Describe your gem" 
+    gemspec.summary = "Pro/Re-Active Time Tracker.  Track time based on what you expect to be working on, with frequent prompts to ensure accuracy." 
     gemspec.email = "frogstarr78@gmail.com"
     gemspec.homepage = "http://github.com/frogstarr78/pratt"
-    gemspec.description = "TODO"
+    gemspec.description = "Describe your gem" 
     gemspec.authors = ["Scott Noel-Hemming", "Michael Goff"]
   end
+  Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
 end

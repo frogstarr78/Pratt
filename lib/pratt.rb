@@ -24,7 +24,7 @@ require 'models/payment'
 class Pratt
 
   include FileUtils
-  VERSION = '1.0.0'
+  VERSION = '1.5.0'
   PID_FILE='pratt.pid'
   FMT = "%a %X %b %d %Y"
   INVOICE_FMT = "%x"
