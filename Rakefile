@@ -1,13 +1,13 @@
 # -*- ruby -*-
 
 require 'rubygems'
-require 'hoe'
+#require 'hoe'
 require './lib/pratt.rb'
 
-Hoe.spec('pratt') do |p|
-  p.rubyforge_name = 'pratt' # if different than lowercase project name
-  p.developer('michael goff, scott noel-hemming', 'frogstarr78@gmail.com')
-end
+#Hoe.spec('pratt') do |p|
+#  p.rubyforge_name = 'pratt' # if different than lowercase project name
+#  p.developer('michael goff, scott noel-hemming', 'frogstarr78@gmail.com')
+#end
 
 #task :default => [:test] 
 task :default => :spec
@@ -17,15 +17,6 @@ task :establish_connection do
   Pratt.root 'models', '*.rb' do |model|
     require model
   end
-end
-
-desc "connect to database"
-task :console do 
-  require 'ruby-debug'
-  libs =  " -r irb/completion"
-  libs << " -r lib/pratt"
-  libs << " -r ruby-debug"
-  exec "irb #{libs} --simple-prompt"
 end
 
 desc "DB Quick access"
