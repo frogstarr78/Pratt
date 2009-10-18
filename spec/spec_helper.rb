@@ -8,7 +8,7 @@ Spec::Runner.configure do |config|
 #  config.mock_with :rspec
   config.mock_with :mocha
 
-  Pratt.connect 'test'
+  Pratt.connect! 'test'
 end
 
 shared_examples_for "Time spent on a project" do

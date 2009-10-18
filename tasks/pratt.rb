@@ -3,7 +3,7 @@
 namespace :pratt do 
 
   task :establish_connection do
-    Pratt.connect( ENV['PRATT_ENV'] || 'development' )
+    Pratt.connect!( ENV['PRATT_ENV'] || 'development' )
     Pratt.root 'models', '*.rb' do |model|
       require model
     end
