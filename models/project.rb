@@ -7,7 +7,7 @@ class Project < ActiveRecord::Base
   has_many :whences
   has_one :payment, :as => :billable
   
-  validates_presence_of :name
+  validates_presence_of :name, :customer_id
 
   def start! at = DateTime.now
     at = Chronic.parse(at) if at.is_a?(String)
