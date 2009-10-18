@@ -45,16 +45,16 @@ class Whence < ActiveRecord::Base
       first :conditions => "end_at IS NULL", :order => "start_at DESC"
     end
 
-    def migrate up = true 
+    def migrate which = :up 
       ActiveRecord::Schema.define do
-        if up
+        if which == :up
           create_table :whences do |t|
             t.references :project
             t.datetime :start_at
             t.datetime :end_at
             t.boolean :invoiced, :default => false
           end
-        else
+        elsif which == :down
           drop_table :whences
         end
       end
