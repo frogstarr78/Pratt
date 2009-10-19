@@ -33,6 +33,7 @@ Gem::Specification.new do |s|
      ".gitignore",
      "History.txt",
      "Manifest.txt",
+     "Pratt.gemspec",
      "README.txt",
      "Rakefile",
      "TODO",
