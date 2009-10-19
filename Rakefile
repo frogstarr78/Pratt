@@ -18,8 +18,8 @@ begin
     gem.authors = Pratt::AUTHORS
     gem.add_development_dependency 'rspec', '>=1.2.6'
     gem.add_development_dependency 'mocha', '>=0.9.5'
-	gem.add_runtime_dependency 'activerecord', '>=2.1.1'
-	gem.add_runtime_dependency 'sqlite3-ruby', '>=1.2.4'
+    gem.add_runtime_dependency 'activerecord', '>=2.1.1'
+    gem.add_runtime_dependency 'sqlite3-ruby', '>=1.2.4'
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
