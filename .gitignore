@@ -2,3 +2,4 @@ pratt.pid
 *.sqlite3
 migrations
 reports
+*.gemspec
