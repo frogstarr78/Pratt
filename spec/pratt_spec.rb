@@ -85,21 +85,25 @@ describe Pratt do
       @when_to = Chronic.parse('last week').beginning_of_week
       @pratt.scale = 'week'
       @pratt.when_to = @when_to
+      @customer = Customer.create :name => 'Bob Hope', :address => '123 Where St', :zip => '22222'
+      @tasks = []
     end
 
     after :each do
       Whence.delete_all
+      @customer.destroy
+      @tasks.each(&:destroy)
     end
 
-
     def task name, time_spent
-      task1 = Project.find_or_create_by_name :name => name
-      task1.start! @when_to
-      task1.stop! @when_to+time_spent
+      task = Project.find_or_create_by_name :name => name, :customer => @customer
+      task.start! @when_to
+      task.stop! @when_to+time_spent
+      @tasks << task
     end
 
     def populate_with_data
-      Project.find_or_create_by_name :name => '**** ********', :weight => 1
+      @tasks << Project.find_or_create_by_name( :name => '**** ********', :weight => 1, :customer => @customer )
       task 'Lunch/Break', 1.hour+21.minutes
       task 'Task1', 1.hour+4.minutes
       task 'Task2', 58.minutes
@@ -108,7 +112,9 @@ describe Pratt do
     end
 
     def get_expected_display
-      Pratt.root('spec', 'fixtures', 'graph.expectation') {|file| File.open(file).read }
+      e = ''
+      Pratt.root('spec', 'fixtures', 'graph.expectation') {|file| e = File.open(file).read }
+      e
     end
 
     it "report no data" do
@@ -119,7 +125,7 @@ describe Pratt do
 
     it "should look right with data" do
       populate_with_data
-      @pratt.expects(:process_template!)
+#      @pratt.expects(:process_template!)
 
       @pratt.graph.should == get_expected_display
     end
