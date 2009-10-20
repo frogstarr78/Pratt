@@ -49,7 +49,7 @@ class Pratt
 
   attr_accessor :when_to, :scale, :color, :show_all, :env, :raw_conditions, :template
   attr_reader :project, :todo
-  def initialize proj = nil #, when_to
+  def initialize proj = nil
     @when_to        = Time.now
     @week           = false
     @day            = false
@@ -62,6 +62,9 @@ class Pratt
     self.project = proj unless proj.nil?
   end
 
+  # Set the project to something (Project/String)
+  # Conditionally creating a new project if the project
+  # named by the parameter isn't found
   def project= proj
     if proj.is_a?(Project)
       @project = proj
@@ -70,15 +73,18 @@ class Pratt
     end
   end
 
+  # We should act like an array
   def << what
     @todo << what
   end
 
+  # Singleton Accessor for @app
   def app
     @app ||= App.last
     @app
   end
 
+  # TODO Rename
   def graph
     @primary = @off_total = @rest_total = 0.0
     self.template = 'graph'
@@ -106,6 +112,7 @@ class Pratt
     end
   end
 
+  # Generate an invoice for a given time period
   def invoice
     self.template = 'invoice'
 
@@ -364,6 +371,13 @@ class Pratt
     def parse args
       me = Pratt.new
 
+      # There are aa few things we're parsing here
+      # Pratt config arguments (Ideally that should be all we do)
+      # Pratt actions. These may require ordering or not. They also may require an argument value.
+      # 
+      # TODO: Redo the cli parsing...
+      # In some cases we require arguments to be run in a certain order, but we don't want some to be run concurrently w/ others.
+      # Sometimes it may be unexpected but helpful to allow that behavior. 
       opt = OptionParser.new do |opt|
         Pratt.connect! ENV['PRATT_ENV'] || 'development' unless Pratt.connected?
 
@@ -474,6 +488,7 @@ class Pratt
       me.run
     end
 
+    # Calculate totals. I think this should be an instance method on Projects/?/Whences
     def totals hr, fmt = false
       "#{fmt_i(hr / 24, 'day', :cyan)} #{fmt_i(hr % 24, 'hour', :yellow)} #{fmt_i((60*(hr -= hr.to_i)), 'min', :green)}"
     end
@@ -482,6 +497,8 @@ class Pratt
       fmt_f((off/total)*100, label, color)
     end
 
+    # Where is Pratt installed.
+    # We've already chdir'd to it's base dir in the bin file
     def root *globs, &block
       root = Dir.pwd
       if globs.empty?
@@ -497,11 +514,12 @@ class Pratt
       end
     end
 
-
+    # Pad the output string to the maximum Project name
     def padded_to_max string
       "%#{max}.#{max}s"% string
     end
 
+    # Migrate schema.
     def migrate
       Pratt.root( 'models', '*.rb' ) do |model_file|
         klass = File.basename( model_file, '.rb' ).capitalize.constantize
@@ -514,11 +532,12 @@ class Pratt
     end
      
     private
-
+      # Format floats in a similar fashion
       def fmt_f flt, label, color
         padded_to_max(label) << " " << (("%0.2f"% flt) << '%').send(color)
       end
 
+      # Format integers in a similar fashoion
       def fmt_i int, label, color
         "%s #{label}"% [("%02i"% int).send(color), label]
       end
