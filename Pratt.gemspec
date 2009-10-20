@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{Pratt}
-  s.version = "1.5.6"
+  s.version = "1.5.8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Scott Noel-Hemming"]
-  s.date = %q{2009-10-19}
+  s.date = %q{2009-10-20}
   s.default_executable = %q{pratt.rb}
   s.description = %q{
 	  Need a way to keep track of your time, but get caught up in work? Or constant interruptions?
