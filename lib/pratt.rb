@@ -367,6 +367,7 @@ class Pratt
       opt = OptionParser.new do |opt|
         Pratt.connect! ENV['PRATT_ENV'] || 'development' unless Pratt.connected?
 
+          # Actionable options
         opt.on('-b', "--begin PROJECT_NAME", String, "Begin project tracking.") do |proj|
           me.project = proj
           me << :begin
@@ -384,27 +385,53 @@ class Pratt
           me.project = proj
           me << :change
         end
-
         opt.on('-g', "--graph [PROJECT_NAME]", String, "Display time spent on supplied project or all projects without argument value.") do |proj|
           me.project = proj
           me << :graph
         end
-
         opt.on('-I', "--invoice", "Create an invoice.") do
           me << :invoice
         end
-
-        templates = [] 
-        Pratt.root("views", "*.eruby") {|view| templates << File.basename(view, '.eruby') }
-        opt.on('-t', "--template TEMPLATE", templates, "Template to use for displaying work done.
-                                       Available templates are #{templates.to_sentence('or')}.") do |template|
-          me.template = template
+        opt.on('-P', '--pid', "Process id display. (Is it still running)") do
+            me << :pid
+        end
+        opt.on('-R', '--raw [CONDITIONS]', "Dump logs (semi-)raw") do |conditions|
+          me << :raw
+          me.raw_conditions = conditions
+        end
+        opt.on('-C', "--current", "Show available projects and current project (if there is one)") do
+          me << :current
+        end
+        opt.on("-d", "--daemonize", "Start daemon.") do
+          me << :daemonize
+        end
+        opt.on('-D', '--detect', 'Detect appropriate behavior. (Daemonize or Graphical).') do
+          me << :detect
+        end
+        opt.on('-G', '--gui', 'Show "smart" gui.') do
+          me << :gui
+        end
+        opt.on('-q', "--quit", "Stop daemon.") do
+          me << :quit
+        end
+        opt.on('-U', '--unlock', "Manually unlock a gui that has died but left it's lock around.") do
+          me << :unlock
+        end
+        opt.on '-V', '--version' do
+          puts "Pro-Reactive Time Tracker [Pratt] (#{VERSION})"
         end
         opt.on('--destroy PROJECT_NAME', String, "Remove a project.") do |proj|
           me.project = proj
           me << :destroy
         end
 
+        # Strictly configuration options
+        templates = [] 
+        Pratt.root("views", "*.eruby") {|view| templates << File.basename(view, '.eruby') }
+        opt.on('-t', "--template TEMPLATE", templates, "Template to use for displaying work done.
+                                       Available templates are #{templates.to_sentence('or')}.") do |template|
+          me.template = template
+        end
         opt.on '-w', '--when_to TIME', String, 'When to do something. 
                                        (e.g. log time start|stop, or what time interval to graph)
                                        If graphing, silently ignored w/out scale argument.' do |when_to|
@@ -416,53 +443,20 @@ class Pratt
                                        Only applies to graphing.") do |scale|
           me.scale = scale
         end
-
-        opt.on('-P', '--pid', "Process id display. (Is it still running)") do
-            me << :pid
-        end
-        opt.on('-R', '--raw [CONDITIONS]', "Dump logs (semi-)raw") do |conditions|
-          me << :raw
-          me.raw_conditions = conditions
-        end
         opt.on('-L', '--log', "Redirect errors") do
           FileUtils.mkdir 'log' unless File.exists? 'log'
           $stderr.reopen('log/pratt.log', 'a')
           $stderr.sync = true
         end
-
         opt.on('-N', '--no-color', "Display output without color or special characters.") do 
           Pratt.color = false
         end
         opt.on('-A', '--show-all', "Display all project regardless of other options.") do 
           me.show_all = true
         end
-
-        opt.on('-C', "--current", "Show available projects and current project (if there is one)") do
-          me << :current
-        end
-
         opt.on('-i', "--interval INTERVAL", Float, "Set the remind interval/min (Only applies to daemonized process).") do |interval|
           me.app.interval = interval
           me.app.save
-        end
-        opt.on('-D', '--detect', 'Detect appropriate behavior. (Daemonize or Graphical).') do
-          me << :detect
-        end
-        opt.on('-G', '--gui', 'Show "smart" gui.') do
-          me << :gui
-        end
-        opt.on("-d", "--daemonize", "Start daemon.") do
-          me << :daemonize
-        end
-        opt.on('-q', "--quit", "Stop daemon.") do
-          me << :quit
-        end
-        opt.on('-U', '--unlock', "Manually unlock a gui that has died but left it's lock around.") do
-          me << :unlock
-        end
-        
-        opt.on '-V', '--version' do
-          puts "Pro-Reactive Time Tracker [Pratt] (#{VERSION})"
         end
 
         opt.parse!
@@ -479,7 +473,8 @@ class Pratt
     end
 
     def percent label, off, total, color
-      fmt_f((off/total)*100, label, color)
+      percent = "%0.2f"% ((off/total)*100)
+      padded_to_max(label) << " #{percent}%".send(color)
     end
 
     def root *globs, &block
@@ -514,10 +509,6 @@ class Pratt
     end
      
     private
-
-      def fmt_f flt, label, color
-        padded_to_max(label) << " " << (("%0.2f"% flt) << '%').send(color)
-      end
 
       def fmt_i int, label, color
         "%s #{label}"% [("%02i"% int).send(color), label]
