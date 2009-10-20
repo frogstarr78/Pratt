@@ -1,7 +1,7 @@
 require 'models/pratt'
 
 class Project < ActiveRecord::Base
-  include Pratt::Models
+  include Pratt::TimeSpent
   belongs_to :customer
 
   has_many :whences
