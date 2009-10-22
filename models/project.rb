@@ -9,6 +9,8 @@ class Project < ActiveRecord::Base
   
   validates_presence_of :name, :customer_id
 
+  before_validation_on_create :set_to_customer_one
+
   def start! at = DateTime.now
     at = Chronic.parse(at) if at.is_a?(String)
     whences.create :start_at => at
@@ -79,4 +81,9 @@ class Project < ActiveRecord::Base
       end
     end
   end
+
+  private
+    def set_to_customer_one
+      self.customer = Customer.first
+    end
 end
