@@ -11,6 +11,7 @@ require 'erubis'
 require 'hoe'
 require 'mocha'
 require 'config'
+require 'shifty_week'
 
 require 'lib/pratt/array'
 require 'lib/pratt/string'
