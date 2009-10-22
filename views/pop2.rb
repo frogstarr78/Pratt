@@ -1,8 +1,6 @@
 #!/usr/bin/ruby
 require 'tk'
 require 'tkextlib/tile'
-require 'optparse'
-require 'ostruct'
 
 $project = self.project
 
