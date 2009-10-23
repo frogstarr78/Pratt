@@ -10,6 +10,7 @@ task :default => :spec
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
+	gem.rubyforge_project = Pratt::NAME
     gem.name = Pratt::NAME
     gem.summary = Pratt::SUMMARY
     gem.description = Pratt::DESCRIPTION
@@ -24,6 +25,9 @@ begin
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
+  Jeweler::RubyforgeTasks.new do |rubyforge|
+	rubyforge.doc_task = "rdoc"
+  end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
@@ -43,7 +47,7 @@ end
 task :spec => :check_dependencies
 
 begin
-  require 'reek/rake_task'
+  require 'reek/adapters/rake_task'
   Reek::RakeTask.new do |t|
     t.fail_on_error = true
     t.verbose = false

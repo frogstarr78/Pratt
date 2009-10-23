@@ -1,5 +1,5 @@
 class Pratt
-  module Models
+  module TimeSpent
     def conditions_for_time_spent scale = nil, when_to = DateTime.now
       when_to = Chronic.parse(when_to) if when_to.is_a?(String)
       cond = ["end_at IS NOT NULL"]
