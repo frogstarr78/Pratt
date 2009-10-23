@@ -23,7 +23,7 @@ class Project < ActiveRecord::Base
     self.start! at
   end
 
-  def time_spent scale = nil, when_to = Time.now
+  def time_spent scale = nil, when_to = DateTime.now
     spent(self.whences).call(scale, when_to)
   end
 

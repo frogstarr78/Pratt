@@ -12,9 +12,12 @@ require 'hoe'
 require 'mocha'
 require 'config'
 require 'shifty_week'
+require 'shifty_week/time'
+require 'shifty_week/date'
 
 require 'lib/pratt/array'
 require 'lib/pratt/string'
+require 'lib/pratt/time'
 
 require 'models/app'
 require 'models/customer'
@@ -48,10 +51,11 @@ class Pratt
   INVOICE_FMT = "%x"
   @@color = true
 
-  attr_accessor :when_to, :scale, :color, :show_all, :env, :raw_conditions, :template
+  attr_accessor :when_to, :scale, :color, :show_all, :env, :raw_conditions, :template, :week_day_start
   attr_reader :project, :todo
   def initialize proj = nil
-    @when_to        = Time.now
+    @when_to        = DateTime.now
+#    @when_to.week_day_start = 'Monday'
     @week           = false
     @day            = false
     @todo           = []
@@ -258,6 +262,10 @@ class Pratt
   end
 
   def run
+    self.when_to.week_day_start = self.week_day_start
+    puts self.when_to.inspect, self.when_to.week_day_start
+    # must happen before any actions but after all cli argument parsing
+
     self.begin      if i_should? :begin
     self.change     if i_should? :change
     self.restart    if i_should? :restart
@@ -423,7 +431,7 @@ class Pratt
         opt.on '-w', '--when_to TIME', String, 'When to do something. 
                                        (e.g. log time start|stop, or what time interval to graph)
                                        If graphing, silently ignored w/out scale argument.' do |when_to|
-          me.when_to = Chronic.parse(when_to)
+          me.when_to = Chronic.parse(when_to).to_datetime
         end
         scales = %w(day week month quarter year)
         opt.on('-l', '--scale SCALE', scales, "Granularity of time argument
@@ -454,6 +462,10 @@ class Pratt
 
         opt.on('-C', "--current", "Show available projects and current project (if there is one)") do
           me << :current
+        end
+
+        opt.on '-s', '--start-day WEEK_DAY_START', String, "" do |wday_start|
+          me.week_day_start = wday_start
         end
 
         opt.on('-i', "--interval INTERVAL", Float, "Set the remind interval/min (Only applies to daemonized process).") do |interval|
