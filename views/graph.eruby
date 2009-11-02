@@ -7,8 +7,9 @@ Project detail
 <%= ( '-'.or '·')*60 %>
 
 <% @projects.each do |proj| %>
-  <% if show_all or ( !show_all and proj.time_spent(scale, when_to) != 0.0 ) %>
-    <%= padded_to_max(proj.name) %><%= ('|'.or '⋮') %> <%= Pratt.totals(proj.time_spent(scale, when_to)) %>
+  <% hour_spent = proj.time_spent(scale, when_to) %>
+  <% if show_all or ( !show_all and hour_spent != 0.0 ) %>
+    <%= padded_to_max(proj.name) %><%= ('|'.or '⋮') %> <%= Pratt.fmt_i(hour_spent / 24, 'day', :cyan) %> <%= Pratt.fmt_i(hour_spent % 24, 'hour', :yellow) %> <%= Pratt.fmt_i((60*(hour_spent -= hour_spent.to_i)), 'min', :green) %>
   <% end %>
 <% end %>
 

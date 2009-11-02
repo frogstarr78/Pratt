@@ -159,7 +159,7 @@ class Pratt
       if last_whence.end_at.nil?
         puts "    started: #{last_whence.start_at.strftime(FMT).send(:blue)}"
         time_til = ( app.interval - ( Time.now - last_whence.start_at ) )
-        puts "next prompt: %s %s"% [Pratt.send( :fmt_i, time_til / 60.0, 'min', :yellow ), Pratt.send( :fmt_i, time_til % 60, 'sec', :yellow ), ], ''
+        puts "next prompt: %s %s"% [Pratt.fmt_i( time_til / 60.0, 'min', :yellow ), Pratt.fmt_i( time_til % 60, 'sec', :yellow ) ], ''
       end
     else
       puts "   projects: " << (
@@ -495,7 +495,7 @@ class Pratt
 
     # Calculate totals. I think this should be an instance method on Projects/?/Whences
     def totals hr, fmt = false
-      "#{fmt_i(hr / 24, 'day', :cyan)} #{fmt_i(hr % 24, 'hour', :yellow)} #{fmt_i((60*(hr -= hr.to_i)), 'min', :green)}"
+      "#{self.class.fmt_i(hr / 24, 'day', :cyan)} #{self.class.fmt_i(hr % 24, 'hour', :yellow)} #{self.class.fmt_i((60*(hr -= hr.to_i)), 'min', :green)}"
     end
 
     def percent label, off, total, color
@@ -537,7 +537,6 @@ class Pratt
       end
     end
      
-    private
       def fmt_i int, label, color
         "%s #{label}"% [("%02i"% int).send(color), label]
       end
