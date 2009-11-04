@@ -495,7 +495,7 @@ class Pratt
 
     # Calculate totals. I think this should be an instance method on Projects/?/Whences
     def totals hr, fmt = false
-      "#{self.class.fmt_i(hr / 24, 'day', :cyan)} #{self.class.fmt_i(hr % 24, 'hour', :yellow)} #{self.class.fmt_i((60*(hr -= hr.to_i)), 'min', :green)}"
+      "#{fmt_i(hr / 24, 'day', :cyan)} #{fmt_i(hr % 24, 'hour', :yellow)} #{fmt_i((60*(hr -= hr.to_i)), 'min', :green)}"
     end
 
     def percent label, off, total, color
