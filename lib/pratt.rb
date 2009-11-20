@@ -407,8 +407,7 @@ class Pratt
           me.project = proj
           me << :change
         end
-        opt.on('-g', "--graph [PROJECT_NAME]", String, "Display time spent on supplied project or all projects without argument value.") do |proj|
-          me.project = proj
+        opt.on('-g', "--graph", String, "Display time spent on supplied project or all projects without argument value.") do |proj|
           me << :graph
         end
         opt.on('-I', "--invoice", "Create an invoice.") do
