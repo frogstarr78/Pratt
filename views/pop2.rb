@@ -49,15 +49,6 @@ TkButton.new(botm_frm) do
   underline 0
 end.pack('side' => 'left', :fill => 'y')
 root.bind("Alt-y", yes)
-#root.bind("Return", yes)
-
-TkButton.new(botm_frm) do
-  text "Ignore"
-  command cleanup
-  underline 0
-end.pack('side' => 'right', :fill => 'y')
-root.bind("Alt-i", cleanup)
-root.bind("Escape", cleanup)
 
 TkButton.new(botm_frm) do
   text "Adjust"
