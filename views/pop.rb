@@ -27,12 +27,12 @@ ARGV.options do |opt|
 end
 
 yes = proc {
-  c = fork { system("ruby bin/pratt.rb --restart '#{opts.project_name}' --unlock") }
+  c = fork { system("ruby bin/pratt.rb --project '#{opts.project_name}' --restart --unlock") }
   Process.detach(c)
   exit 
 }
 adjust = proc {
-  c = fork { system("ruby bin/pratt.rb --end '#{opts.project_name}' --unlock --gui") }
+  c = fork { system("ruby bin/pratt.rb --project '#{opts.project_name}' --end --unlock --gui") }
   Process.detach(c)
   exit 
 }

@@ -206,7 +206,7 @@ class Pratt
   def raw
     self.template = 'raw'
 
-    if project = Project.find_by_name( raw_conditions )
+    if project?
       @whences = project.whences.all
     else
       case raw_conditions
@@ -390,30 +390,26 @@ class Pratt
         Pratt.connect! ENV['PRATT_ENV'] || 'development' unless Pratt.connected?
 
           # Actionable options
-        opt.on('-b', "--begin PROJECT_NAME", String, "Begin project tracking.") do |proj|
-          me.project = proj
+        opt.on('-b', "--begin", String, "Begin project tracking.") do
           me << :begin
         end
-        opt.on('-r', "--restart [PROJECT_NAME]", String, "Restart project log (stop last log and start a new one).
-                                       Applies to last un-ended project, unless a specific project is provided.") do |proj|
-          me.project = proj
+        opt.on('-r', "--restart", String, "Restart project log (stop last log and start a new one).
+                                       Applies to last un-ended project, unless a specific project is provided.") do
           me << :restart
         end
-        opt.on('-e', "--end [PROJECT_NAME]", String, "Stop tracking interval for last project or supplied project if provided.") do |proj|
-          me.project = proj
+        opt.on('-e', "--end", String, "Stop tracking interval for last project or supplied project if provided.") do
           me << :end
         end
-        opt.on('-c', "--change PROJECT_NAME", String, "Change last time interval to this project.") do |proj|
-          me.project = proj
+        opt.on('-c', "--change", String, "Change last time interval to this project.") do
           me << :change
         end
-        opt.on('-g', "--graph", String, "Display time spent on supplied project or all projects without argument value.") do |proj|
+        opt.on('-g', "--graph", String, "Display time spent on supplied project or all projects without argument value.") do
           me << :graph
         end
         opt.on('-I', "--invoice", "Create an invoice.") do
           me << :invoice
         end
-        opt.on('-P', '--pid', "Process id display. (Is it still running)") do
+        opt.on('-p', '--pid', "Process id display. (Is it still running)") do
             me << :pid
         end
         opt.on('-R', '--raw [CONDITIONS]', "Dump logs (semi-)raw") do |conditions|
@@ -441,12 +437,15 @@ class Pratt
         opt.on '-V', '--version' do
           puts "Pro-Reactive Time Tracker [Pratt] (#{VERSION})"
         end
-        opt.on('--destroy PROJECT_NAME', String, "Remove a project.") do |proj|
-          me.project = proj
+        opt.on('--destroy', String, "Remove a project.") do
           me << :destroy
         end
 
         # Strictly configuration options
+        opt.on('-P', "--project PROJECT_NAME", String, "Set project.") do |proj|
+          me.project = proj
+        end
+
         templates = [] 
         Pratt.root("views", "*.eruby") {|view| templates << File.basename(view, '.eruby') }
         opt.on('-t', "--template TEMPLATE", templates, "Template to use for displaying work done.
