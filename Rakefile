@@ -87,4 +87,4 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-# vim: syntax=Ruby
+# vim: syntax=ruby
