@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{Pratt}
-  s.version = "1.5.8"
+  s.version = "1.6.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Scott Noel-Hemming"]
-  s.date = %q{2009-10-20}
+  s.date = %q{2009-11-30}
   s.default_executable = %q{pratt.rb}
   s.description = %q{
 	  Need a way to keep track of your time, but get caught up in work? Or constant interruptions?
@@ -43,6 +43,7 @@ Gem::Specification.new do |s|
      "lib/pratt.rb",
      "lib/pratt/array.rb",
      "lib/pratt/string.rb",
+     "lib/pratt/time.rb",
      "models/app.rb",
      "models/customer.rb",
      "models/payment.rb",
@@ -290,6 +291,8 @@ Gem::Specification.new do |s|
      "pkgs/tile-0.8.2/win/tile.rc",
      "pkgs/tile-0.8.2/win/winTheme.c",
      "pkgs/tile-0.8.2/win/xpTheme.c",
+     "pratt.mm",
+     "reports/travel.log",
      "spec/app_spec.rb",
      "spec/customer_spec.rb",
      "spec/fixtures/graph.expectation",
@@ -315,6 +318,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/frogstarr78/pratt}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
+  s.rubyforge_project = %q{Pratt}
   s.rubygems_version = %q{1.3.5}
   s.summary = %q{Pro/Re-Active Time Tracker.  Track time based on what you expect to be working on, with frequent prompts to ensure accuracy.}
   s.test_files = [
@@ -336,16 +340,19 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<mocha>, [">= 0.9.5"])
       s.add_runtime_dependency(%q<activerecord>, [">= 2.1.1"])
       s.add_runtime_dependency(%q<sqlite3-ruby>, [">= 1.2.4"])
+      s.add_runtime_dependency(%q<shifty_week>, [">= 0.1.0"])
     else
       s.add_dependency(%q<rspec>, [">= 1.2.6"])
       s.add_dependency(%q<mocha>, [">= 0.9.5"])
       s.add_dependency(%q<activerecord>, [">= 2.1.1"])
       s.add_dependency(%q<sqlite3-ruby>, [">= 1.2.4"])
+      s.add_dependency(%q<shifty_week>, [">= 0.1.0"])
     end
   else
     s.add_dependency(%q<rspec>, [">= 1.2.6"])
     s.add_dependency(%q<mocha>, [">= 0.9.5"])
     s.add_dependency(%q<activerecord>, [">= 2.1.1"])
     s.add_dependency(%q<sqlite3-ruby>, [">= 1.2.4"])
+    s.add_dependency(%q<shifty_week>, [">= 0.1.0"])
   end
 end
