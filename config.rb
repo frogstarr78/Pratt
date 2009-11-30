@@ -15,7 +15,7 @@ class Pratt
 
     def connect! to_env = :development
       puts "Connecting to: #{to_env}"
-      @@connected_to = "#{to_env}.sqlite3"
+      @@connected_to = "db/#{to_env}.sqlite3"
       ActiveRecord::Base.establish_connection( :adapter => 'sqlite3', :database => connected_to? )
       unless File.exists? connected_to?
         Pratt.migrate
