@@ -40,6 +40,7 @@ Gem::Specification.new do |s|
      "VERSION",
      "bin/pratt.rb",
      "config.rb",
+     "db/sqlite_databases_go_here",
      "lib/pratt.rb",
      "lib/pratt/array.rb",
      "lib/pratt/string.rb",
