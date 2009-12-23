@@ -29,10 +29,15 @@ end
 
 opts.current = opts.projects.index(opts.current) if opts.current == -1
 
-root = TkRoot.new { title "Pratt Main" }
+root = TkRoot.new do
+  title "Pratt Main" 
+end
+#root.grab_set_global
 
-button_holder        = Tk::Tile::Frame.new(root){ padding "5 5 5 5" }
-button_holder_top    = Tk::Tile::Frame.new(button_holder) { padding "5 5 5 5" }
+main_button_holder   = Tk::Tile::Frame.new(root){ padding "5 5 5 5" }
+button_holder_top    = Tk::Tile::Frame.new(main_button_holder) { padding "5 5 5 5" }
+button_holder_middle = Tk::Tile::Frame.new(main_button_holder) { padding "5 5 5 5" }
+button_holder_bottom = Tk::Tile::Frame.new(main_button_holder) { padding "5 5 5 5" }
 
 project_combo  = Tk::Tile::TCombobox.new(button_holder_top)
 project_combo.values = opts.projects
@@ -60,7 +65,12 @@ start = proc {
 
 Tk::Tile::Label.new(button_holder_top) { text "What will you be working on?" }.pack('side' => 'top', :fill => 'y')
 
-button_holder_bottom = Tk::Tile::Frame.new(button_holder) { padding "5 5 5 5" }
+$project_type = TkVariable.new
+Tk::Tile::Label.new(button_holder_middle) { text "Part of project?:" }.pack('side' => 'top', :fill => 'y')
+Tk::Tile::RadioButton.new(button_holder_middle) { text "Refactor"; variable @project_type; value '1'  }.pack('side' => 'left')
+Tk::Tile::RadioButton.new(button_holder_middle) { text "None";     variable @project_type; value '0'  }.pack('side' => 'left')
+Tk::Tile::RadioButton.new(button_holder_middle) { text "Other";    variable @project_type; value '-1' }.pack('side' => 'left')
+
 TkButton.new(button_holder_bottom) do 
   text 'Start'
   command start
@@ -87,6 +97,7 @@ root.bind("Destroy", quit)
 
 button_holder_top.pack(   :side => 'top'   , :fill => 'y')
 button_holder_bottom.pack(:side => 'bottom', :fill => 'y')
-button_holder.pack(       :side => 'top',    :fill => 'y')
+button_holder_middle.pack(:side => 'bottom', :fill => 'y')
+main_button_holder.pack(       :side => 'top',    :fill => 'y')
 
 Tk.mainloop
