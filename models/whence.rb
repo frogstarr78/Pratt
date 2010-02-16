@@ -31,7 +31,7 @@ class Whence < ActiveRecord::Base
   end
 
   def inspect
-    "#<Whence id: '#{id || ''}', project: '#{project ? project.name : ''}', start_at: '#{start_at? ? start_at.strftime(Pratt::FMT) : ''}', end_at: '#{end_at? ? end_at.strftime(Pratt::FMT) : ''}'>"
+    "#<Whence id: '#{id || ''}', project: '#{project ? project.name : ''}', start_at: '#{start_at? ? start_at.strftime(Pratt::FMT) : ''}', end_at: '#{end_at? ? end_at.strftime(Pratt::FMT) : ''}', invoiced: #{invoiced ? 'true' : 'false'}>"
   end
   
   class << self
