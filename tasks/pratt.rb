@@ -19,9 +19,12 @@ namespace :pratt do
 
     namespace :schema do
       desc "Run schema file" 
-      task :run => :establish_connection do
-        raise "Missing required file argument" unless ENV.include? 'file'
-        schema_change = File.open( ENV['file'] ).read
+      task :run, :file, :needs => :establish_connection do |t, args|
+		puts args.inspect
+		puts args.file.nil?
+		puts args.file.empty?
+        raise "Missing required file argument" if args.file.nil? or ( not args.file.nil? and args.file.empty? )
+        schema_change = File.open( args.file ).read
 
         ActiveRecord::Schema.define do
           ActiveRecord::Base.transaction do
