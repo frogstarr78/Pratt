@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <!--This file was converted to xhtml by OpenOffice.org - see http://xml.openoffice.org/odf2xhtml for more info.-->
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title xml:lang="en-US">Frogstarr78 Software Invoice</title>
+    <style type="text/css">
+	@page {  }
+	body  { padding: 15px; }
+	table { border-collapse:collapse; border-spacing:0; empty-cells:show }
+	td, th { vertical-align:top; font-size:10pt;}
+	h1, h2, h3, h4, h5, h6 { clear:both }
+	ol, ul { margin:0; padding:0;}
+	li { list-style: none; margin:0; padding:0;}
+	li span.odfLiEnd { clear: both; line-height:0; width:0; height:0; margin:0; padding:0; }
+	span.footnodeNumber { padding-right:1em; }
+	* { margin:0; }
+	.gr1 { font-size:12pt; padding-top:0.0512in; padding-bottom:0.0512in; padding-left:0.0984in; padding-right:0.0984in; }
+	.P1 { text-align:center ! important; font-size:24pt; }
+	.Default { font-family:Arial; }
+	.ce1 { color: #4CBB17; font-family:Trebuchet MS; border-style:none; vertical-align:top; text-align:left ! important; margin-left:0in; font-size:16pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:normal; }
+	.ce11 { font-family:Arial; border-bottom-width:1px; border-bottom-style:solid; border-bottom-color:#666666; border-left-width:1px; border-left-style:solid; border-left-color:#666666; border-right-width:1px; border-right-style:solid; border-right-color:#666666; border-top-style:none; vertical-align:top; text-align:left ! important; margin-left:0in; }
+	.ce12 { font-family:Arial; border-style:none; vertical-align:top; text-align:center ! important; margin-left:0in; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:normal; }
+	.ce13 { font-family:Arial; border-style:none; vertical-align:top; text-align:center ! important; margin-left:0in; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:normal; }
+	.ce14 { font-family:Trebuchet MS; border-style:none; vertical-align:top; text-align:center ! important; margin-left:0in; font-size:12pt; font-style:italic; text-shadow:none; text-decoration:none ! important; font-weight:bold; }
+	.ce15 { font-family:Trebuchet MS; border-style:none; vertical-align:top; text-align:right ! important; margin-left:0in; color: #4CBB17;  font-size:28pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:bold; }
+	.ce16 { font-family:Arial; border-style:none; vertical-align:top; text-align:center ! important; margin-left:0in; }
+	.ce17 { font-family:Arial; border-style:none; vertical-align:top; text-align:center ! important; margin-left:0in; }
+	.ce18 { font-family:Arial; border-bottom-width:1px; border-bottom-style:solid; border-bottom-color:#000000; border-left-style:none; border-right-style:none; border-top-style:none; vertical-align:top; text-align:center ! important; margin-left:0in; }
+	.ce2 { font-family:Arial; border-style:none; vertical-align:top; text-align:left ! important; margin-left:0in; }
+	.ce20 { font-family:Trebuchet MS; background-color:transparent; vertical-align:top; text-align:left ! important; margin-left:0in; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:bold; }
+	.ce21 { font-family:Trebuchet MS; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:bold; }
+	.ce22 { font-family:Arial; border-bottom-style:none; border-left-style:none; border-right-width:1px; border-right-style:solid; border-right-color:#000000; border-top-style:none; vertical-align:top; text-align:center ! important; margin-left:0in; }
+	.ce23 { font-family:Arial; border-bottom-width:1px; border-bottom-style:solid; border-bottom-color:#000000; border-left-style:none; border-right-width:1px; border-right-style:solid; border-right-color:#000000; border-top-style:none; vertical-align:top; text-align:center ! important; margin-left:0in; }
+	.ce24 { font-family:Arial; border-bottom-width:0.1049cm; border-bottom-style:double; border-bottom-color:#000000; border-left-style:none; border-right-style:none; border-top-style:none; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:normal; }
+	.ce25 { font-family:Arial; border-style:none; vertical-align:top; text-align:center ! important; margin-left:0in; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:normal; }
+	.ce26 { font-family:Trebuchet MS; border-style:none; vertical-align:top; text-align:center ! important; margin-left:0in; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:bold; }
+	.ce27 { font-family:Arial; background-color:#aae09a; vertical-align:top; text-align:center ! important; margin-left:0in; }
+	.ce28 { font-family:Arial; border-width:1px; border-style:solid; border-color:#000000; vertical-align:top; text-align:center ! important; margin-left:0in; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:normal; }
+	.ce29 { font-family:Arial; border-width:1px; border-style:solid; border-color:#000000; vertical-align:top; text-align:center ! important; margin-left:0in; }
+	.ce3 { font-family:Arial; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:normal; }
+	.ce30 { font-family:Trebuchet MS; border-bottom-style:none; background-color:#4CBB17; border-left-width:0.0879cm; border-left-style:solid; border-left-color:#000000; border-right-width:0.0879cm; border-right-style:solid; border-right-color:#000000; border-top-width:0.0879cm; border-top-style:solid; border-top-color:#000000; vertical-align:top; text-align:center ! important; margin-left:0in; color:#ffffff; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:bold; }
+	.ce31 { font-family:Arial; border-bottom-style:none; border-left-width:0.0879cm; border-left-style:solid; border-left-color:#000000; border-right-width:0.0879cm; border-right-style:solid; border-right-color:#000000; border-top-style:none; }
+	.ce32 { font-family:Arial; border-bottom-width:0.0879cm; border-bottom-style:solid; border-bottom-color:#000000; border-left-width:0.0879cm; border-left-style:solid; border-left-color:#000000; border-right-width:0.0879cm; border-right-style:solid; border-right-color:#000000; border-top-style:none; }
+	.ce33 { font-family:Arial; background-color:#aae09a; }
+	.ce34 { font-family:Arial; border-style:none; }
+	.ce35 { font-family:Arial; border-bottom-width:0.1049cm; border-bottom-style:double; border-bottom-color:#000000; background-color:transparent; border-left-style:none; border-right-style:none; border-top-style:none; }
+	.ce36 { font-family:Trebuchet MS; background-color:#aae09a; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:bold; }
+	.ce4 { font-family:Trebuchet MS; border: none; border-bottom:1px solid #000000; background-color:#4CBB17; vertical-align:top; text-align:left ! important; margin-left:0in; color:#ffffff; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:bold; }
+	.ce5 { font-family:Trebuchet MS; background-color:#4CBB17; border-style:none; vertical-align:top; text-align:center ! important; margin-left:0in; color:#ffffff; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:bold; }
+	.ce6 { padding-left: 7px; font-family:Arial; border-bottom-style:none; border-left-width:1px; border-left-style:solid; border-left-color:#000000; border-right-width:1px; border-right-style:solid; border-right-color:#000000; border-top-style:none; vertical-align:top; text-align:left ! important; margin-left:0in; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:normal; }
+	.ce7 { font-family:Arial; border-bottom-width:1px; border-bottom-style:solid; border-bottom-color:#000000; border-left-width:1px; border-left-style:solid; border-left-color:#000000; border-right-width:1px; border-right-style:solid; border-right-color:#000000; border-top-style:none; vertical-align:top; text-align:left ! important; margin-left:0in; }
+	.ce8 { font-family:Trebuchet MS; border-bottom-width:1px; border-bottom-style:solid; border-bottom-color:#666666; background-color:#c0c0c0; border-left-style:none; border-right-style:none; border-top-style:none; vertical-align:top; text-align:left ! important; margin-left:0in; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:bold; }
+	.ce10 { font-family:Arial; border:1px solid #666666; border-bottom-style:none; border-top-style:none; vertical-align:top; text-align:left ! important; margin-left:0in; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:normal; }
+	.co1 { width:2.0209in; }
+	.co2 { width:0.3854in; }
+	.co3 { width:1.6272in; }
+	.co4 { width:0.9in; }
+	.co5 { width:1.0835in; }
+	.co6 { width:0.6602in; }
+	.co7 { width:0.6984in; }
+	.co8 { width:1.8957in; }
+	.co9 { width:0.5626in; }
+	.ro1 { height:0.4736in; }
+	.ro2 { height:0.1736in; }
+	.ro3 { height:0.1807in; }
+	.ro4 { height:0.2071in; }
+	.T1 { font-family:Trebuchet MS; font-size:16pt; font-style:normal; text-shadow:none; text-decoration:underline; font-weight:normal; }
+	.T2 { font-family:Trebuchet MS; font-size:16pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:normal; }
+	.T3 { font-family:Arial; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:normal; }
+	.T4 { color:#0000ff; font-family:Arial; font-size:8pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:normal; }
+	<!-- ODF styles with no properties representable as CSS -->
+	.ta1 .ta2 { }
+	</style>
+  </head>
+  <body dir="ltr">
+    <table border="0" cellspacing="0" cellpadding="0" class="ta1">
+      <colgroup>
+        <col width="224"/>
+        <col width="43"/>
+        <col width="181"/>
+        <col width="100"/>
+        <col width="100"/>
+        <col width="120"/>
+        <col width="73"/>
+        <col width="78"/>
+      </colgroup>
+      <tr class="ro1">
+        <td colspan="3" style="text-align:left;width:2.0209in; " class="ce1">
+          <p>Frogstarr<span class="T1">78</span><span class="T2"> Software</span></p>
+        </td>
+        <td colspan="3" style="text-align:left;width:0.9in; " class="ce15">
+          <p>INVOICE</p>
+        </td>
+        <td style="text-align:left;width:0.6602in; " class="Default"> </td>
+      </tr>
+      <tr class="ro2">
+        <td colspan="3" style="text-align:left;width:2.0209in; " class="ce2"> </td>
+        <td style="text-align:left;width:0.9in; " class="Default"> </td>
+        <td style="text-align:left;width:0.9in; " class="ce20">
+          <p>DATE:</p>
+        </td>
+        <td style="text-align:right; width:1.0835in; " class="ce27">
+          <p><%= when_to.send("beginning_of_#{scale}").strftime(Pratt::INVOICE_FMT) %> to <%= when_to.send("end_of_#{scale}").strftime(Pratt::INVOICE_FMT) %></p>
+        </td>
+      </tr>
+      <tr class="ro2">
+        <td style="text-align:left;width:2.0209in; " class="Default"> </td>
+        <td style="text-align:left;width:0.3854in; " class="Default"> </td>
+        <td style="text-align:left;width:1.6272in; " class="Default"> </td>
+        <td style="text-align:left;width:0.9in; " class="Default"> </td>
+        <td style="text-align:left;width:0.9in; " class="ce20">
+          <p>INVOICE #</p>
+        </td>
+        <td style="text-align:left;width:1.0835in; " class="ce28">
+			<p><%= project.customer.id %>-07-02</p>
+        </td>
+      </tr>
+      <tr class="ro3">
+        <td style="text-align:left;width:2.0209in; " class="ce3">
+          <p>312 NW 7<span class="T3">th</span></p>
+        </td>
+        <td style="text-align:left;width:0.3854in; " class="Default"> </td>
+        <td style="text-align:left;width:1.6272in; " class="Default"> </td>
+        <td style="text-align:left;width:0.9in; " class="Default"> </td>
+        <td style="text-align:left;width:0.9in; " class="ce21">
+          <p>Customer ID</p>
+        </td>
+        <td style="text-align:right; width:1.0835in; " class="ce29">
+			<p><%= project.customer.id %></p>
+        </td>
+        <td style="text-align:left;width:0.6602in; " class="Default"> </td>
+        <td style="text-align:left;width:0.6984in; " class="Default"> </td>
+      </tr>
+      <tr class="ro2">
+        <td style="text-align:left;width:2.0209in; " class="ce3">
+          <p>Milton-Freewater, OR 97862</p>
+        </td>
+        <td style="text-align:left;width:0.3854in; " class="Default"> </td>
+        <td style="text-align:left;width:1.6272in; " class="Default"> </td>
+        <td style="text-align:left;width:0.9in; " class="Default"> </td>
+        <td style="text-align:left;width:0.9in; " class="Default"> </td>
+        <td style="text-align:left;width:1.0835in; " class="Default"> </td>
+      </tr>
+      <tr class="ro2">
+        <td style="text-align:left;width:2.0209in; " class="ce3">
+          <p>Phone: 509-301-6893</p>
+        </td>
+        <td style="text-align:left;width:0.3854in; " class="Default"> </td>
+        <td style="text-align:left;width:1.6272in; " class="Default"> </td>
+        <td style="text-align:left;width:0.9in; " class="Default"> </td>
+      </tr>
+      <tr class="ro2">
+        <td style="text-align:left;width:2.0209in; " class="ce3"> </td>
+      </tr>
+      <tr class="ro2">
+        <td style="text-align:left;width:2.0209in; " class="ce4">
+          <p>BILL TO:</p>
+        </td>
+      </tr>
+      <tr class="ro2">
+        <td style="text-align:left;width:2.0209in; " class="ce3">
+			<p><%= project.customer.name %></p>
+        </td>
+      </tr>
+<%
+	  if project.customer.address
+%>
+      <tr class="ro2">
+        <td style="text-align:left;width:2.0209in; " class="ce3"> </td>
+      </tr>
+<%
+	  end 
+
+	  if project.customer.company_name
+%>
+      <tr class="ro2">
+        <td style="text-align:left;width:2.0209in; " class="ce3"> </td>
+      </tr>
+<%
+	  end 
+
+	  if project.customer.zip
+%>
+      <tr class="ro2">
+        <td style="text-align:left;width:2.0209in; " class="ce3">
+			<p><%= project.customer.city_state_zip %></p>
+        </td>
+      </tr>
+<%
+	  end 
+
+	  if project.customer.phone
+%>
+      <tr class="ro2">
+        <td style="text-align:left;width:2.0209in; " class="ce3">
+			<p><%= project.customer.phone.pretty_print %></p>
+        </td>
+      </tr>
+<%
+	  end 
+%>
+      <tr class="ro2">
+        <td style="text-align:left;width:2.0209in; " class="Default"> </td>
+      </tr>
+      <tr class="ro2">
+        <td colspan="3" style="text-align:left;width:2.0209in; " class="ce5">
+          <p>DESCRIPTION</p>
+        </td>
+        <td style="text-align:left;width:0.9in; " class="ce5">
+          <p>HOURS</p>
+        </td>
+        <td style="text-align:left;width:0.9in; " class="ce5">
+          <p>RATE</p>
+        </td>
+        <td style="text-align:left;width:1.0835in; " class="ce30">
+          <p>AMOUNT</p>
+        </td>
+      </tr>
+
+		<% @projects.each do |project| %>
+      <tr class="ro2">
+        <td colspan="3" style="text-align:left;width:2.0209in; " class="ce6">
+			<p><%= project.name %></p>
+        </td>
+        <td style="text-align:right; width:0.9in; " class="ce16">
+			<p><%= project.time_spent(scale, when_to).pretty_print %></p>
+        </td>
+        <td style="text-align:right; width:0.9in; " class="ce22">
+			<p><%= project.payment.pretty_print %></p>
+        </td>
+        <td style="text-align:right; width:1.0835in; " class="ce31">
+          <p><%= project.amount(scale, when_to).pretty_print %></p>
+        </td>
+      </tr>
+		<% end %>
+      <tr class="ro2">
+        <td colspan="3" style="text-align:left;width:2.0209in; " class="ce7"> </td>
+        <td style="text-align:left;width:0.9in; " class="ce18"> </td>
+        <td style="text-align:left;width:0.9in; " class="ce23"> </td>
+        <td style="text-align:left;width:1.0835in; " class="ce32">
+          <p> </p>
+        </td>
+      </tr>
+      <tr class="ro2">
+        <td style="width:2.0209in; " class="Default"> </td>
+        <td style="width:0.3854in; " class="Default"> </td>
+        <td style="width:1.6272in; " class="Default"> </td>
+        <td style="width:0.9in; " class="Default"> </td>
+        <td style="text-align:left;width:0.9in; " class="Default">
+          <p>SUBTOTAL</p>
+        </td>
+        <td style="text-align:right; width:1.0835in; " class="ce33">
+          <p><%= project.amount(scale, when_to).pretty_print %></p>
+        </td>
+      </tr>
+      <tr class="ro2">
+        <td colspan="3" style="text-align:left;width:2.0209in; " class="ce8">
+          <p>OTHER COMMENTS</p>
+        </td>
+        <td style="width:0.9in; " class="Default"> </td>
+        <td style="width:0.9in; " class="Default">
+          <p>TAX RATE</p>
+        </td>
+        <td style="text-align:right; width:1.0835in; " class="ce34">
+          <p>0.000%</p>
+        </td>
+      </tr>
+      <tr class="ro2">
+        <td colspan="3" style="text-align:left;width:2.0209in; border-top:1px solid #666666; " class="ce10">
+          <p>1. Total payment due in 30 days</p>
+        </td>
+        <td style="text-align:left;width:0.9in; " class="Default"> </td>
+        <td style="text-align:left;width:0.9in; " class="Default">
+          <p>TAX</p>
+        </td>
+        <td style="text-align:right; width:1.0835in; " class="ce33">
+          <p>$0.00</p>
+        </td>
+      </tr>
+      <tr class="ro2">
+        <td colspan="3" style="text-align:left;width:2.0209in; " class="ce10">
+          <p>2. Please include the invoice number on your check</p>
+        </td>
+        <td style="width:0.9in; " class="Default"> </td>
+        <td style="width:0.9in; " class="ce24">
+          <p>OTHER</p>
+        </td>
+        <td style="text-align:right; width:1.0835in; " class="ce35">
+          <p>$0.00</p>
+        </td>
+      </tr>
+      <tr class="ro2">
+        <td colspan="3" style="text-align:left;width:2.0209in; " class="ce10"> </td>
+        <td style="width:0.9in; " class="Default"> </td>
+        <td style="width:0.9in; " class="ce21">
+          <p>TOTAL</p>
+        </td>
+        <td style="text-align:right; width:1.0835in; " class="ce36">
+          <p><%= project.amount(scale, when_to).pretty_print %></p>
+        </td>
+      </tr>
+      <tr class="ro2">
+        <td colspan="3" style="text-align:left;width:2.0209in; " class="ce10"> </td>
+        <td style="width:0.9in; " class="Default"> </td>
+        <td style="width:0.9in; " class="Default"> </td>
+        <td style="width:1.0835in; " class="Default"> </td>
+      </tr>
+      <tr class="ro2">
+        <td colspan="3" style="text-align:left;width:2.0209in; " class="ce10"> </td>
+        <td style="text-align:left;width:0.9in; " class="Default"> </td>
+        <td colspan="2" style="text-align:left;width:0.9in; " class="ce25">
+          <p>Make all checks payable to</p>
+        </td>
+      </tr>
+      <tr class="ro2">
+        <td colspan="3" style="text-align:left;width:2.0209in; " class="ce11"> </td>
+        <td style="text-align:left;width:0.9in; " class="Default"> </td>
+        <td colspan="2" style="text-align:left;width:0.9in; " class="ce26">
+			<p>Frogstarr78 Software</p>
+        </td>
+      </tr>
+      <tr class="ro2">
+        <td style="text-align:left;width:2.0209in; " class="Default"> </td>
+        <td style="text-align:left;width:0.3854in; " class="Default"> </td>
+        <td style="text-align:left;width:1.6272in; " class="Default"> </td>
+      </tr>
+      <tr class="ro2">
+        <td style="text-align:left;width:2.0209in; " class="Default"> </td>
+      </tr>
+      <tr class="ro2">
+        <td colspan="6" style="text-align:left;width:2.0209in; " class="ce12">
+          <p>If you have any questions about this invoice, please contact</p>
+        </td>
+      </tr>
+      <tr class="ro3">
+        <td colspan="6" style="text-align:left;width:2.0209in; " class="ce13">
+          <p>
+            Scott Noel-Hemming, 509.301.6893, <a href="mailto:frogstarr78@gmail.com">frogstarr78@gmail.com</a>
+          </p>
+        </td>
+      </tr>
+      <tr class="ro2">
+        <td style="text-align:left;width:2.0209in; " class="Default"> </td>
+      </tr>
+      <tr class="ro4">
+        <td colspan="6" style="text-align:left;width:2.0209in; " class="ce14">
+          <p>Thank You For Your Business!</p>
+        </td>
+        <td style="text-align:left;width:0.6602in; " class="Default"> </td>
+        <td style="text-align:left;width:0.6984in; " class="Default"> </td>
+      </tr>
+    </table>
+	<br />
+	<div>
+	  <div style="height: 0.2083in;width: 0.9961in;" id="Graphics_1" class="P1">
+		<p>
+		  <img width="111" height="23" alt="" src="data:image/*;base64,iVBORw0KGgoAAAANSUhEUgAAAF4AAAAUCAMAAAAzz3pWAAABMlBMVEVVSFVVUlVhUmFhY2FrY2trbWt1bXV1eHUANJUAPpUMPpUMPqAMSJUMSKAWSKAWUqAgUqAgUqogY6orY6o2Y6o2bao2Y7ZAbapAbbZAeLZLeLZLgrZVgrZVgsBhgsBhjMBrjMB1jMB1l8B1l8qAeICAgoCLjIuVjJWVl5WVoZWgl6CgoaCqoaqqq6q2t7aAl8qAocqLocqLq8qAodWLodWLq9WVq9WVt9Wgt9Wgt+Cqt+C2wdWqweC2y+C2y+rAt8DAwcDAwcrAy8DKwcrKy8rVy9XV1tXAy+DAy+rKy+DA1urK1uDK1urK1vXV1uDV1vXV4OrV4PXg1uDg4ODg4Orq4Orq6urg4PXg6vXq6vXq6v/q9fXq9f/16vX19fX19f/1////9f/////8A/sAAAD///8o0jSTAAAAZHRSTlP///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8AJoxtPQAAAu1JREFUeJy1lWtf2jAUxnuECtmlUnETmVgmUhlda7cJA52aaQ2K3aaLzeicceb7f4ilFxQY7vLbPC/S9kn775OT01NFTER4Nan8SyhjV5z3Kq/vCc+FCA5PygYfXlP2F6CLD4Nf4AdhIGEBoUb5bDhH7sA3nCnid//r3fidznnkldPL3m4/neIWno6HtSnieW3nTnzY9zm7DoKAeJvaQrq5/IU3lc6hPkUdVI/uwoebGz6ljBwGGG9rmp9MMdWSI1axcHJZtW5zllWzqkNnAFRT4HpWzdlMZNflTTTr9PWoJpZ1ERb0QnFVdFpVI8X7W+9Cxjj5zDA+0eZqKR4aER4wkTw1AyaLjg5RIaM25EsiLSfipRCw+8iVJ0tIDPTC/CPUHvRcN8H3q7Vua9U9pyTs7PS22rtXKT4ytgfYVg6kQcgypX6Te6zI/eUzICBDhLAUuxfjF1GSqbxxm5zu5vPd8rNlijEpaqUKQv64exskYR2sRBCxYSlLKpjCg0zDhDq/cR9nG93iPc+jR912h3qYLmhaK4+qY/g9WyHcVOqcKY0R91h6zslq8xRQclz00eJRr1+U+Lax8jTvDvGc4H1iLDyptapdf6ta6TxExZ/cr0t/YsK9BRFdLgFghgpRRHGIWjQuXYxUDgtXSgu1ZU2rlIul7vF251uCN+XoRLmfld6lMOZ+NvYumrBGHAAqrjruhltAovjg9MtN30rqnhLS8119rmwgVMLWy8O4vmfAESQD1IPIu7h1n4t2OvEuQI092AlO5r4wP1n3gmCMWdmotTe1vPbeajrXsQqgAHiRQzXGp+7XlFkqbMgEMSAuTCXFy8rRUWmxtFhrvz09G+J54O2fawjpDG+/OrUt6zJZVCamR/mN+Ml3JmVTlbmW/Mi+GmWQqGkbWimIkqx7Xa+8cc8+jXRMHpYf59Gx1bSoYJSmIknbZ9Mc9tHbcKZokzHa78PdykfLah789qE/j/HfieDMc+z7w8ev+I/4HyyJNp/B6/55AAAAAElFTkSuQmCC"/>
+		</p>
+	  </div>
+	  <p>
+		<span class="T4">
+		  <a href="http://www.vertex42.com/ExcelTemplates/excel-invoice-template.html">Invoice Templates</a>
+		</span>
+	  </p>
+	  <p>&copy; 2009 Vertex42.com</p>
+	</div>
+  </body>
+</html>
