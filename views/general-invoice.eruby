@@ -44,8 +44,8 @@
 	.ce32 { font-family:Arial; border-bottom-width:0.0879cm; border-bottom-style:solid; border-bottom-color:#000000; border-left-width:0.0879cm; border-left-style:solid; border-left-color:#000000; border-right-width:0.0879cm; border-right-style:solid; border-right-color:#000000; border-top-style:none; }
 	.ce33 { font-family:Arial; background-color:#aae09a; }
 	.ce34 { font-family:Arial; border-style:none; }
-	.ce35 { font-family:Arial; border-bottom-width:0.1049cm; border-bottom-style:double; border-bottom-color:#000000; background-color:transparent; border-left-style:none; border-right-style:none; border-top-style:none; }
-	.ce36 { font-family:Trebuchet MS; background-color:#aae09a; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:bold; }
+	.ce35 { font-family:Arial; border:none; border-bottom: 0.1049cm double #000000; background-color:transparent; }
+	.ce36 { font-family:Trebuchet MS; border-bottom: 0.1049cm double #000000; background-color:#aae09a; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none }
 	.ce4 { font-family:Trebuchet MS; border: none; border-bottom:1px solid #000000; background-color:#4CBB17; vertical-align:top; text-align:left ! important; margin-left:0in; color:#ffffff; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:bold; }
 	.ce5 { font-family:Trebuchet MS; background-color:#4CBB17; border-style:none; vertical-align:top; text-align:center ! important; margin-left:0in; color:#ffffff; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:bold; }
 	.ce6 { padding-left: 7px; font-family:Arial; border-bottom-style:none; border-left-width:1px; border-left-style:solid; border-left-color:#000000; border-right-width:1px; border-right-style:solid; border-right-color:#000000; border-top-style:none; vertical-align:top; text-align:left ! important; margin-left:0in; font-size:10pt; font-style:normal; text-shadow:none; text-decoration:none ! important; font-weight:normal; }
@@ -271,10 +271,10 @@
           <p>1. Total payment due in 30 days</p>
         </td>
         <td style="text-align:left;width:0.9in; " class="Default"> </td>
-        <td style="text-align:left;width:0.9in; " class="Default">
+        <td style="text-align:left;width:0.9in; " class="Default ce35">
           <p>TAX</p>
         </td>
-        <td style="text-align:right; width:1.0835in; " class="ce33">
+        <td style="text-align:right; width:1.0835in; " class="ce33 ce36">
           <p>$0.00</p>
         </td>
       </tr>
@@ -283,20 +283,10 @@
           <p>2. Please include the invoice number on your check</p>
         </td>
         <td style="width:0.9in; " class="Default"> </td>
-        <td style="width:0.9in; " class="ce24">
-          <p>OTHER</p>
-        </td>
-        <td style="text-align:right; width:1.0835in; " class="ce35">
-          <p>$0.00</p>
-        </td>
-      </tr>
-      <tr class="ro2">
-        <td colspan="3" style="text-align:left;width:2.0209in; " class="ce10"> </td>
-        <td style="width:0.9in; " class="Default"> </td>
         <td style="width:0.9in; " class="ce21">
           <p>TOTAL</p>
         </td>
-        <td style="text-align:right; width:1.0835in; " class="ce36">
+		<td style="text-align:right; width:1.0835in; " class="ce21 ce34">
           <p><%= project.amount(scale, when_to).pretty_print %></p>
         </td>
       </tr>
