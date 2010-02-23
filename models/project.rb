@@ -30,7 +30,8 @@ class Project < ActiveRecord::Base
   end
 
   def amount scale = nil, when_to = Time.now
-    spent(self.whences).call(scale, when_to) * payment.rate/100
+    amount = spent(self.whences).call(scale, when_to) * payment.rate/100
+	amount.to_money
   end
 
   class << self
