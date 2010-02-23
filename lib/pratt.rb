@@ -18,12 +18,17 @@ require 'shifty_week/date'
 require 'lib/pratt/array'
 require 'lib/pratt/string'
 require 'lib/pratt/time'
+require 'lib/pratt/float'
+require 'lib/pratt/nil'
 
 require 'models/app'
 require 'models/customer'
 require 'models/whence'
 require 'models/project'
 require 'models/payment'
+require 'models/invoice'
+require 'models/invoice_whence'
+require 'models/zip'
 
 class Pratt
 
@@ -118,18 +123,18 @@ class Pratt
 
   # Generate an invoice for a given time period
   def invoice
-    self.template = 'invoice'
+    self.template ||= 'invoice'
 
     if project?
       @projects = [project]
 
-      @total = project.time_spent(scale, when_to)
+      @total = project.amount(scale, when_to)
     else
       @projects = (Project.all - [Project.primary, Project.off])
       @projects.select! {|proj| show_all or ( !show_all and proj.time_spent(scale, when_to) != 0.0 ) }
 
       @total = @projects.inject 0.0 do |total, proj| 
-        total += proj.time_spent(scale, when_to)
+        total += proj.amount(scale, when_to)
         total
       end
     end
