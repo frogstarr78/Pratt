@@ -9,6 +9,12 @@ class Float
 end
 
 class Money
+  include Comparable
+  
+  def <=> other
+    @f <=> other
+  end
+
   def initialize f
     @f = Float(f)
   end
