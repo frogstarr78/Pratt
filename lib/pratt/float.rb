@@ -1,14 +1,10 @@
-def Money float
-  Money.new(float)
-end
-
 class Float
   def pretty_print
     "%0.2f"% self
   end
 
   def to_money
-    Money(self)
+    Money.new(self)
   end
 end
 
