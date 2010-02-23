@@ -140,7 +140,7 @@ class Pratt
     end
 
     @projects.each do |project| 
-      puts "#{project.name} #{project.payment.inspect}"
+      puts "<!-- #{project.name} #{project.payment.inspect} -->"
     end
     if @total > 0.0
       puts process_template!
@@ -267,7 +267,7 @@ class Pratt
 
   def run
     self.when_to.week_day_start = self.week_day_start
-    puts self.when_to.inspect, self.when_to.week_day_start
+    puts "<!-- when_to: #{self.when_to}, week_day_start: #{self.when_to.week_day_start} -->"
     # must happen before any actions but after all cli argument parsing
 
     self.begin      if i_should? :begin
