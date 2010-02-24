@@ -55,8 +55,8 @@ describe Pratt do
 
   describe "\b#root" do
     before :each do
-      Dir.stubs(:pwd).returns("/home/scott/git/pratt")
-      @expected_root = "/home/scott/git/pratt"
+      @expected_root = File.dirname( File.expand_path( '..', __FILE__ ) ).to_s
+      Dir.stubs(:pwd).returns(@expected_root)
     end
 
     it "is correct without arguments" do
