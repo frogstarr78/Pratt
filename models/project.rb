@@ -56,26 +56,6 @@ class Project < ActiveRecord::Base
             t.integer :weight, :default => -1
             t.references :customer, :null => false
           end
-
-          Project.create(
-            [
-              {
-                :name => 'Refactor',
-                :weight => 1,
-                :customer_id => 0
-              },
-              {
-                :name => 'Lunch/Break',
-                :weight => 0,
-                :customer_id => 0
-              },
-              {
-                :name => 'Other',
-                :weight => -1,
-                :customer_id => 0
-              }
-            ]
-          )
         elsif which == :down
           drop_table :projects
         end
