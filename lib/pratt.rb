@@ -531,7 +531,8 @@ class Pratt
     # Migrate schema.
     def migrate
       Pratt.root( 'models', '*.rb' ) do |model_file|
-        klass = File.basename( model_file, '.rb' ).capitalize.constantize
+        klass = File.basename( model_file, '.rb' ).classify.constantize
+		puts "klass #{klass}"
         begin
           ActiveRecord::Base.connection.table_structure(model_file)
         rescue ActiveRecord::StatementInvalid

@@ -1,7 +1,7 @@
 # This file is copied to ~/spec when you run 'ruby script/generate rspec'
 # from the project root directory.
 require 'spec'
-require 'config'
+require 'lib/pratt'
 require 'ruby-debug'
 
 Spec::Runner.configure do |config|
