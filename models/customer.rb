@@ -34,6 +34,7 @@ class Customer < ActiveRecord::Base
             t.string :company_name
             t.string :address
             t.string :phone
+            t.string :email
             t.string :zip, :limit => 5
           end
         elsif which == :down
