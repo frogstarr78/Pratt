@@ -346,12 +346,12 @@
           <p>INVOICE #</p>
         </td>
         <td class="ce29 ce28">
-			<p><%= project.customer.id %>-07-02</p>
+		<p><%= project.customer.id %>-<%= when_to.week %>-01</p>
         </td>
       </tr>
       <tr class="ro3">
         <td colspan="2" class="ce3">
-          <p>Phone: 509-301-6893</p>
+          <p>Phone: 509-730-5401</p>
         </td>
         <td class="Default"> </td>
         <td class="ce21">
