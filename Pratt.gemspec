@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Scott Noel-Hemming"]
-  s.date = %q{2010-02-15}
+  s.date = %q{2010-03-09}
   s.default_executable = %q{pratt.rb}
   s.description = %q{
 	  Need a way to keep track of your time, but get caught up in work? Or constant interruptions?
@@ -26,7 +26,8 @@ Gem::Specification.new do |s|
   s.email = %q{frogstarr78@gmail.com}
   s.executables = ["pratt.rb"]
   s.extra_rdoc_files = [
-    "README.txt",
+    "README.html",
+     "README.txt",
      "TODO"
   ]
   s.files = [
@@ -36,6 +37,7 @@ Gem::Specification.new do |s|
      "Manifest.txt",
      "Pratt.gemspec",
      "Pratt.mm",
+     "README.html",
      "README.txt",
      "Rakefile",
      "Session.vim",
@@ -44,16 +46,22 @@ Gem::Specification.new do |s|
      "bin/pratt.rb",
      "config.rb",
      "db/sqlite_databases_go_here",
+     "db/zips.csv.zip",
      "lib/pratt.rb",
      "lib/pratt/array.rb",
+     "lib/pratt/float.rb",
+     "lib/pratt/nil.rb",
      "lib/pratt/string.rb",
      "lib/pratt/time.rb",
      "models/app.rb",
      "models/customer.rb",
+     "models/invoice.rb",
+     "models/invoice_whence.rb",
      "models/payment.rb",
      "models/pratt.rb",
      "models/project.rb",
      "models/whence.rb",
+     "models/zip.rb",
      "pkgs/tile-0.8.2.tar.gz",
      "pkgs/tile-0.8.2/ANNOUNCE.txt",
      "pkgs/tile-0.8.2/ChangeLog",
@@ -312,6 +320,7 @@ Gem::Specification.new do |s|
      "templates/model.eruby",
      "templates/spec.eruby",
      "views/env.rb",
+     "views/general-invoice.eruby",
      "views/graph.eruby",
      "views/invoice.eruby",
      "views/main.rb",
