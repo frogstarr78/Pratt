@@ -447,7 +447,10 @@ class Pratt
         end
 
         # Strictly configuration options
-        opt.on('-P', "--project PROJECT_NAME", String, "Set project.") do |proj|
+        project_names = Project.all.collect{|p| 
+"                                        #{p.name.cyan}"}
+        opt.on('-P', "--project PROJECT_NAME", project_names, "Set project.
+                                      Available projects are:\n#{project_names*"\n"}") do |proj|
           me.project = proj
         end
 
