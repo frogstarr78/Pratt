@@ -2,6 +2,8 @@ require 'models/pratt'
 
 class Whence < ActiveRecord::Base
   belongs_to :project
+  has_many :invoice_whences
+  has_many :invoices, :through => :invoice_whences
   validates_associated :project
 
   def stop! when_to
@@ -31,7 +33,11 @@ class Whence < ActiveRecord::Base
   end
 
   def inspect
-    "#<Whence id: '#{id || ''}', project: '#{project ? project.name : ''}', start_at: '#{start_at? ? start_at.strftime(Pratt::FMT) : ''}', end_at: '#{end_at? ? end_at.strftime(Pratt::FMT) : ''}'>"
+    "#<Whence id: '#{id || ''}', project: '#{project ? project.name : ''}', start_at: '#{start_at? ? start_at.strftime(Pratt::FMT) : ''}', end_at: '#{end_at? ? end_at.strftime(Pratt::FMT) : ''}', invoiced: #{invoiced ? 'true' : 'false'}>"
+  end
+
+  def invoiced?
+	read_attribute(:invoiced) == true
   end
   
   class << self

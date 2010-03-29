@@ -55,8 +55,8 @@ describe Pratt do
 
   describe "\b#root" do
     before :each do
-      Dir.stubs(:pwd).returns("/home/scott/git/pratt")
-      @expected_root = "/home/scott/git/pratt"
+      @expected_root = File.dirname( File.expand_path( '..', __FILE__ ) ).to_s
+      Dir.stubs(:pwd).returns(@expected_root)
     end
 
     it "is correct without arguments" do
@@ -75,8 +75,9 @@ describe Pratt do
 
     it "is correct with an argument and block" do
       received = []
+      expected = %w(app.rb customer.rb project.rb payment.rb pratt.rb whence.rb invoice.rb invoice_whence.rb zip.rb)
       Pratt.root('models', '*.rb') {|model| received << model }
-      received.to_set.should == %w(app.rb customer.rb project.rb payment.rb pratt.rb whence.rb).collect {|model| Pathname.new File.join(@expected_root, "models", model) }.to_set
+      received.to_set.should == expected.collect {|model| Pathname.new File.join(@expected_root, "models", model) }.to_set
     end
   end
 

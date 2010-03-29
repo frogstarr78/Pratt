@@ -9,10 +9,13 @@ Pratt (describe your package)
 
 == FEATURES/PROBLEMS:
 
-* (list of features or problems)
-Currently you'll need to manually fix the project data since I haven't
+(list of features or problems)
+* Currently you'll need to manually fix the project data since I haven't
 fully integrated the support for Projects to have customer's and my current
 implementation is shoddy.
+* Upgrading versions looses your database. (See TODO)
+* Windows doesn't work (no fork). (See TODO)
+
 
 == SYNOPSIS:
 
@@ -44,7 +47,7 @@ Michael and Kent Krenrich
 
 (The MIT License)
 
-Copyright (c) 2009 QualitySmith LLC
+Copyright (c) 2009 Frogstarr78 Software
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

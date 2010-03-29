@@ -2,7 +2,7 @@ class Payment < ActiveRecord::Base
   belongs_to :billable, :polymorphic => true
 
   def pretty_print
-    "$%0.2f"% (rate/100)
+    "$%0.2f"% (rate/100.0)
   end
 
   class << self

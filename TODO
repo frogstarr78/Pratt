@@ -1,12 +1,12 @@
 General:
-[ ] Add environment ability
+[ ] Remove environment ability
 [ ] Change to use raw command line arguments / Remove optparse lib
 [ ] Update general package setup (It's messy)
 [?]   Add file watching like merb
 [?] Move to Observer Pattern for reporting functionality
 
 Invoicing:
-[ ] Add shifty week plugin
+[x] Add shifty week plugin
 [ ] Add support for variable rates.
 
 	Templating:
@@ -14,8 +14,9 @@ Invoicing:
 [ ] Move other output to template based
 
 Data:
-[ ] Change to Use DataMapper
+[?] Change to Use DataMapper
 [?] Put everything in the db? (logs, app locks, etc)
+[ ] Move database location to central location that doesn't dissappear when upgrading the app.
 
 GUI:
 [ ] Add TrayIcon.
@@ -23,6 +24,8 @@ GUI:
 [ ] Payment CRUD
 [ ] Re-design prompts
 [ ] Remove fork in favor of ( eval OR (!?!) GUI classes )
+[ ] Don't assume gui.
+[ ] Add options for cli user prompting.
 
 Test:
 [ ] Add more I'm not testing everything

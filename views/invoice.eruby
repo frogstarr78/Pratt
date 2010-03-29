@@ -101,13 +101,13 @@
           <P><%= project.name %></P>
         </TD>
         <TD WIDTH=96>
-          <P ALIGN=RIGHT><%= project.time_spent(scale, when_to) %></P>
+          <P ALIGN=RIGHT><%= project.time_spent(scale, when_to).pretty_print %></P>
         </TD>
         <TD WIDTH=96>
           <P ALIGN=RIGHT><%= project.payment.pretty_print %></P>
         </TD>
         <TD WIDTH=97>
-          <P ALIGN=RIGHT><FONT SIZE=2><%= project.amount(scale, when_to) %></FONT></P>
+          <P ALIGN=RIGHT><FONT SIZE=2><%= project.amount(scale, when_to).pretty_print %></FONT></P>
         </TD>
       </TR>
 		<% end %>
@@ -120,7 +120,7 @@
 				<P ALIGN=RIGHT><FONT SIZE=1 STYLE="font-size: 8pt">TOTAL</FONT></P>
 			</TD>
 			<TD WIDTH=97>
-				<P ALIGN=RIGHT><FONT SIZE=2><%= @total %></FONT></P>
+				<P ALIGN=RIGHT><FONT SIZE=2><%= @total.pretty_print %></FONT></P>
 			</TD>
 		</TR>
 	</TABLE>
