@@ -3,8 +3,6 @@ PRATT_ENV = ENV["PRATT_ENV"] || 'development' unless Object.const_defined? :PRAT
 
 class Pratt
   @@connected_to = nil
-  module Test
-  end
 
   include FileUtils
 
