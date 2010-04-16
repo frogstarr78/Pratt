@@ -150,8 +150,10 @@ class Pratt
   end
 
   def console options = []
-    options << %w(-r\ irb/completion -r\ lib/pratt --simple-prompt)
-    exec "irb #{options.join ' '}"
+    require 'irb'
+    require 'irb/completion'
+    ARGV.clear
+    IRB.start
   end
 
   def current
@@ -249,6 +251,13 @@ class Pratt
     end
   end
 
+  def pop2
+    self.app.reload
+    return if self.app.gui?('pop', true)
+    self.app.log('pop')
+    puts "Calling pop2"
+  end
+
   def show_env
     defork { system("ruby views/env.rb ") } 
   end
@@ -283,6 +292,7 @@ class Pratt
     puts self.graph      if i_should? :graph
     self.invoice    if i_should? :invoice
     self.console    if i_should? :console
+    self.pop2       if i_should? :pop2
     self.gui        if i_should? :gui
     self.show_env   if i_should? :env
     self.detect     if i_should? :detect
@@ -496,6 +506,7 @@ class Pratt
 
       me << :env if args.include? 'env'
       me << :console if args.include? 'console'
+      me << :pop2 if args.include? 'pop2'
 
       me.run
     end
