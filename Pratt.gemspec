@@ -49,7 +49,6 @@ Gem::Specification.new do |s|
      "db/zips.csv.zip",
      "lib/models.rb",
      "lib/pratt.rb",
-     "lib/pratt.rb.orig",
      "lib/pratt/core_ext.rb",
      "lib/pratt/core_ext/array.rb",
      "lib/pratt/core_ext/float.rb",
@@ -339,7 +338,6 @@ Gem::Specification.new do |s|
      "views/main.rb",
      "views/pid.eruby",
      "views/pop.rb",
-     "views/pop2.rb",
      "views/proportions.eruby",
      "views/raw.eruby"
   ]
