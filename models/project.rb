@@ -52,6 +52,15 @@ class Project < ActiveRecord::Base
       all - [primary, off]
     end
 
+    def longest_project_name
+      project_names = all.collect(&:name)
+      longest = project_names.inject(0) do |max, next_name|
+        max = next_name.length if next_name.length > max
+        max
+      end
+      longest
+    end
+
     def migrate which = :up
       ActiveRecord::Schema.define do
         if which == :up
