@@ -4,6 +4,8 @@ require 'tkextlib/tile'
 require 'optparse'
 require 'ostruct'
 
+include Tk::Tile
+
 opts = OpenStruct.new
 opts.env          = :development
 opts.project_name = ''
@@ -39,25 +41,25 @@ adjust = proc {
 
 root = TkRoot.new { title "Pratt Reminder" }
 
-frm = Tk::Tile::Frame.new(root) { padding "5 5 5 5" }
-top_frm = Tk::Tile::Frame.new(frm) { padding "5 5 5 5" }
+frm = Frame.new(root) { padding "5 5 5 5" }
+top_frm = Frame.new(frm) { padding "5 5 5 5" }
 
-Tk::Tile::Label.new(top_frm) do
+Label.new(top_frm) do
   text "Have you been working on: "
 end.pack(:side => 'top', :fill => 'y')
 
-Tk::Tile::Label.new(top_frm) do
+Label.new(top_frm) do
   text opts.project_name
 end.pack(:side => 'top', :fill => 'y')
 
-Tk::Tile::Label.new(top_frm) do
+Label.new(top_frm) do
   text "started:
   #{opts.start_time}
 total time:
   #{opts.project_time.gsub(/\e\[[0-9]+m/, '')}."
 end.pack(:side => 'bottom', :fill => 'y')
 
-botm_frm = Tk::Tile::Frame.new(frm) { padding "5 5 5 5" }
+botm_frm = Frame.new(frm) { padding "5 5 5 5" }
 TkButton.new(botm_frm) do
   text "Yes"
   command yes
