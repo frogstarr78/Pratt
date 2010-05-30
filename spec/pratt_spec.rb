@@ -126,7 +126,7 @@ describe Pratt do
 
     it "should look right with data" do
       populate_with_data
-#      @pratt.expects(:process_template!)
+      @pratt.expects(:process_template!)
 
       @pratt.graph.should == get_expected_display
     end
