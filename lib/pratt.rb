@@ -30,6 +30,8 @@ require 'models/invoice'
 require 'models/invoice_whence'
 require 'models/zip'
 
+require 'views/pop2'
+
 class Pratt
 
   NAME         = 'Pratt'
@@ -157,7 +159,7 @@ class Pratt
   end
 
   def current
-    project_names = ([Project.primary, Project.off] | Project.rest).collect(&:name)
+    project_names = ([Project.primary, Project.off] | Project.rest).compact.collect(&:name)
 
     if last_whence = Whence.last_unended || Whence.last
       puts "   projects: " << (
@@ -251,11 +253,13 @@ class Pratt
     end
   end
 
+
   def pop2
-    self.app.reload
-    return if self.app.gui?('pop', true)
-    self.app.log('pop')
-    puts "Calling pop2"
+#    self.app.reload
+#    return if self.app.gui?('pop', true)
+#    self.app.log('pop')
+    view = Pratt::Pop2.new Whence.last_unended.project
+    view.show
   end
 
   def show_env
@@ -329,14 +333,20 @@ class Pratt
       self.app.reload
       return if self.app.gui?('main', true)
       self.app.log('main')
-      projects = ([Project.primary, Project.off] | Project.rest).collect(&:name)
       if Whence.count == 0 
         # first run
-        project = Whence.new(:project => Project.primary)
+        project = Whence.new(:project => Project.new)
+        current_project_name = project.project.name
       else
         project = Whence.last_unended || Whence.last
+        current_project_name = ''
       end
-      defork { system("ruby views/main.rb  --projects '#{projects*"','"}' --current '#{project.project.name}'") } 
+      if Project.count > 0
+        projects = ([Project.primary, Project.off] | Project.rest).compact.collect(&:name)
+      else
+        projects = []
+      end
+      defork { system("ruby views/main.rb  --projects '#{projects*"','"}' --current '#{current_project_name}'") } 
     end
     def pop
       self.app.reload
