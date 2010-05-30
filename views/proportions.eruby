@@ -1,4 +1,4 @@
-    <%= Pratt.padded_to_max('Total') %> <%= ("%0.2f"%@scaled_total).underline %> hrs
-    <%= Pratt.percent(Project.primary.name,  @primary.to_f,        @scaled_total, :green) %>
-    <%= Pratt.percent(Project.off.name,      @off_total.to_f,      @scaled_total, :yellow) %>
-    <%= Pratt.percent('Other',               @rest_total.to_f,     @scaled_total, :red) %>
+    <%= @scaled_total.to_f.pretty_print.underline.with_label("Total") %> hrs
+    <%= @primary.to_f.percentage( @scaled_total ).green.with_label(Project.primary.name) %>
+    <%= @off_total.to_f.percentage( @scaled_total).yellow.with_label(Project.off.name) %>
+    <%= @rest_total.to_f.percentage( @scaled_total ).red.with_label('Other') %>

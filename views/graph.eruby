@@ -3,13 +3,13 @@ Project detail
   by <%= scale.red %> from
   <%= when_to.send("beginning_of_#{scale}").strftime(Pratt::FMT).blue %> to <%= when_to.send("end_of_#{scale}").strftime(Pratt::FMT).blue %>
 <% end %>
-     <%= Pratt.padded_to_max('') << '  ' << 'dys'.underline << ' '*5 << 'hrs'.underline << ' '*5 << 'min'.underline << ' '*3 << 'total'.underline %>
+     <%= '  '.with_label('') << 'dys'.underline << ' '*5 << 'hrs'.underline << ' '*5 << 'min'.underline << ' '*3 << 'total'.underline %>
 <%= ( '-'.or '·')*67 %>
 
 <% @projects.each do |proj| %>
   <% hour_spent = proj.time_spent(scale, when_to) %>
   <% if show_all or ( !show_all and hour_spent != 0.0 ) %>
-    <%= Pratt.padded_to_max(proj.name) %><%= ('|'.or '⋮') %> <%= (hour_spent / 24).format_integer_with_label( 'day', :cyan ) %> <%= (hour_spent % 24).format_integer_with_label( 'hour', :yellow) %> <%= (60*(hour_spent - hour_spent.to_i)).format_integer_with_label( 'min', :green ) %>   <%= "%0.2f".blue% hour_spent %>
+    <%= ('|'.or '⋮').with_label(proj.name) %> <%= (hour_spent / 24).format_integer.cyan %> day <%= (hour_spent % 24).format_integer.yellow %> hour <%= (60*(hour_spent - hour_spent.to_i)).format_integer.green %> min  <%= hour_spent.pretty_print.blue %>
   <% end %>
 <% end %>
 

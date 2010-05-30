@@ -1,5 +1,5 @@
    projects: <%= @project_names.join ' ' %>
 <% if @last_whence.end_at.nil? %>
     started: <%= @last_whence.start_at.strftime(Pratt::FMT).send(:blue) %>
-next prompt: <%= ( @time_til / 60.0 ).format_integer_with_label( 'min', :yellow ) %> <%= ( @time_til % 60 ).format_integer_with_label( 'sec', :yellow ) %>
+next prompt: <%= ( @time_til / 60.0 ).format_integer.yellow %> min <%= ( @time_til % 60 ).format_integer.yellow %> sec
 <% end %>

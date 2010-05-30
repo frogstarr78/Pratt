@@ -2,7 +2,7 @@
   @whences.each do |whence| 
   color = colors[whence.project.id%colors.size]
 %>
-<%= Pratt.padded_to_max(whence.project.name) %> <%= '|'.or '⌈' %><%= whence.start_at.strftime(Pratt::FMT).send(color) -%>
+<%= ('|'.or '⌈').with_label whence.project.name %><%= whence.start_at.strftime(Pratt::FMT).send(color) -%>
 <% if whence.end_at -%>
  <%= '-'.or '­' %> <%= whence.end_at.strftime(Pratt::FMT).send(color) %><%= '|'.or '⌋' %> <%= "%6.2f"% [(whence.end_at-whence.start_at)/60] %> min
 <% else %>

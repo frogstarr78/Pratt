@@ -3,6 +3,10 @@ class Float
     "%0.2f"% self
   end
 
+  def percentage of_total = 1
+    ( (self/of_total)*100.0 ).pretty_print << "%"
+  end
+
   def to_money
     Money.new(self)
   end
