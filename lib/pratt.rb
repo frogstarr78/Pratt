@@ -77,12 +77,7 @@ class Pratt
     @todo << what
   end
 
-  # Singleton Accessor for @app
-  def app
-    @app ||= App.last
-    @app
-  end
-
+  # Connect to the database in irb for manual commands/investigation
   def console options = []
     require 'irb'
     require 'irb/completion'
@@ -90,6 +85,7 @@ class Pratt
     IRB.start
   end
 
+  # Stop everything and kill daemonized processes.
   def quit
     project.stop! if project? and project.whences.last_unended
     Whence.last_unended.stop! if Whence.last_unended
@@ -103,6 +99,13 @@ class Pratt
     app.save!
   end
 
+  # Singleton Accessor for @app
+  def app
+    @app ||= App.last
+    @app
+  end
+
+  # "Unlock" the gui. 
   def unlock
     self.app.unlock
   end
@@ -130,17 +133,20 @@ class Pratt
     self.quit       if i_should? :quit
     self.daemonize! if i_should? :daemonize and not self.daemonized?
   end
+
   private
     def i_should? what
       @todo.include?(what)
     end
 
+    # Is there a project that can be operated on?
     def project?
       !@project.nil? and @project.name?
     end
 
   class << self
 
+    # Parse cli arguments and init Pratt
     def parse args
       me = Pratt.new
 
