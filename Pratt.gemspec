@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{Pratt}
-  s.version = "1.6.2"
+  s.version = "1.6.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Scott Noel-Hemming"]
-  s.date = %q{2010-03-16}
+  s.date = %q{2010-05-30}
   s.default_executable = %q{pratt.rb}
   s.description = %q{
 	  Need a way to keep track of your time, but get caught up in work? Or constant interruptions?
@@ -47,12 +47,20 @@ Gem::Specification.new do |s|
      "config.rb",
      "db/sqlite_databases_go_here",
      "db/zips.csv.zip",
+     "lib/models.rb",
      "lib/pratt.rb",
-     "lib/pratt/array.rb",
-     "lib/pratt/float.rb",
-     "lib/pratt/nil.rb",
-     "lib/pratt/string.rb",
-     "lib/pratt/time.rb",
+     "lib/pratt.rb.orig",
+     "lib/pratt/core_ext.rb",
+     "lib/pratt/core_ext/array.rb",
+     "lib/pratt/core_ext/float.rb",
+     "lib/pratt/core_ext/nil.rb",
+     "lib/pratt/core_ext/numeric.rb",
+     "lib/pratt/core_ext/string.rb",
+     "lib/pratt/core_ext/time.rb",
+     "lib/pratt/dialogs.rb",
+     "lib/pratt/formatting.rb",
+     "lib/pratt/project_actions.rb",
+     "lib/pratt/reports.rb",
      "models/app.rb",
      "models/customer.rb",
      "models/invoice.rb",
@@ -306,20 +314,25 @@ Gem::Specification.new do |s|
      "pkgs/tktray1.2.tar.gz",
      "pratt.mm",
      "reports/travel.log",
+     "reports/travel.log.2009",
      "spec/app_spec.rb",
      "spec/customer_spec.rb",
      "spec/fixtures/graph.expectation",
+     "spec/fixtures/proportions.expectation",
+     "spec/float_spec.rb",
+     "spec/numeric_spec.rb",
      "spec/payment_spec.rb",
      "spec/pratt_spec.rb",
      "spec/project_spec.rb",
      "spec/rcov.opts",
      "spec/spec.opts",
      "spec/spec_helper.rb",
+     "spec/string_ext_spec.rb",
      "spec/whence_spec.rb",
      "tasks/pratt.rb",
      "templates/model.eruby",
      "templates/spec.eruby",
-     "views/env.rb",
+     "views/current.eruby",
      "views/general-invoice.eruby",
      "views/graph.eruby",
      "views/invoice.eruby",
@@ -327,6 +340,7 @@ Gem::Specification.new do |s|
      "views/pid.eruby",
      "views/pop.rb",
      "views/pop2.rb",
+     "views/proportions.eruby",
      "views/raw.eruby"
   ]
   s.homepage = %q{http://github.com/frogstarr78/pratt}
@@ -336,12 +350,15 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.6}
   s.summary = %q{Pro/Re-Active Time Tracker.  Track time based on what you expect to be working on, with frequent prompts to ensure accuracy.}
   s.test_files = [
-    "spec/customer_spec.rb",
-     "spec/project_spec.rb",
-     "spec/pratt_spec.rb",
+    "spec/whence_spec.rb",
      "spec/spec_helper.rb",
+     "spec/float_spec.rb",
+     "spec/pratt_spec.rb",
+     "spec/project_spec.rb",
+     "spec/numeric_spec.rb",
      "spec/app_spec.rb",
-     "spec/whence_spec.rb",
+     "spec/string_ext_spec.rb",
+     "spec/customer_spec.rb",
      "spec/payment_spec.rb"
   ]
 
