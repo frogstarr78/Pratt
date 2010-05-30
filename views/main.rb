@@ -22,11 +22,6 @@ ARGV.options do |opt|
   opt.parse!
 end
 
-if opts.projects.empty?
-  raise 'No Projects' if ARGV.empty?
-  opts.projects = ARGV.split(',')
-end
-
 opts.current = opts.projects.index(opts.current) if opts.current == -1
 
 root = TkRoot.new { title "Pratt Main" }
@@ -36,7 +31,7 @@ button_holder_top    = Tk::Tile::Frame.new(button_holder) { padding "5 5 5 5" }
 
 project_combo  = Tk::Tile::TCombobox.new(button_holder_top)
 project_combo.values = opts.projects
-project_combo.current = opts.current
+project_combo.current = opts.current unless opts.current.nil?
 project_combo.pack('side' => 'bottom', 'fill' => 'y')
 
 change = proc {
