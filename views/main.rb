@@ -4,6 +4,8 @@ require 'tkextlib/tile'
 require 'optparse'
 require 'ostruct'
 
+include Tk::Tile
+
 opts = OpenStruct.new
 opts.projects = []
 opts.current  = -1
@@ -31,12 +33,12 @@ opts.current = opts.projects.index(opts.current) if opts.current == -1
 
 root = TkRoot.new { title "Pratt Main" }
 
-button_holder        = Tk::Tile::Frame.new(root){ padding "5 5 5 5" }
-button_holder_top    = Tk::Tile::Frame.new(button_holder) { padding "5 5 5 5" }
+button_holder        = Frame.new(root){ padding "5 5 5 5" }
+button_holder_top    = Frame.new(button_holder) { padding "5 5 5 5" }
 
-project_combo  = Tk::Tile::TCombobox.new(button_holder_top)
+project_combo  = TCombobox.new(button_holder_top)
 project_combo.values = opts.projects
-project_combo.current = opts.current
+project_combo.current = opts.current || 0
 project_combo.pack('side' => 'bottom', 'fill' => 'y')
 
 change = proc {
@@ -58,9 +60,9 @@ start = proc {
   exit
 }
 
-Tk::Tile::Label.new(button_holder_top) { text "What will you be working on?" }.pack('side' => 'top', :fill => 'y')
+Label.new(button_holder_top) { text "What will you be working on?" }.pack('side' => 'top', :fill => 'y')
 
-button_holder_bottom = Tk::Tile::Frame.new(button_holder) { padding "5 5 5 5" }
+button_holder_bottom = Frame.new(button_holder) { padding "5 5 5 5" }
 TkButton.new(button_holder_bottom) do 
   text 'Start'
   command start
