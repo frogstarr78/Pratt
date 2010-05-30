@@ -10,6 +10,11 @@ end
 describe Project do
   it_should_behave_like "being a billable item"
 
+  it{ Project.should respond_to(:primary) }
+  it{ Project.should respond_to(:off) }
+  it{ Project.should respond_to(:rest) }
+  it{ Project.should respond_to(:longest_project_name) }
+
   context "scopes" do
     it "named primary" do 
       Project.expects(:first).with(:conditions => { :weight => 1 }).returns(mock('Refactor'))
@@ -160,4 +165,5 @@ describe Project do
       @project.time_spent('day', Chronic.parse('yesterday')).should == 18.0/60
     end
   end
+
 end
