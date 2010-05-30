@@ -105,4 +105,11 @@ class Pratt
     process_template!
   end
 
+  private
+    def process_template!
+      input = File.open(Pratt.root("views", "#{template}.eruby").first).read
+      erubis = Erubis::Eruby.new(input)
+      puts erubis.evaluate(self)
+    end
+
 end
