@@ -147,8 +147,6 @@ class Pratt
 
   def run
     self.when_to.week_day_start = self.week_day_start
-    puts "<!-- when_to: #{self.when_to}, week_day_start: #{self.when_to.week_day_start} -->"
-    # must happen before any actions but after all cli argument parsing
 
     self.begin      if i_should? :begin
     self.change     if i_should? :change
@@ -189,15 +187,15 @@ class Pratt
     }
   end
 
-  def max 
-    self.class.max
-  end
-
   private
-    def main
+    def reload_and_detect_lock of
       self.app.reload
-      return if self.app.gui?('main', true)
-      self.app.log('main')
+      return if self.app.gui? of
+      self.app.log of
+    end
+
+    def main
+      reload_and_detect_lock 'main'
       projects = ([Project.primary, Project.off] | Project.rest).collect(&:name)
       if Whence.count == 0 
         # first run
@@ -213,16 +211,27 @@ class Pratt
       else
         projects = []
       end
-      defork { system("ruby views/main.rb  --projects '#{projects*"','"}' --current '#{current_project_name}'") } 
+      defork { 
+        command = "ruby views/main.rb  --projects '#{projects*"','"}' --current '#{current_project_name}'"
+        system command
+      } 
     end
 
     def pop
-      self.app.reload
-      return if self.app.gui?('pop', true)
-      self.app.log('pop')
+      reload_and_detect_lock 'pop'
       self.project = Whence.last_unended.project
-      defork { system("ruby views/pop.rb  --project '#{project.name}' --start '#{project.whences.last_unended.start_at}' --project_time '#{Pratt.totals(project.time_spent)}'") }
+      defork do
+        command = "ruby views/pop.rb  --project '#{project.name}' --start '#{project.whences.last_unended.start_at}' --project_time '#{Pratt.totals(project.time_spent)}'"
+        system command
+      end
     end
+
+    def defork &block
+      Process.detach(
+        fork &block 
+      )
+    end
+
 
     def i_should? what
       @todo.include?(what)
@@ -242,19 +251,8 @@ class Pratt
       self.class.padded_to_max string
     end
 
-    def defork &block
-      Process.detach(
-        fork &block 
-      )
-    end
-
   class << self
 
-
-    def max
-      # TODO Fix me
-      @max ||= Project.all.inject(0) {|x,p| x = p.name.length if p.name.length > x; x }
-    end
 
     def color
       @@color
@@ -392,6 +390,10 @@ class Pratt
       "#{fmt_i(hr / 24, 'day', :cyan)} #{fmt_i(hr % 24, 'hour', :yellow)} #{fmt_i((60*(hr -= hr.to_i)), 'min', :green)}"
     end
 
+    def fmt_i int, label, color
+      "%s #{label}"% [("%02i"% int).send(color), label]
+    end
+
     def percent label, off, total, color
       percent = "%0.2f"% ((off/total)*100)
       padded_to_max(label) << " #{percent}%".send(color)
@@ -416,14 +418,14 @@ class Pratt
 
     # Pad the output string to the maximum Project name
     def padded_to_max string
-      "%#{max}.#{max}s"% string
+      project_padding = Project.longest_length_project
+      "%#{project_padding}.#{project_padding}s"% string
     end
 
     # Migrate schema.
     def migrate
       Pratt.root( 'models', '*.rb' ) do |model_file|
         klass = File.basename( model_file, '.rb' ).classify.constantize
-		puts "klass #{klass}"
         begin
           ActiveRecord::Base.connection.table_structure(model_file)
         rescue ActiveRecord::StatementInvalid
@@ -431,10 +433,5 @@ class Pratt
         end
       end
     end
-     
-      def fmt_i int, label, color
-        "%s #{label}"% [("%02i"% int).send(color), label]
-      end
-
   end
 end
