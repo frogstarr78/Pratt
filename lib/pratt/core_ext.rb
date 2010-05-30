@@ -1,0 +1,5 @@
+require 'lib/pratt/core_ext/array'
+require 'lib/pratt/core_ext/string'
+require 'lib/pratt/core_ext/time'
+require 'lib/pratt/core_ext/float'
+require 'lib/pratt/core_ext/nil'

@@ -1,0 +1,8 @@
+require 'models/app'
+require 'models/customer'
+require 'models/whence'
+require 'models/project'
+require 'models/payment'
+require 'models/invoice'
+require 'models/invoice_whence'
+require 'models/zip'

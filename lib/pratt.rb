@@ -15,20 +15,10 @@ require 'shifty_week'
 require 'shifty_week/time'
 require 'shifty_week/date'
 
-require 'lib/pratt/array'
-require 'lib/pratt/string'
-require 'lib/pratt/time'
-require 'lib/pratt/float'
-require 'lib/pratt/nil'
+require 'lib/pratt/core_ext'
+require 'lib/pratt/reports'
+require 'lib/models'
 
-require 'models/app'
-require 'models/customer'
-require 'models/whence'
-require 'models/project'
-require 'models/payment'
-require 'models/invoice'
-require 'models/invoice_whence'
-require 'models/zip'
 
 class Pratt
 
@@ -56,7 +46,7 @@ class Pratt
   INVOICE_FMT = "%x"
   @@color = true
 
-  attr_accessor :when_to, :scale, :color, :show_all, :env, :raw_conditions, :template, :week_day_start
+  attr_accessor :when_to, :scale, :color, :show_all, :raw_conditions, :template, :week_day_start
   attr_reader :project, :todo
   def initialize proj = nil
     @when_to        = DateTime.now
@@ -66,7 +56,6 @@ class Pratt
     @scale          = nil
     @show_all       = false
     @template       = nil
-    @env            = :development
     @raw_conditions = ''
     self.project = proj unless proj.nil?
   end
@@ -93,86 +82,11 @@ class Pratt
     @app
   end
 
-  # TODO Rename
-  def graph
-    @primary = @off_total = @rest_total = 0.0
-    self.template = 'graph'
-
-    if project?
-      @projects = [project]
-
-      @primary = project.time_spent(scale, when_to)
-      @scaled_total = project.whences.time_spent(scale, when_to)
-    else
-      @projects = Project.all
-
-      @projects.each do |proj| 
-        @primary     = proj.time_spent(scale, when_to) if proj.name == Project.primary.name
-        @off_total   = proj.time_spent(scale, when_to) if proj.name == Project.off.name
-        @rest_total += proj.time_spent(scale, when_to) if Project.rest.collect(&:name).include?(proj.name)
-      end
-      @scaled_total = Whence.time_spent(scale, when_to)-@off_total
-    end
-
-    if @primary + @off_total + @rest_total > 0.0
-      process_template!
-    else
-      "No data to report"
-    end
-  end
-
-  # Generate an invoice for a given time period
-  def invoice
-    self.template ||= 'invoice'
-
-    if project?
-      @projects = [project]
-
-      @total = project.amount(scale, when_to)
-    else
-      @projects = (Project.all - [Project.primary, Project.off])
-      @projects.select! {|proj| show_all or ( !show_all and proj.time_spent(scale, when_to) != 0.0 ) }
-
-      @total = @projects.inject 0.0 do |total, proj| 
-        total += proj.amount(scale, when_to)
-        total
-      end
-    end
-
-    @projects.each do |project| 
-      puts "<!-- #{project.name} #{project.payment.inspect} -->"
-    end
-    if @total > 0.0
-      process_template!
-    else
-      puts "No data to report"
-    end
-  end
-
   def console options = []
     require 'irb'
     require 'irb/completion'
     ARGV.clear
     IRB.start
-  end
-
-  def current
-    self.template = 'current'
-    @last_whence = Whence.last_unended || Whence.last || Whence.new( :end_at => nil, :project => Project.new )
-
-    projects = ([Project.primary, Project.off] | Project.rest).compact
-    @project_names = projects.collect do |proj| 
-
-      if @last_whence.end_at.nil? && @last_whence.project.name == proj.name
-        colored_name = proj.name.green
-      else
-        colored_name = proj.name.magenta
-      end
-      "'" << colored_name << "'"
-    end
-    @time_til = ( app.interval - ( Time.now - @last_whence.start_at ) ) if @last_whence.end_at.nil?
-
-    process_template!
   end
 
   def begin
@@ -198,43 +112,13 @@ class Pratt
   def destroy
     project.destroy
   end
-
-  def cpid
-    `pgrep -fl 'bin/pratt'`.chomp.split(' ').first
-  end
-
-  def pid
-    self.template = 'pid'
-    process_template!
-  end
-
-  def raw
-    self.template = 'raw'
-
-    if project?
-      @whences = project.whences.all
-    else
-      case raw_conditions
-        when 'all'
-          @whences = Whence.find raw_conditions.to_sym
-        when /^last$/, 'first'
-          @whences = [Whence.find raw_conditions.to_sym]
-        when /last[\(\s]?(\d+)[\)\s]?/
-          @whences = Whence.all.last($1.to_i)
-        else
-          @whences = Whence.all :conditions => ["start_at > ?", Chronic.parse("today 00:00")]
-      end
-    end
-    @whences.sort_by(&:id)
-    process_template!
-  end
-
   def quit
     project.stop! if project? and project.whences.last_unended
     Whence.last_unended.stop! if Whence.last_unended
     begin
       Process.kill("KILL", app.pid.to_i)
     rescue Errno::ESRCH
+      puts "Unable to kill Pratt@pid(#{app.pid})."
     end
     app.pid = ''
     app.gui = ''
@@ -247,10 +131,6 @@ class Pratt
     else
       main
     end
-  end
-
-  def show_env
-    defork { system("ruby views/env.rb ") } 
   end
 
   def detect
@@ -284,7 +164,6 @@ class Pratt
     self.invoice    if i_should? :invoice
     self.console    if i_should? :console
     self.gui        if i_should? :gui
-    self.show_env   if i_should? :env
     self.detect     if i_should? :detect
     self.unlock     if i_should? :unlock
 
@@ -503,7 +382,6 @@ class Pratt
         opt.parse!
       end
 
-      me << :env if args.include? 'env'
       me << :console if args.include? 'console'
 
       me.run
