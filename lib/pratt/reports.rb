@@ -2,8 +2,20 @@ class Pratt
 
   # TODO Rename
   def graph
-    @primary = @off_total = @rest_total = 0.0
     self.template = 'graph'
+
+    if project?
+      @projects = [project]
+    else
+      @projects = Project.all
+    end
+
+    process_template!
+  end
+
+  def proportions
+    @primary = @off_total = @rest_total = 0.0
+    self.template = 'proportions'
 
     if project?
       @projects = [project]

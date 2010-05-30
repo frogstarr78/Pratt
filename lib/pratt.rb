@@ -15,6 +15,7 @@ require 'shifty_week'
 require 'shifty_week/time'
 require 'shifty_week/date'
 
+require 'lib/pratt/formatting'
 require 'lib/pratt/core_ext'
 require 'lib/pratt/dialogs'
 require 'lib/pratt/project_actions'
@@ -111,27 +112,36 @@ class Pratt
   end
 
   def run
+    # ensure we've shifted the when_to value to the 
+    # current start of week
     self.when_to.week_day_start = self.week_day_start
 
-    self.begin      if i_should? :begin
-    self.change     if i_should? :change
-    self.restart    if i_should? :restart
-    self.end        if i_should? :end
+    # << order is semi important
+    self.end         if i_should? :end
+    self.begin       if i_should? :begin
+    self.change      if i_should? :change
+    self.restart     if i_should? :restart
 
-    self.destroy    if i_should? :destroy
+    self.destroy     if i_should? :destroy
+    # end order is semi important
 
-    self.pid        if i_should? :pid
-    self.raw        if i_should? :raw
-    self.current    if i_should? :current
-    self.graph      if i_should? :graph
-    self.invoice    if i_should? :invoice
-    self.console    if i_should? :console
-    self.gui        if i_should? :gui
-    self.detect     if i_should? :detect
-    self.unlock     if i_should? :unlock
+    # << order doesn't matter within this set
+    self.pid         if i_should? :pid
+    self.raw         if i_should? :raw
+    self.current     if i_should? :current
+    self.graph       if i_should? :graph
+    self.proportions if i_should? :proportions
+    self.invoice     if i_should? :invoice
+    self.console     if i_should? :console
+    self.gui         if i_should? :gui
+    self.detect      if i_should? :detect
+    self.unlock      if i_should? :unlock
+    # end order doesn't matter within this set
 
-    self.quit       if i_should? :quit
-    self.daemonize! if i_should? :daemonize and not self.daemonized?
+    # << these should happen last
+    self.quit        if i_should? :quit
+    self.daemonize!  if i_should? :daemonize and not self.daemonized?
+    # end these should happen last
   end
 
   private
@@ -179,6 +189,9 @@ class Pratt
         end
         opt.on('-I', "--invoice", "Create an invoice.") do
           me << :invoice
+        end
+        opt.on('-r', '--proportions', "") do
+          me << :proportions
         end
         opt.on('-p', '--pid', "Process id display. (Is it still running)") do
             me << :pid
