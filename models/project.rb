@@ -26,12 +26,16 @@ class Project < ActiveRecord::Base
   end
 
   def time_spent scale = nil, when_to = DateTime.now
-    spent(self.whences).call(scale, when_to)
+    whences_since = self.whences.find :all, :conditions => conditions_for_time_spent(scale, when_to)
+    whences_since.inject(0.0) {|total, whence| 
+      total += ( whence.end_at - whence.start_at )
+    } / 3600
   end
 
   def amount scale = nil, when_to = Time.now
-    amount = spent(self.whences).call(scale, when_to) * payment.rate/100
-	amount.to_money
+    amount = time_spent(scale, when_to) 
+    amount *= payment.rate / 100.0
+    amount.to_money
   end
 
   class << self

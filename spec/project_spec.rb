@@ -96,7 +96,7 @@ describe Project do
 
     context "amount calculation" do
       before :each do
-        Payment.create :rate => '315', :billable => @project
+        Payment.create :rate => '315.0', :billable => @project
 
         @now = Time.parse("2009-10-04 17:53:58")
         Time.stubs(:now).returns(@now.beginning_of_week)
@@ -132,7 +132,7 @@ describe Project do
     end
 
     it "correctly calculates with no data" do
-      Whence.expects(:find).with(:all, :conditions => ["end_at IS NOT NULL"]).returns []
+      @project.expects(:time_spent).returns 0
       @project.time_spent.should == 0.0
     end
 

@@ -150,12 +150,14 @@ class Pratt
   end
 
   def console options = []
-    options << %w(-r\ irb/completion -r\ lib/pratt --simple-prompt)
-    exec "irb #{options.join ' '}"
+    require 'irb'
+    require 'irb/completion'
+    ARGV.clear
+    IRB.start
   end
 
   def current
-    project_names = ([Project.primary, Project.off] | Project.rest).collect(&:name)
+    project_names = ([Project.primary, Project.off] | Project.rest).compact.collect(&:name)
 
     if last_whence = Whence.last_unended || Whence.last
       puts "   projects: " << (
@@ -322,12 +324,21 @@ class Pratt
       projects = ([Project.primary, Project.off] | Project.rest).collect(&:name)
       if Whence.count == 0 
         # first run
-        project = Whence.new(:project => Project.primary)
+        project = Whence.new(:project => Project.new)
+        current_project_name = project.project.name
       else
         project = Whence.last_unended || Whence.last
+        current_project_name = ''
       end
-      defork { system("ruby views/main.rb  --projects '#{projects*"','"}' --current '#{project.project.name}'") } 
+
+      if Project.count > 0
+        projects = ([Project.primary, Project.off] | Project.rest).compact.collect(&:name)
+      else
+        projects = []
+      end
+      defork { system("ruby views/main.rb  --projects '#{projects*"','"}' --current '#{current_project_name}'") } 
     end
+
     def pop
       self.app.reload
       return if self.app.gui?('pop', true)

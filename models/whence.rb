@@ -44,7 +44,10 @@ class Whence < ActiveRecord::Base
     include Pratt::TimeSpent
 
     def time_spent scale = nil, when_to = Time.now
-      spent(self).call(scale, when_to)
+      whences_since = Whence.find :all, :conditions => conditions_for_time_spent(scale, when_to)
+      whences_since.inject(0.0) {|total, whence| 
+          total += ( whence.end_at - whence.start_at )
+        } / 3600
     end
 
     def last_unended
