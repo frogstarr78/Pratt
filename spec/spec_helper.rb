@@ -1,6 +1,8 @@
 # This file is copied to ~/spec when you run 'ruby script/generate rspec'
 # from the project root directory.
+require 'rubygems'
 require 'spec'
+require 'mocha'
 require 'lib/pratt'
 require 'ruby-debug'
 
