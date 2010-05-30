@@ -6,9 +6,8 @@ class App < ActiveRecord::Base
     save!
   end
 
-  def gui? which = '', log_err = false
+  def gui? which = ''
     match = (self.gui == which)
-#    $stderr.write("#{which} already being displayed\n") if log_err
     match
   end
 
