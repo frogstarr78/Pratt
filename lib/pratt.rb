@@ -143,7 +143,7 @@ class Pratt
       puts "<!-- #{project.name} #{project.payment.inspect} -->"
     end
     if @total > 0.0
-      puts process_template!
+      process_template!
     else
       puts "No data to report"
     end
@@ -157,24 +157,22 @@ class Pratt
   end
 
   def current
-    project_names = ([Project.primary, Project.off] | Project.rest).compact.collect(&:name)
+    self.template = 'current'
+    @last_whence = Whence.last_unended || Whence.last || Whence.new( :end_at => nil, :project => Project.new )
 
-    if last_whence = Whence.last_unended || Whence.last
-      puts "   projects: " << (
-        project_names.collect {|project_name| "'#{project_name.send(last_whence.end_at.nil? && last_whence.project.name == project_name ? :green : :magenta)}'" }
-      ) * ' '
-      if last_whence.end_at.nil?
-        puts "    started: #{last_whence.start_at.strftime(FMT).send(:blue)}"
-        time_til = ( app.interval - ( Time.now - last_whence.start_at ) )
-        puts "next prompt: %s %s"% [Pratt.fmt_i( time_til / 60.0, 'min', :yellow ), Pratt.fmt_i( time_til % 60, 'sec', :yellow ) ], ''
+    projects = ([Project.primary, Project.off] | Project.rest).compact
+    @project_names = projects.collect do |proj| 
+
+      if @last_whence.end_at.nil? && @last_whence.project.name == proj.name
+        colored_name = proj.name.green
+      else
+        colored_name = proj.name.magenta
       end
-    else
-      puts "   projects: " << (
-        project_names.collect do |project_name| 
-          "'#{project_name.magenta}'" 
-        end
-      ) * ' '
+      "'" << colored_name << "'"
     end
+    @time_til = ( app.interval - ( Time.now - @last_whence.start_at ) ) if @last_whence.end_at.nil?
+
+    process_template!
   end
 
   def begin
@@ -207,7 +205,7 @@ class Pratt
 
   def pid
     self.template = 'pid'
-    puts process_template!
+    process_template!
   end
 
   def raw
@@ -228,7 +226,7 @@ class Pratt
       end
     end
     @whences.sort_by(&:id)
-    puts process_template!
+    process_template!
   end
 
   def quit
@@ -282,7 +280,7 @@ class Pratt
     self.pid        if i_should? :pid
     self.raw        if i_should? :raw
     self.current    if i_should? :current
-    puts self.graph      if i_should? :graph
+    self.graph      if i_should? :graph
     self.invoice    if i_should? :invoice
     self.console    if i_should? :console
     self.gui        if i_should? :gui
@@ -358,7 +356,7 @@ class Pratt
     def process_template!
       input = File.open(Pratt.root("views", "#{template}.eruby").first).read
       erubis = Erubis::Eruby.new(input)
-      erubis.evaluate(self)
+      puts erubis.evaluate(self)
     end
 
     def padded_to_max string
