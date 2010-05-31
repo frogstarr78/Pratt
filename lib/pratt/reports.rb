@@ -50,7 +50,7 @@ class Pratt
       @total = project.amount( project.time_spent(scale, when_to) )
     else
       @projects = (Project.all - [Project.primary, Project.off])
-      @projects.select! {|proj| show_all or ( !show_all and proj.time_spent(scale, when_to) != 0.0 ) }
+      @projects = @projects.select {|proj| show_all or ( !show_all and proj.time_spent(scale, when_to) != 0.0 ) }
 
       @total = @projects.inject 0.0 do |total, proj| 
         total += proj.amount( proj.time_spent(scale, when_to) )
