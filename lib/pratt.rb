@@ -77,7 +77,7 @@ class Pratt
   end
 
   # Connect to the database in irb for manual commands/investigation
-  def console options = []
+  def console
     require 'irb'
     require 'irb/completion'
     ARGV.clear
