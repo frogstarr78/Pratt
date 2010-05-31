@@ -64,7 +64,7 @@ class Pratt
     if @total > 0.0
       process_template!
     else
-      $stdout.puts "No data to report"
+      $stdout.puts "No data to report in Pratt#invoice"
     end
   end
 
