@@ -13,7 +13,11 @@ class Customer < ActiveRecord::Base
     phone = read_attribute(:phone)
     class << phone
       def pretty_print sep = '.'
-        self.split(/(\d{3})(\d{3})(\d{4})/)[1,3] * sep
+        if self.blank?
+          ""
+        else
+          self.split(/(\d{3})(\d{3})(\d{4})/)[1,3] * sep
+        end
       end
     end
     phone
