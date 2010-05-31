@@ -1,4 +1,3 @@
-require 'active_record'
 PRATT_ENV = ENV["PRATT_ENV"] || 'development' unless Object.const_defined? :PRATT_ENV
 
 class Pratt
