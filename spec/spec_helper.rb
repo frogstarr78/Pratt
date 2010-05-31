@@ -12,30 +12,34 @@ Spec::Runner.configure do |config|
 
   Pratt.connect! 'test'
 
-  Customer.create(
-	:name         => 'Scott Noel-Hemming',
-	:company_name => 'Frogstarr78 Software',
-	:address      => '312 NW 7th',
-	:phone        => '509.730.5401',
-	:zip          => '97862'
-  ) unless Customer.count > 0
+  if Customer.count > 0
+    customer = Customer.find :first
+  else
+    customer = Customer.create(
+      :name         => 'Scott Noel-Hemming',
+      :company_name => 'Frogstarr78 Software',
+      :address      => '312 NW 7th',
+      :phone        => '509.730.5401',
+      :zip          => '97862'
+    ) 
+  end
 
   Project.create(
 	[
 	  {
-		:name => 'Refactor',
-		:weight => 1,
-		:customer_id => 0
+      :name => 'Refactor',
+      :weight => 1,
+      :customer => customer
 	  },
 	  {
-		:name => 'Lunch/Break',
-		:weight => 0,
-		:customer_id => 0
+      :name => 'Lunch/Break',
+      :weight => 0,
+      :customer => customer
 	  },
 	  {
-		:name => 'Other',
-		:weight => -1,
-		:customer_id => 0
+      :name => 'Other',
+      :weight => -1,
+      :customer => customer
 	  }
 	]
   ) unless Project.count > 0
