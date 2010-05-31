@@ -61,8 +61,9 @@ class Pratt
     def pop
       reload_and_detect_lock 'pop'
       self.project = Whence.last_unended.project
+      project_time = project.formatted_time_spent_totals( project.time_spent(scale, when_to) )
       defork do
-        command = "ruby views/pop.rb  --project '#{project.name}' --start '#{project.whences.last_unended.start_at}' --project_time '#{Pratt.totals(project.time_spent)}'"
+        command = "ruby views/pop.rb  --project '#{project.name}' --start '#{project.whences.last_unended.start_at}' --project_time '#{project_time}'"
         system command
       end
     end

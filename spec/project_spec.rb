@@ -118,15 +118,15 @@ describe Project do
       end
 
       it "is correct with no arguments" do
-        @project.amount.should == 6*3.15
+        @project.amount(@project.time_spent).should == 6*3.15
       end
 
       it "is correct with a scale" do
-        @project.amount(:month).should == 6*3.15
+        @project.amount(@project.time_spent(:month)).should == 6*3.15
       end
 
       it "is correct with a scale and time" do
-        @project.amount(:week, @now).should == 3*3.15
+        @project.amount(@project.time_spent(:week, @now)).should == 3*3.15
       end
     end
   end

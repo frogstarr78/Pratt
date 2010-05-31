@@ -25,17 +25,18 @@ class Project < ActiveRecord::Base
     self.start! at
   end
 
-  def time_spent scale = nil, when_to = DateTime.now
+  def time_spent scale = nil, when_to = DateTime.now, &block
     whences_since = self.whences.find :all, :conditions => conditions_for_time_spent(scale, when_to)
-    whences_since.inject(0.0) {|total, whence| 
-      total += ( whence.end_at - whence.start_at )
-    } / 3600
+    total_whences whences_since
   end
 
-  def amount scale = nil, when_to = Time.now
-    amount = time_spent(scale, when_to) 
-    amount *= payment.rate / 100.0
+  def amount hour
+    amount = hour * ( payment.rate / 100.0 )
     amount.to_money
+  end
+
+  def formatted_time_spent_totals hour
+    "#{(hour / 24).format_integer.cyan} day #{(hour % 24).format_integer.yellow} hour #{(60*(hour -= hour.to_i)).format_integer.green} min"
   end
 
   class << self

@@ -45,9 +45,7 @@ class Whence < ActiveRecord::Base
 
     def time_spent scale = nil, when_to = Time.now
       whences_since = Whence.find :all, :conditions => conditions_for_time_spent(scale, when_to)
-      whences_since.inject(0.0) {|total, whence| 
-          total += ( whence.end_at - whence.start_at )
-        } / 3600
+      total_whences whences_since
     end
 
     def last_unended

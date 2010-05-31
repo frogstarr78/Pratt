@@ -21,7 +21,7 @@ class Pratt
       @projects = [project]
 
       @primary = project.time_spent(scale, when_to)
-      @scaled_total = project.whences.time_spent(scale, when_to)
+      @scaled_total = project.time_spent(scale, when_to)
     else
       @projects = Project.all
 
@@ -30,7 +30,7 @@ class Pratt
         @off_total   = proj.time_spent(scale, when_to) if proj.name == Project.off.name
         @rest_total += proj.time_spent(scale, when_to) if Project.rest.collect(&:name).include?(proj.name)
       end
-      @scaled_total = Whence.time_spent(scale, when_to)-@off_total
+      @scaled_total = Whence.time_spent(scale, when_to) - @off_total
     end
 
     if @primary + @off_total + @rest_total > 0.0
@@ -47,13 +47,13 @@ class Pratt
     if project?
       @projects = [project]
 
-      @total = project.amount(scale, when_to)
+      @total = project.amount( project.time_spent(scale, when_to) )
     else
       @projects = (Project.all - [Project.primary, Project.off])
       @projects.select! {|proj| show_all or ( !show_all and proj.time_spent(scale, when_to) != 0.0 ) }
 
       @total = @projects.inject 0.0 do |total, proj| 
-        total += proj.amount(scale, when_to)
+        total += proj.amount( proj.time_spent(scale, when_to) )
         total
       end
     end
