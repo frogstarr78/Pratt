@@ -450,7 +450,7 @@
 			<p><%= project.payment.pretty_print %></p>
         </td>
         <td style="text-align:right;  " class="ce31">
-          <p><%= project.amount(scale, when_to).pretty_print %></p>
+          <p><%= project.amount( project.time_spent( scale, when_to ) ).pretty_print %></p>
         </td>
       </tr>
 		<% end %>
@@ -468,7 +468,7 @@
           <!--p>SUBTOTAL</p-->
         </td>
         <td style="text-align:right;  " class="ce36">
-          <!--p><%= project.amount(scale, when_to).pretty_print %></p-->
+          <!--p><%= project.amount( project.time_spent( scale, when_to ) ).pretty_print %></p-->
         </td>
       </tr>
       <tr class="ro2">
@@ -480,7 +480,7 @@
           <p>TOTAL</p>
         </td>
 		<td style="text-align:right;  " class="ce21 ce34">
-          <p><%= project.amount(scale, when_to).pretty_print %></p>
+          <p><%= project.amount( project.time_spent( scale, when_to ) ).pretty_print %></p>
         </td>
       </tr>
       <tr class="ro2">
