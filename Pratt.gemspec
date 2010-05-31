@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{Pratt}
-  s.version = "1.6.5"
+  s.version = "1.6.8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Scott Noel-Hemming"]
-  s.date = %q{2010-05-30}
+  s.date = %q{2010-05-31}
   s.default_executable = %q{pratt.rb}
   s.description = %q{
 	  Need a way to keep track of your time, but get caught up in work? Or constant interruptions?
@@ -40,7 +40,6 @@ Gem::Specification.new do |s|
      "README.html",
      "README.txt",
      "Rakefile",
-     "Session.vim",
      "TODO",
      "VERSION",
      "bin/pratt.rb",
@@ -315,15 +314,22 @@ Gem::Specification.new do |s|
      "reports/travel.log",
      "reports/travel.log.2009",
      "spec/app_spec.rb",
+     "spec/array_spec.rb",
      "spec/customer_spec.rb",
+     "spec/fixtures/empty_graph.expectation",
      "spec/fixtures/graph.expectation",
      "spec/fixtures/proportions.expectation",
      "spec/float_spec.rb",
+     "spec/formatting_spec.rb",
+     "spec/money_spec.rb",
+     "spec/nil_class_spec.rb",
      "spec/numeric_spec.rb",
      "spec/payment_spec.rb",
      "spec/pratt_spec.rb",
      "spec/project_spec.rb",
      "spec/rcov.opts",
+     "spec/report_action_spec.rb",
+     "spec/report_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb",
      "spec/string_ext_spec.rb",
@@ -348,15 +354,21 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.6}
   s.summary = %q{Pro/Re-Active Time Tracker.  Track time based on what you expect to be working on, with frequent prompts to ensure accuracy.}
   s.test_files = [
-    "spec/whence_spec.rb",
+    "spec/nil_class_spec.rb",
+     "spec/whence_spec.rb",
+     "spec/array_spec.rb",
      "spec/spec_helper.rb",
      "spec/float_spec.rb",
      "spec/pratt_spec.rb",
      "spec/project_spec.rb",
      "spec/numeric_spec.rb",
      "spec/app_spec.rb",
+     "spec/formatting_spec.rb",
      "spec/string_ext_spec.rb",
      "spec/customer_spec.rb",
+     "spec/report_spec.rb",
+     "spec/money_spec.rb",
+     "spec/report_action_spec.rb",
      "spec/payment_spec.rb"
   ]
 
