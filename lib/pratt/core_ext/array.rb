@@ -7,7 +7,11 @@ class Pratt
       # @param [String] conjunction
       # @return [String] 
       def to_sentence conjunction = 'and'
-        self[0..-2].join(", ") << (self.size > 2 ? ',' : '') << " #{conjunction} #{self.last}"
+        if self.size >= 2
+          self[0..-2].join(", ") << (self.size > 2 ? ',' : '') << " #{conjunction} #{self.last}"
+        elsif self.size <= 1
+          self.first.to_s
+        end
       end
     end
   end
