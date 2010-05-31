@@ -47,7 +47,10 @@ describe Project do
   end
 
   context "instances" do
+    include SeedData
+
     before :each do
+      load_seed_data
       @project = Project.primary
       @log_count = @project.whences.size
     end

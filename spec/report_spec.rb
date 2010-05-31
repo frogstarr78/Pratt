@@ -26,6 +26,7 @@ describe "Pratt report method" do
   end
 
   describe "output" do
+    include SeedData
     before :each do
       @when_to = Chronic.parse('September 29 2009').beginning_of_week
       @pratt.scale = 'week'
@@ -81,7 +82,8 @@ describe "Pratt report method" do
     end
 
     def populate_with_data
-      @tasks << Project.find_or_create_by_name( :name => '**** ********', :weight => 1, :customer => @customer )
+      load_seed_data
+      @tasks << Project.primary
       task 'Lunch/Break', 1.hour+21.minutes+0.seconds
       task 'Task1', 1.hour+4.minutes+0.seconds
       task 'Task2', 58.minutes+0.seconds
@@ -91,6 +93,7 @@ describe "Pratt report method" do
   end
 
   describe "#proportions" do
+    include SeedData
     before :each do
       @when_to = Chronic.parse('last week').beginning_of_week
       @pratt.scale = 'week'
@@ -113,7 +116,8 @@ describe "Pratt report method" do
     end
 
     def populate_with_data
-      primary = Project.find_or_create_by_name( :name => 'Refactor', :weight => 1, :customer => @customer )
+      load_seed_data
+      primary = Project.primary
       primary.start! @when_to
       primary.stop! @when_to+20.hours
       @tasks << primary

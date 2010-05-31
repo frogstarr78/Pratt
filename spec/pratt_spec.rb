@@ -82,7 +82,6 @@ describe Pratt do
   end
 
   describe "parse" do
-    it "handles cli arg -n setting appropriate environment config"
 #    do
 ##      Pratt.expects(:connect).with('staging')
 ##      lambda {
