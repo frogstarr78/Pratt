@@ -107,7 +107,7 @@
           <P ALIGN=RIGHT><%= project.payment.pretty_print %></P>
         </TD>
         <TD WIDTH=97>
-          <P ALIGN=RIGHT><FONT SIZE=2><%= project.amount(scale, when_to).pretty_print %></FONT></P>
+          <P ALIGN=RIGHT><FONT SIZE=2><%= project.amount( project.time_spent( scale, when_to ) ).pretty_print %></FONT></P>
         </TD>
       </TR>
 		<% end %>
