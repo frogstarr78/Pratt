@@ -42,7 +42,7 @@ Spec::Rake::SpecTask.new(:rcov) do |spec|
   spec.libs << 'lib' << 'spec'
   spec.pattern = 'spec/**/*_spec.rb'
   spec.rcov = true
-  spec.rcov_opts = %w(--text-report --spec-only --exclude=activerecord,ruby-debug,shifty_week,sqlite3-ruby,rspec,mocha,erubis,chronic,colored,columnize,builder,activesupport,i18n,linecache,json_pure,rcov,abstract,spec_helper.rb)
+  spec.rcov_opts = %w(--text-report --spec-only --exclude=activerecord,ruby-debug,shifty_week,sqlite3-ruby,rspec,mocha,erubis,chronic,colored,columnize,builder,activesupport,i18n,linecache,json_pure,rcov,abstract,spec_helper.rb,config.rb)
 end
 
 task :spec => :check_dependencies
