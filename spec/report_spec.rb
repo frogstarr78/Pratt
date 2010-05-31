@@ -2,11 +2,26 @@ require 'spec_helper'
 require 'pratt'
 
 describe "Pratt report method" do
-  before :each do
+
+  describe "#pid" do
     @pratt = Pratt.new
+    @pratt.expects(:template=).with("pid")
+    @pratt.expects(:process_template!)
+    @pratt.pid
   end
 
+  # FIXME: Get this working
+  describe "#cpid" #do
+#    @pratt = Pratt.new
+#    ::Kernel.expects(:`)
+#    @pratt.cpid
+#  end
+
   describe "#graph" do
+    before :each do
+      @pratt = Pratt.new
+    end
+
     it "with no project uses Project.all to generate output" do
       @pratt.expects(:template=).with("graph")
       @pratt.expects(:project?).returns false
@@ -27,6 +42,10 @@ describe "Pratt report method" do
 
   describe "output" do
     include SeedData
+
+    before :each do
+      @pratt = Pratt.new
+    end
     before :each do
       @when_to = Chronic.parse('September 29 2009').beginning_of_week
       @pratt.scale = 'week'
@@ -94,6 +113,10 @@ describe "Pratt report method" do
 
   describe "#proportions" do
     include SeedData
+
+    before :each do
+      @pratt = Pratt.new
+    end
     before :each do
       @when_to = Chronic.parse('last week').beginning_of_week
       @pratt.scale = 'week'
