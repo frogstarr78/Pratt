@@ -1,13 +1,13 @@
 Project detail
   by week from
   Mon 00:00:00 Sep 28 2009 to Sun 23:59:59 Oct 04 2009
-                          dys     hrs     min
-------------------------------------------------------------
+                    dys     hrs     min   total
+-------------------------------------------------------------------
 
-     Lunch/Break| 00 day 01 hour 21 min
-           Task1| 00 day 01 hour 04 min
-           Task2| 00 day 00 hour 58 min
-    Another Task| 00 day 00 hour 05 min
-           Task3| 01 day 17 hour 32 min
+     Lunch/Break | 00 day 01 hour 21 min  1.35
+           Task1 | 00 day 01 hour 03 min  1.07
+           Task2 | 00 day 00 hour 58 min  0.97
+    Another Task | 00 day 00 hour 05 min  0.08
+           Task3 | 01 day 17 hour 31 min  41.53
 
-------------------------------------------------------------
+-------------------------------------------------------------------
