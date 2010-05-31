@@ -5,7 +5,7 @@ class Pratt
     self.template = 'graph'
 
     if project?
-      @projects = [project]
+      @projects = [ project ]
     else
       @projects = Project.all
     end
@@ -36,7 +36,7 @@ class Pratt
     if @primary + @off_total + @rest_total > 0.0
       process_template!
     else
-      "No data to report"
+      $stdout.puts "No data to report"
     end
   end
 
@@ -64,7 +64,7 @@ class Pratt
     if @total > 0.0
       process_template!
     else
-      puts "No data to report"
+      $stdout.puts "No data to report"
     end
   end
 
@@ -118,10 +118,17 @@ class Pratt
   end
 
   private
+   def output
+     # for testing
+     @__output
+   end
+
     def process_template!
       input = File.open(Pratt.root("views", "#{template}.eruby").first).read
       erubis = Erubis::Eruby.new(input)
-      puts erubis.evaluate(self)
+      @__output = erubis.evaluate(self)
+      $stdout.puts @__output
+      nil
     end
 
 end
