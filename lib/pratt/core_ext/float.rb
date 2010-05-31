@@ -22,6 +22,7 @@ class Money
   def initialize f
     @f = Float(f)
   end
+
   def pretty_print
     "$#{@f.pretty_print}"
   end
