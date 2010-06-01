@@ -83,8 +83,9 @@ describe Project do
 
     it "should do nothing if attempting to start a project when there is one that has not been finished" do
       @project.start!
+      @project.reload
 
-      $stdout.expects(:puts)
+      $stdout.expects(:puts).with "Unable to start a new Project when there is an existing project #{@project.name} that hasn't been finished"
       lambda {
         @project.start!
       }.should_not change(@project.whences, :count)
