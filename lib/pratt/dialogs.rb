@@ -4,18 +4,17 @@ class Pratt
   end
 
   def daemonize!
-    defork { 
+    defork do
       puts "pratt (#{Process.pid.to_s.yellow})"
       app.pid = Process.pid
       app.save!
 
-      gui
-      while(daemonized?)
-        sleep(app.interval)
+      while daemonized?
         gui
+        sleep(app.interval)
       end
       quit
-    }
+    end
   end
 
   def gui
