@@ -1,7 +1,0 @@
-# @configure_input@
-#
-
-package ifneeded tile @PACKAGE_VERSION@ \
-    [list load [file join $dir tile[info sharedlibext]]]
-
-#*EOF*
