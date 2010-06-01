@@ -27,8 +27,7 @@ Gem::Specification.new do |s|
   s.email = %q{frogstarr78@gmail.com}
   s.executables = ["pratt"]
   s.extra_rdoc_files = [
-    "README.html",
-     "README.txt",
+    "README.txt",
      "TODO"
   ]
   s.files = [
@@ -38,7 +37,6 @@ Gem::Specification.new do |s|
      "Manifest.txt",
      "Pratt.gemspec",
      "Pratt.mm",
-     "README.html",
      "README.txt",
      "Rakefile",
      "TODO",
@@ -109,6 +107,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/frogstarr78/pratt}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
+  s.requirements = ["An OS that supports fork (This will be remedied soon.)"]
   s.rubyforge_project = %q{Pratt}
   s.rubygems_version = %q{1.3.6}
   s.summary = %q{Pro/Re-Active Time Tracker.  Track time based on what you expect to be working on, with frequent prompts to ensure accuracy.}
@@ -144,7 +143,6 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rspec>, ["= 1.2.6"])
       s.add_development_dependency(%q<mocha>, ["= 0.9.5"])
       s.add_runtime_dependency(%q<activerecord>, ["= 2.1.1"])
-      s.add_runtime_dependency(%q<sqlite3-ruby>, ["= 1.2.4"])
       s.add_runtime_dependency(%q<shifty_week>, ["= 0.1.0"])
       s.add_runtime_dependency(%q<erubis>, ["= 2.6.5"])
       s.add_runtime_dependency(%q<chronic>, ["= 0.2.3"])
@@ -153,7 +151,6 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rspec>, ["= 1.2.6"])
       s.add_dependency(%q<mocha>, ["= 0.9.5"])
       s.add_dependency(%q<activerecord>, ["= 2.1.1"])
-      s.add_dependency(%q<sqlite3-ruby>, ["= 1.2.4"])
       s.add_dependency(%q<shifty_week>, ["= 0.1.0"])
       s.add_dependency(%q<erubis>, ["= 2.6.5"])
       s.add_dependency(%q<chronic>, ["= 0.2.3"])
@@ -163,7 +160,6 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rspec>, ["= 1.2.6"])
     s.add_dependency(%q<mocha>, ["= 0.9.5"])
     s.add_dependency(%q<activerecord>, ["= 2.1.1"])
-    s.add_dependency(%q<sqlite3-ruby>, ["= 1.2.4"])
     s.add_dependency(%q<shifty_week>, ["= 0.1.0"])
     s.add_dependency(%q<erubis>, ["= 2.6.5"])
     s.add_dependency(%q<chronic>, ["= 0.2.3"])

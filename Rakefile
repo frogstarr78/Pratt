@@ -9,6 +9,7 @@ task :default => :spec
 
 begin
   require 'jeweler'
+  require 'rbconfig'
   Jeweler::Tasks.new do |gem|
     gem.rubyforge_project = Pratt::NAME
     gem.name = Pratt::NAME
@@ -20,11 +21,12 @@ begin
     gem.add_development_dependency 'rspec', '=1.2.6'
     gem.add_development_dependency 'mocha', '=0.9.5'
     gem.add_runtime_dependency 'activerecord', '=2.1.1'
-    gem.add_runtime_dependency 'sqlite3-ruby', '=1.2.4'
+#    gem.add_runtime_dependency 'sqlite3-ruby', '=1.2.4'
     gem.add_runtime_dependency 'shifty_week', '=0.1.0'
     gem.add_runtime_dependency 'erubis', '=2.6.5'
     gem.add_runtime_dependency 'chronic', '=0.2.3'
     gem.add_runtime_dependency 'colored', '=1.2'
+    gem.requirements << "An OS that supports fork (This will be remedied soon.)"
     gem.platform = 'current'
     gem.test_files = FileList['spec/**/*.{rb,opts}', 'spec/fixtures/*.expectation']
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
