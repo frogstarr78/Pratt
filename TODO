@@ -11,7 +11,7 @@ Invoicing:
 
 	Templating:
 [ ] Invoices
-[ ] Move other output to template based
+[x] Move other output to template based
 
 Data:
 [?] Change to Use DataMapper
@@ -25,7 +25,6 @@ GUI:
 [ ] Re-design prompts
 [ ] Remove fork in favor of ( eval OR (!?!) GUI classes )
 [ ] Don't assume gui.
-[ ] Add options for cli user prompting.
 
 Test:
 [ ] Add more I'm not testing everything
