@@ -12,6 +12,8 @@ class Project < ActiveRecord::Base
   before_validation_on_create :set_to_customer_one
 
   def start! at = DateTime.now
+    last_unended = Whence.last_unended
+    $stdout.puts "Unable to start a new Project when there is an existing project #{last_unended.project.name} that hasn't been finished" and return unless last_unended.nil?
     at = Chronic.parse(at) if at.is_a?(String)
     whences.create :start_at => at
   end

@@ -81,6 +81,15 @@ describe Project do
       @project.whences.last.end_at.should be_nil
     end
 
+    it "should do nothing if attempting to start a project when there is one that has not been finished" do
+      @project.start!
+
+      $stdout.expects(:puts)
+      lambda {
+        @project.start!
+      }.should_not change(@project.whences, :count)
+    end
+
     it "should do nothing if attempting to stop a project that hasn't been started" do
       lambda {
         @project.stop!
