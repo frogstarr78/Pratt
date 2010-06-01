@@ -4,15 +4,13 @@
 
 == DESCRIPTION:
 
-Pratt (describe your package)
-(Pro/Re)-Active Time Tracker
+Pratt (Pro/Re)-Active Time Tracker
 
 == FEATURES/PROBLEMS:
 
 (list of features or problems)
 * Currently you'll need to manually fix the project data since I haven't
-fully integrated the support for Projects to have customer's and my current
-implementation is shoddy.
+fully integrated the support for Projects to have a Customer.
 * Upgrading versions looses your database. (See TODO)
 * Windows doesn't work (no fork). (See TODO)
 
