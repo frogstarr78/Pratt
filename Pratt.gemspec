@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Scott Noel-Hemming"]
-  s.date = %q{2010-05-31}
+  s.date = %q{2010-06-01}
   s.default_executable = %q{pratt}
   s.description = %q{
 	  Need a way to keep track of your time, but get caught up in work? Or constant interruptions?
@@ -27,8 +27,7 @@ Gem::Specification.new do |s|
   s.email = %q{frogstarr78@gmail.com}
   s.executables = ["pratt"]
   s.extra_rdoc_files = [
-    "README.html",
-     "README.txt",
+    "README.txt",
      "TODO"
   ]
   s.files = [
@@ -38,7 +37,6 @@ Gem::Specification.new do |s|
      "Manifest.txt",
      "Pratt.gemspec",
      "Pratt.mm",
-     "README.html",
      "README.txt",
      "Rakefile",
      "TODO",
