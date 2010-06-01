@@ -377,24 +377,33 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<rspec>, [">= 1.2.6"])
-      s.add_development_dependency(%q<mocha>, [">= 0.9.5"])
-      s.add_runtime_dependency(%q<activerecord>, [">= 2.1.1"])
-      s.add_runtime_dependency(%q<sqlite3-ruby>, [">= 1.2.4"])
-      s.add_runtime_dependency(%q<shifty_week>, [">= 0.1.0"])
+      s.add_development_dependency(%q<rspec>, ["= 1.2.6"])
+      s.add_development_dependency(%q<mocha>, ["= 0.9.5"])
+      s.add_runtime_dependency(%q<activerecord>, ["= 2.1.1"])
+      s.add_runtime_dependency(%q<sqlite3-ruby>, ["= 1.2.4"])
+      s.add_runtime_dependency(%q<shifty_week>, ["= 0.1.0"])
+      s.add_runtime_dependency(%q<erubis>, ["= 2.6.5"])
+      s.add_runtime_dependency(%q<chronic>, ["= 0.2.3"])
+      s.add_runtime_dependency(%q<colored>, ["= 1.2"])
     else
-      s.add_dependency(%q<rspec>, [">= 1.2.6"])
-      s.add_dependency(%q<mocha>, [">= 0.9.5"])
-      s.add_dependency(%q<activerecord>, [">= 2.1.1"])
-      s.add_dependency(%q<sqlite3-ruby>, [">= 1.2.4"])
-      s.add_dependency(%q<shifty_week>, [">= 0.1.0"])
+      s.add_dependency(%q<rspec>, ["= 1.2.6"])
+      s.add_dependency(%q<mocha>, ["= 0.9.5"])
+      s.add_dependency(%q<activerecord>, ["= 2.1.1"])
+      s.add_dependency(%q<sqlite3-ruby>, ["= 1.2.4"])
+      s.add_dependency(%q<shifty_week>, ["= 0.1.0"])
+      s.add_dependency(%q<erubis>, ["= 2.6.5"])
+      s.add_dependency(%q<chronic>, ["= 0.2.3"])
+      s.add_dependency(%q<colored>, ["= 1.2"])
     end
   else
-    s.add_dependency(%q<rspec>, [">= 1.2.6"])
-    s.add_dependency(%q<mocha>, [">= 0.9.5"])
-    s.add_dependency(%q<activerecord>, [">= 2.1.1"])
-    s.add_dependency(%q<sqlite3-ruby>, [">= 1.2.4"])
-    s.add_dependency(%q<shifty_week>, [">= 0.1.0"])
+    s.add_dependency(%q<rspec>, ["= 1.2.6"])
+    s.add_dependency(%q<mocha>, ["= 0.9.5"])
+    s.add_dependency(%q<activerecord>, ["= 2.1.1"])
+    s.add_dependency(%q<sqlite3-ruby>, ["= 1.2.4"])
+    s.add_dependency(%q<shifty_week>, ["= 0.1.0"])
+    s.add_dependency(%q<erubis>, ["= 2.6.5"])
+    s.add_dependency(%q<chronic>, ["= 0.2.3"])
+    s.add_dependency(%q<colored>, ["= 1.2"])
   end
 end
 
