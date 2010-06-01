@@ -109,7 +109,13 @@ class Pratt
   end
 
   def cpid
-    `pgrep -fl 'bin/pratt'`.chomp.split(' ').first
+    rubies = %x(ps -C ruby -o pid=,cmd=)
+    pratts = rubies.select do |ruby_process|
+      pid, interp, cmd, args = ruby_process.chomp.split(' ')
+      cmd =~ /pratt/ && args == '-d'
+    end
+    return '' unless pratts.size == 1
+    pratts.first.split(' ').first
   end
 
   def pid
