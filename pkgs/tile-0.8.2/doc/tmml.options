@@ -1,4 +1,0 @@
-set Options(xsltProcessor) tdom
-set dictionary(pathname) cmd
-set manpageCategories(widget.n) stdopt
-set manpageCategories(tile-intro.n) misc
