@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 require 'tk'
 require 'tkextlib/tile'
 require 'optparse'
@@ -9,12 +9,8 @@ include Tk::Tile
 opts = OpenStruct.new
 opts.projects = []
 opts.current  = -1
-opts.env      = :development
 
 ARGV.options do |opt|
-  opt.on('-e', '--environment ENVIRON', String, "Environment to run under.") do |env|
-    opts.env      = env
-  end
   opt.on('-p x,y,z', "--projects x,y,z", Array, "List of projects to display.") do |projs|
     opts.projects = projs
   end
@@ -43,19 +39,19 @@ project_combo.pack('side' => 'bottom', 'fill' => 'y')
 
 change = proc {
   Process.detach(   
-    fork { system("ruby bin/pratt.rb --project '#{project_combo.get}' --change --begin --unlock") } 
+    fork { system("ruby bin/pratt --project '#{project_combo.get}' --change --begin --unlock") } 
   )
   exit
 }
 quit = proc {
   Process.detach(
-    fork { system("ruby bin/pratt.rb --project '#{project_combo.get}' --end --unlock --quit") }
+    fork { system("ruby bin/pratt --project '#{project_combo.get}' --end --unlock --quit") }
   )
   exit
 }
 start = proc {
   Process.detach(
-    fork { system("ruby bin/pratt.rb --project '#{project_combo.get}' --begin --unlock") }
+    fork { system("ruby bin/pratt --project '#{project_combo.get}' --begin --unlock") }
   )
   exit
 }

@@ -1,6 +1,6 @@
-<map version="0.9.0">
+<map version="0.8.0">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
-<node CREATED="1259562766445" ID="ID_1410372245" MODIFIED="1259562818702" TEXT="Pratt">
+<node CREATED="1259562766445" ID="ID_1410372245" MODIFIED="1275374263901" TEXT="Pratt">
 <node CREATED="1259562789082" FOLDED="true" ID="ID_1114206163" LINK="file:/home/scott/git/pratt/.git/" MODIFIED="1259562792217" POSITION="right" TEXT=".git">
 <node CREATED="1259562789204" FOLDED="true" ID="ID_1451204513" LINK="file:/home/scott/git/pratt/.git/info/" MODIFIED="1259562789209" TEXT="info">
 <node CREATED="1259562789207" ID="ID_1057964515" LINK="file:/home/scott/git/pratt/.git/info/exclude" MODIFIED="1259562789208" TEXT="exclude"/>
@@ -1488,7 +1488,7 @@
 <node CREATED="1259562792212" ID="ID_604560561" LINK="file:/home/scott/git/pratt/.git/gitk.cache" MODIFIED="1259562792213" TEXT="gitk.cache"/>
 <node CREATED="1259562792213" ID="ID_1438653982" LINK="file:/home/scott/git/pratt/.git/RENAMED-REF" MODIFIED="1259562792214" TEXT="RENAMED-REF"/>
 </node>
-<node CREATED="1259562792218" FOLDED="true" ID="ID_808147679" LINK="file:/home/scott/git/pratt/tasks/" MODIFIED="1261014388729" POSITION="left" TEXT="tasks">
+<node CREATED="1259562792218" ID="ID_808147679" LINK="file:/home/scott/git/pratt/tasks/" MODIFIED="1261014388729" POSITION="left" TEXT="tasks">
 <node CREATED="1259562792220" ID="ID_26759006" LINK="file:/home/scott/git/pratt/tasks/pratt.rb" MODIFIED="1259562792221" TEXT="pratt.rb"/>
 </node>
 <node CREATED="1259562792222" FOLDED="true" ID="ID_1837883331" LINK="file:/home/scott/git/pratt/app/" MODIFIED="1259562792256" POSITION="right" TEXT="app">
@@ -1519,7 +1519,7 @@
 <node CREATED="1259562792254" ID="ID_1593682642" LINK="file:/home/scott/git/pratt/app/controllers/web.rb" MODIFIED="1259562792255" TEXT="web.rb"/>
 </node>
 </node>
-<node CREATED="1259562792267" FOLDED="true" ID="ID_575899579" LINK="file:/home/scott/git/pratt/lib/" MODIFIED="1261014387785" POSITION="left" TEXT="lib">
+<node CREATED="1259562792267" ID="ID_575899579" LINK="file:/home/scott/git/pratt/lib/" MODIFIED="1261014387785" POSITION="left" TEXT="lib">
 <node CREATED="1259562792268" FOLDED="true" ID="ID_833289382" LINK="file:/home/scott/git/pratt/lib/pratt/" MODIFIED="1261014381608" TEXT="pratt">
 <node CREATED="1259562792270" ID="ID_1564657644" LINK="file:/home/scott/git/pratt/lib/pratt/time.rb" MODIFIED="1259562792271" TEXT="time.rb"/>
 <node CREATED="1259562792271" ID="ID_1081392673" LINK="file:/home/scott/git/pratt/lib/pratt/array.rb" MODIFIED="1259562792272" TEXT="array.rb"/>
@@ -1550,14 +1550,14 @@
 <node CREATED="1259562792302" ID="ID_1985618125" LINK="file:/home/scott/git/pratt/spec/spec_helper.rb" MODIFIED="1259562792302" TEXT="spec_helper.rb"/>
 <node CREATED="1259562792303" ID="ID_683943592" LINK="file:/home/scott/git/pratt/spec/customer_spec.rb" MODIFIED="1259562792303" TEXT="customer_spec.rb"/>
 </node>
-<node CREATED="1259562792305" FOLDED="true" ID="ID_1850610877" LINK="file:/home/scott/git/pratt/bin/" MODIFIED="1259562815675" POSITION="left" TEXT="bin">
+<node CREATED="1259562792305" ID="ID_1850610877" LINK="file:/home/scott/git/pratt/bin/" MODIFIED="1259562815675" POSITION="left" TEXT="bin">
 <node CREATED="1259562792307" ID="ID_427990459" LINK="file:/home/scott/git/pratt/bin/pratt.rb" MODIFIED="1259562792308" TEXT="pratt.rb"/>
 </node>
 <node CREATED="1259562792309" FOLDED="true" ID="ID_1864410296" LINK="file:/home/scott/git/pratt/templates/" MODIFIED="1259562792315" POSITION="right" TEXT="templates">
 <node CREATED="1259562792311" ID="ID_627352970" LINK="file:/home/scott/git/pratt/templates/model.eruby" MODIFIED="1259562792312" TEXT="model.eruby"/>
 <node CREATED="1259562792313" ID="ID_1526522947" LINK="file:/home/scott/git/pratt/templates/spec.eruby" MODIFIED="1259562792314" TEXT="spec.eruby"/>
 </node>
-<node CREATED="1259562792316" FOLDED="true" ID="ID_1726401516" LINK="file:/home/scott/git/pratt/pkgs/" MODIFIED="1259562815020" POSITION="left" TEXT="pkgs">
+<node CREATED="1259562792316" ID="ID_1726401516" LINK="file:/home/scott/git/pratt/pkgs/" MODIFIED="1259562815020" POSITION="left" TEXT="pkgs">
 <node CREATED="1259562792318" FOLDED="true" ID="ID_1973841042" LINK="file:/home/scott/git/pratt/pkgs/tile-0.8.2/" MODIFIED="1259562792752" TEXT="tile-0.8.2">
 <node CREATED="1259562792320" FOLDED="true" ID="ID_372555345" LINK="file:/home/scott/git/pratt/pkgs/tile-0.8.2/macosx/" MODIFIED="1259562792323" TEXT="macosx">
 <node CREATED="1259562792322" ID="ID_1636453496" LINK="file:/home/scott/git/pratt/pkgs/tile-0.8.2/macosx/aquaTheme.c" MODIFIED="1259562792322" TEXT="aquaTheme.c"/>
@@ -1840,7 +1840,7 @@
 <node CREATED="1259562792813" ID="ID_854757218" LINK="file:/home/scott/git/pratt/reports/Invoice_10.03-10.09.odt" MODIFIED="1259562792813" TEXT="Invoice_10.03-10.09.odt"/>
 <node CREATED="1259562792814" ID="ID_474079896" LINK="file:/home/scott/git/pratt/reports/travel.log" MODIFIED="1259562792814" TEXT="travel.log"/>
 </node>
-<node CREATED="1259562792816" FOLDED="true" ID="ID_53820923" LINK="file:/home/scott/git/pratt/pkg/" MODIFIED="1259562792820" POSITION="left" TEXT="pkg">
+<node CREATED="1259562792816" ID="ID_53820923" LINK="file:/home/scott/git/pratt/pkg/" MODIFIED="1259562792820" POSITION="left" TEXT="pkg">
 <node CREATED="1259562792818" ID="ID_23637756" LINK="file:/home/scott/git/pratt/pkg/Pratt-1.5.8.gem" MODIFIED="1259562792819" TEXT="Pratt-1.5.8.gem"/>
 <node CREATED="1259562792819" ID="ID_1751753399" LINK="file:/home/scott/git/pratt/pkg/Pratt-1.5.6.gem" MODIFIED="1259562792820" TEXT="Pratt-1.5.6.gem"/>
 </node>

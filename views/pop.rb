@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 require 'tk'
 require 'tkextlib/tile'
 require 'optparse'
@@ -7,15 +7,11 @@ require 'ostruct'
 include Tk::Tile
 
 opts = OpenStruct.new
-opts.env          = :development
 opts.project_name = ''
 opts.start_time   = ''
 opts.project_time = ''
 
 ARGV.options do |opt|
-  opt.on('-e', '--environment ENVIRON', String, "Environment to run under.") do |env|
-    opts.env     = env
-  end
   opt.on('-p', '--project PROJECT', String, "Set the current task.") do |proj|
     opts.project_name = proj
   end
@@ -29,12 +25,12 @@ ARGV.options do |opt|
 end
 
 yes = proc {
-  c = fork { system("ruby bin/pratt.rb --project '#{opts.project_name}' --restart --unlock") }
+  c = fork { system("ruby bin/pratt --project '#{opts.project_name}' --restart --unlock") }
   Process.detach(c)
   exit 
 }
 adjust = proc {
-  c = fork { system("ruby bin/pratt.rb --project '#{opts.project_name}' --end --unlock --gui") }
+  c = fork { system("ruby bin/pratt --project '#{opts.project_name}' --end --unlock --gui") }
   Process.detach(c)
   exit 
 }
