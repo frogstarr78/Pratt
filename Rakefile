@@ -10,7 +10,7 @@ task :default => :spec
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-	gem.rubyforge_project = Pratt::NAME
+    gem.rubyforge_project = Pratt::NAME
     gem.name = Pratt::NAME
     gem.summary = Pratt::SUMMARY
     gem.description = Pratt::DESCRIPTION
@@ -25,6 +25,8 @@ begin
     gem.add_runtime_dependency 'erubis', '=2.6.5'
     gem.add_runtime_dependency 'chronic', '=0.2.3'
     gem.add_runtime_dependency 'colored', '=1.2'
+    gem.platform = 'current'
+    gem.test_files = FileList['spec/**/*.{rb,opts}', 'spec/fixtures/*.expectation']
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
