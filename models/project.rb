@@ -9,7 +9,7 @@ class Project < ActiveRecord::Base
   
   validates_presence_of :name, :customer_id
 
-  before_validation_on_create :set_to_customer_one
+  before_validation :set_to_customer_one, :on => 'create'
 
   def start! at = DateTime.now
     last_unended = Whence.last_unended
