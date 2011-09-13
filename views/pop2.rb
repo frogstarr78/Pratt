@@ -1,85 +1,115 @@
 #!/usr/bin/ruby
+DEFAULT_TK_ENCODING = __ENCODING__
 require 'tk'
+#Tk.encoding = __ENCODING__
 require 'tkextlib/tile'
 
 class Pratt
-  class Pop2 < Tk::Toplevel
-    attr_reader :project
+  class TkBase < Tk::Toplevel
+    def button parent, txt, args = {}, &block
+      args = { 'side' => 'left', :fill => 'y' }.update args
+      TkButton.new(parent) do
+        text txt
+        command block
+        underline 0
+      end.pack args
+    end
+
+    def label parent, txt, args = {}
+      args = { :side => 'top', :fill => 'y' }.update args
+      Tk::Tile::Label.new(parent) do
+        text txt
+      end.pack args
+    end
+
+    def frame parent, args = {}
+      args = { :side => 'top', :fill => 'y' }.update args
+      me = Tk::Tile::Frame.new(parent) { padding "5 5 5 5" }
+      yield me
+      me.pack args
+    end
+
+  end
+
+  class Pop2 < TkBase
+    attr_accessor :project
 
 
     def initialize project
       super nil, :title => 'Pratt Reminder', :width => 500
 
-#      @project = project 
-      $project = project
-
-      build
+      build project
     end
 
-    cleanup = proc {
+
+    def cleanup
 #      self.unlock
       exit
-    }
-    yes = proc {
-#      self.when_to = Time.now
-#      self.restart
-      cleanup.call
-    }
-    adjust = proc {
+    end
+
+    def adjust
+      puts 'here'
 #      self.when_to = Time.now
 #      self.end
 #      self.unlock
 #      self.gui
 #      # TODO: Clean up the slop
-      cleanup.call
-    }
+      exit
+#      cleanup
+    end
 
+    def yes
+#      self.when_to = Time.now
+#      self.restart
+      exit
+#      cleanup
+    end
 
     def show
-      Tk.mainloop if Tk.has_mainwindow?
+      if Tk.has_mainwindow?
+        root = Tk::Root.new
+        root.withdraw
+        Tk.mainloop
+      end
       puts self.state
     end
 
     private
-      def build
-        frm = Tk::Tile::Frame.new(self) { padding "5 5 5 5" }
-        top_frm = Tk::Tile::Frame.new(frm) { padding "5 5 5 5" }
+      def build project
+        frame self do |frm|
 
-        Tk::Tile::Label.new(top_frm) do
-          text "Have you been working on: "
-        end.pack(:side => 'top', :fill => 'y')
+          frame frm do |top|
+            label top, "Have you been working on: "
+            label top, project.name
+            label top, "started:
+              #{project.whences.last_unended.start_at}
+            total time:
+              #{Pratt.totals(project.time_spent)}."
+          end
 
-        Tk::Tile::Label.new(top_frm) do
-          text $project.name
-        end.pack(:side => 'top', :fill => 'y')
+          frame frm, :side => 'bottom' do |btm|
+            button btm, 'Yes', :side => 'left' do
+              exit
+            end
 
-        Tk::Tile::Label.new(top_frm) do
-          text "started:
-          #{$project.whences.last_unended.start_at}
-        total time:
-          #{Pratt.totals($project.time_spent)}."
-        end.pack(:side => 'bottom', :fill => 'y')
+            button btm, 'Adjust', :side => 'right' do
+              adjust
+            end
+          end
+        end
 
-        botm_frm = Tk::Tile::Frame.new(frm) { padding "5 5 5 5" }
-        TkButton.new(botm_frm) do
-          text "Yes"
-          command &:yes
-          underline 0
-        end.pack('side' => 'left', :fill => 'y')
-        self.bind("Alt-y", &:yes)
-
-        TkButton.new(botm_frm) do
-          text "Adjust"
-          command &:adjust
-          underline 0
-        end.pack('side' => 'right', :fill => 'y')
-        self.bind("Alt-a", &:adjust)
-
-        top_frm.pack( :side => 'top',    :fill => 'y')
-        botm_frm.pack(:side => 'bottom', :fill => 'y')
-        frm.pack(     :side => 'top',    :fill => 'y')
+        self.bind "Alt-y", &method(:yes)
+        self.bind "Alt-a", &method(:adjust)
       end
   end
 end
 
-#Tk.mainloop
+if $0 == __FILE__
+  $: << '.'
+  require 'lib/pratt'
+  require 'config'
+
+  Pratt.connect!
+  view = Pratt::Pop2.new( Whence.last_unended.project )
+  view.show
+end
