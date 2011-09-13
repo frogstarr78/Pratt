@@ -6,26 +6,26 @@ require 'tkextlib/tile'
 
 class Pratt
   class TkBase < Tk::Toplevel
-    def button parent, txt, args = {}, &block
+    def button txt, args = {}, &block
       args = { 'side' => 'left', :fill => 'y' }.update args
-      TkButton.new(parent) do
+      TkButton.new(self) do
         text txt
         command block
         underline 0
       end.pack args
     end
 
-    def label parent, txt, args = {}
+    def label txt, args = {}
       args = { :side => 'top', :fill => 'y' }.update args
-      Tk::Tile::Label.new(parent) do
+      Tk::Tile::Label.new(self) do
         text txt
       end.pack args
     end
 
-    def frame parent, args = {}
+    def frame args = {}
       args = { :side => 'top', :fill => 'y' }.update args
-      me = Tk::Tile::Frame.new(parent) { padding "5 5 5 5" }
-      yield me
+      me = Tk::Tile::Frame.new(self) { padding "5 5 5 5" }
+      me.instance_eval { yield }
       me.pack args
     end
 
@@ -76,23 +76,23 @@ class Pratt
 
     private
       def build project
-        frame self do |frm|
+        frame do
 
-          frame frm do |top|
-            label top, "Have you been working on: "
-            label top, project.name
-            label top, "started:
+          frame do
+            label "Have you been working on: "
+            label project.name
+            label "started:
               #{project.whences.last_unended.start_at}
             total time:
               #{Pratt.totals(project.time_spent)}."
           end
 
-          frame frm, :side => 'bottom' do |btm|
-            button btm, 'Yes', :side => 'left' do
+          frame :side => 'bottom' do
+            button 'Yes', :side => 'left' do
               exit
             end
 
-            button btm, 'Adjust', :side => 'right' do
+            button 'Adjust', :side => 'right' do
               adjust
             end
           end
