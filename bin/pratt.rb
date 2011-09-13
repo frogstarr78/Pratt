@@ -7,6 +7,7 @@ bin_file = File.symlink?(bin_file) ? File.readlink(bin_file) : bin_file
 bin_path = File.expand_path( '..', bin_file )
 pratt_dir = File.dirname( bin_path )
 FileUtils.chdir pratt_dir
+$LOAD_PATH << '.'
 
 require "lib/pratt"
 
