@@ -222,7 +222,7 @@ class Pratt
         when 'all'
           @whences = Whence.find raw_conditions.to_sym
         when /^last$/, 'first'
-          @whences = [Whence.find raw_conditions.to_sym]
+          @whences = [Whence.find( raw_conditions.to_sym )]
         when /last[\(\s]?(\d+)[\)\s]?/
           @whences = Whence.all.last($1.to_i)
         else
