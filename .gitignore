@@ -1,6 +1,9 @@
-pratt.pid
-*.sqlite3
-migrations
-reports
-*.swp
-*.swo
+/.bundle/
+/.yardoc
+/Gemfile.lock
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
